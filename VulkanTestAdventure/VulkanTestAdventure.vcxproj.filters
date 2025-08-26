@@ -7,6 +7,12 @@
     <Filter Include="Licenses">
       <UniqueIdentifier>{3782d889-fd2f-404a-834c-a3f8b563a158}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Vulkan">
+      <UniqueIdentifier>{f57adfaf-d9d5-483f-9ad7-fb35f47540c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Vulkan\NewFilter1">
+      <UniqueIdentifier>{331a59ba-f406-41fa-a053-6446cc57aa09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
