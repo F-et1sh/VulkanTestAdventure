@@ -4,10 +4,18 @@
     <Filter Include="Code">
       <UniqueIdentifier>{a8c31914-fb10-4834-9aa3-1ea4ef713f15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Licenses">
+      <UniqueIdentifier>{3782d889-fd2f-404a-834c-a3f8b563a158}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
       <Filter>Code</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Lisenses\VULKAN_LICENSE.txt">
+      <Filter>Licenses</Filter>
+    </Text>
   </ItemGroup>
 </Project>
