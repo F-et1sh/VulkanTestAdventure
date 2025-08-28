@@ -166,6 +166,63 @@ int main() {
     VkSwapchainKHR swapchain{};
     vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain);
 
+    uint32_t swapchain_image_count = 0;
+    vkGetSwapchainImagesKHR(device, swapchain, &swapchain_image_count, nullptr);
+    std::vector<VkImage> swapchain_images(swapchain_image_count);
+    vkGetSwapchainImagesKHR(device, swapchain, &swapchain_image_count, swapchain_images.data());
+
+    VkFormat swapchain_image_format = surface_format.format;
+    VkExtent2D swapchain_extent = extent;
+    std::vector<VkImageView> swapchain_image_views(swapchain_images.size());
+
+    for (size_t i = 0; i < swapchain_images.size(); i++) {
+        VkImageViewCreateInfo image_view_create_info{};
+        image_view_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        image_view_create_info.image = swapchain_images[0];
+        image_view_create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        image_view_create_info.format = swapchain_image_format;
+        image_view_create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        image_view_create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        image_view_create_info.subresourceRange.baseMipLevel = 0;
+        image_view_create_info.subresourceRange.levelCount = 1;
+        image_view_create_info.subresourceRange.baseArrayLayer = 0;
+        image_view_create_info.subresourceRange.layerCount = 1;
+
+        vkCreateImageView(device, &image_view_create_info, nullptr, &swapchain_image_views[i]);
+    }
+
+    VkAttachmentDescription color_attachment_description{};
+    color_attachment_description.format = swapchain_image_format;
+    color_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
+    color_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    color_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    color_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    color_attachment_description.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    color_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    color_attachment_description.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference color_attachment_reference{};
+    color_attachment_reference.attachment = 1;
+    color_attachment_reference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpass_description{};
+    subpass_description.colorAttachmentCount = 1;
+    subpass_description.pColorAttachments = &color_attachment_reference;
+    subpass_description.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+
+    VkRenderPassCreateInfo render_pass_create_info{};
+    render_pass_create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    render_pass_create_info.attachmentCount = 1;
+    render_pass_create_info.pAttachments = &color_attachment_description;
+    render_pass_create_info.subpassCount = 1;
+    render_pass_create_info.pSubpasses = &subpass_description;
+
+    VkRenderPass render_pass{};
+    vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
     }
