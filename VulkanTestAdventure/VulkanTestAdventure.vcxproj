@@ -84,6 +84,20 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>$(VULKAN_SDK)\Bin\glslc.exe %(FullPath) -o %(FullPath).spv</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(FullPath).spv</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -101,6 +115,20 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>$(VULKAN_SDK)\Bin\glslc.exe %(FullPath) -o %(FullPath).spv</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(FullPath).spv</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,6 +146,20 @@
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(SolutionDir)VulkanTestAdventure\Libraries\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>$(VULKAN_SDK)\Bin\glslc.exe %(FullPath) -o %(FullPath).spv</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(FullPath).spv</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -137,12 +179,34 @@
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(SolutionDir)VulkanTestAdventure\Libraries\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>$(VULKAN_SDK)\Bin\glslc.exe %(FullPath) -o %(FullPath).spv</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>%(FullPath).spv</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Lisenses\VULKAN_LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Files\Shaders\Test1\shader.frag">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\Files\Shaders\Test1\shader.vert">
+      <FileType>Document</FileType>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

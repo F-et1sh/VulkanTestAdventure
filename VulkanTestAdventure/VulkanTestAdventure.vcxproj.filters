@@ -10,6 +10,12 @@
     <Filter Include="Code\Vulkan">
       <UniqueIdentifier>{f57adfaf-d9d5-483f-9ad7-fb35f47540c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{2e7b344b-1c3c-485c-822a-2cf05df1e8e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Test1">
+      <UniqueIdentifier>{a931e0dd-66f7-410b-ab9f-6083b94a95b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -20,5 +26,13 @@
     <Text Include="Lisenses\VULKAN_LICENSE.txt">
       <Filter>Licenses</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Files\Shaders\Test1\shader.vert">
+      <Filter>Shaders\Test1</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Files\Shaders\Test1\shader.frag">
+      <Filter>Shaders\Test1</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
