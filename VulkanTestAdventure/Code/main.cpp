@@ -27,6 +27,48 @@ std::string load_shader(const std::filesystem::path& path) {
     return { (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
 }
 
+void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index, VkRenderPass render_pass, std::vector<VkFramebuffer> swapchain_framebuffers, VkExtent2D swapchain_extent, VkPipeline graphics_pipeline) {
+    VkCommandBufferBeginInfo begin_info{};
+    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    vkBeginCommandBuffer(command_buffer, &begin_info);
+
+    VkClearValue clear_values = { { 0.025f, 0.025f, 0.025f, 1.0f } };
+
+    VkRenderPassBeginInfo render_pass_begin_info{};
+    render_pass_begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    render_pass_begin_info.renderPass = render_pass;
+    render_pass_begin_info.framebuffer = swapchain_framebuffers[image_index];
+    render_pass_begin_info.renderArea.offset = { 0,0 };
+    render_pass_begin_info.renderArea.extent = swapchain_extent;
+    render_pass_begin_info.clearValueCount = 1;
+    render_pass_begin_info.pClearValues = &clear_values;
+
+    vkCmdBeginRenderPass(command_buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphics_pipeline);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = swapchain_extent.width;
+    viewport.height = swapchain_extent.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+
+    vkCmdSetViewport(command_buffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = { 0,0 };
+    scissor.extent = swapchain_extent;
+
+    vkCmdSetScissor(command_buffer, 0, 1, &scissor);
+
+    vkCmdDraw(command_buffer, 3, 1, 0, 0);
+    vkCmdEndRenderPass(command_buffer);
+    vkEndCommandBuffer(command_buffer);
+}
+
 int main() {
     if (!glfwInit()) {
         std::cerr << "Failed to init GLFW" << std::endl;
@@ -131,6 +173,11 @@ int main() {
     VkDevice device{};
     if (vkCreateDevice(physical_device, &device_create_info, nullptr, &device) != VK_SUCCESS)
         throw std::runtime_error("ERROR : Failed to create device");
+
+    VkQueue graphics_queue{};
+    VkQueue present_queue{};
+    vkGetDeviceQueue(device, graphics_queue_family_index, 0, &graphics_queue);
+    vkGetDeviceQueue(device, present_queue_family_index, 0, &present_queue);
 
     uint32_t format_count = 0;
     vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &format_count, nullptr);
@@ -238,12 +285,22 @@ int main() {
     subpass_description.pColorAttachments = &color_attachment_reference;
     subpass_description.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
+    VkSubpassDependency subpass_dependency{};
+    subpass_dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    subpass_dependency.dstSubpass = 0;
+    subpass_dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpass_dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpass_dependency.srcAccessMask = 0;
+    subpass_dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
     VkRenderPassCreateInfo render_pass_create_info{};
     render_pass_create_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     render_pass_create_info.attachmentCount = 1;
     render_pass_create_info.pAttachments = &color_attachment_description;
     render_pass_create_info.subpassCount = 1;
     render_pass_create_info.pSubpasses = &subpass_description;
+    render_pass_create_info.dependencyCount = 1;
+    render_pass_create_info.pDependencies = &subpass_dependency;
 
     VkRenderPass render_pass{};
     vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
@@ -294,7 +351,7 @@ int main() {
     pipeline_rasterization_state_create_info.polygonMode = VK_POLYGON_MODE_FILL;
     pipeline_rasterization_state_create_info.lineWidth = 1.0f;
     pipeline_rasterization_state_create_info.cullMode = VK_CULL_MODE_BACK_BIT;
-    pipeline_rasterization_state_create_info.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    pipeline_rasterization_state_create_info.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
     VkPipelineMultisampleStateCreateInfo pipeline_multisample_state_create_info{};
     pipeline_multisample_state_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -403,8 +460,60 @@ int main() {
         vkCreateFence(device, &fence_create_info, nullptr, &in_flight_fences[i]);
     }
 
+    uint32_t current_frame = 0;
+
+    using clock = std::chrono::high_resolution_clock;
+    auto last_time = clock::now();
+    int frames = 0;
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
+
+        uint32_t image_index = 0;
+        vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_avaliable_semaphores[current_frame], VK_NULL_HANDLE, &image_index);
+
+        vkResetCommandBuffer(command_buffers[current_frame], 0);
+
+        record_command_buffer(command_buffers[current_frame], image_index, render_pass, swapchain_framebuffers, swapchain_extent, graphics_pipeline);
+
+        VkPipelineStageFlags wait_stages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        VkSemaphore wait_semaphores[] = { image_avaliable_semaphores[current_frame] };
+        VkSemaphore signal_semaphores[] = { render_finished_semaphores[current_frame] };
+        VkSwapchainKHR swapchains[] = { swapchain };
+
+        VkSubmitInfo submit_info{};
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &command_buffers[current_frame];
+        submit_info.pWaitDstStageMask = wait_stages;
+        submit_info.waitSemaphoreCount = 1;
+        submit_info.pWaitSemaphores = wait_semaphores;
+        submit_info.signalSemaphoreCount = 1;
+        submit_info.pSignalSemaphores = signal_semaphores;
+
+        vkQueueSubmit(graphics_queue, 1, &submit_info, in_flight_fences[current_frame]);
+
+        VkPresentInfoKHR present_info{};
+        present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+        present_info.waitSemaphoreCount = 1;
+        present_info.pWaitSemaphores = signal_semaphores;
+        present_info.swapchainCount = 1;
+        present_info.pSwapchains = swapchains;
+        present_info.pImageIndices = &image_index;
+
+        vkQueuePresentKHR(present_queue, &present_info);
+
+        current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+        frames++;
+        auto now = clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - last_time);
+
+        if (duration.count() >= 1) {
+            std::cout << "FPS : " << frames << std::endl;
+            frames = 0;
+            last_time = now;
+        }
     }
 
     vkDestroyDevice(device, nullptr);
