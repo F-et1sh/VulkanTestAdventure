@@ -348,6 +348,61 @@ int main() {
     VkPipeline graphics_pipeline{};
     vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &graphics_pipeline_create_info, nullptr, &graphics_pipeline);
 
+    vkDestroyShaderModule(device, vert_shader_module, nullptr);
+    vkDestroyShaderModule(device, frag_shader_module, nullptr);
+
+    std::vector<VkFramebuffer> swapchain_framebuffers(swapchain_image_views.size());
+    
+    for (size_t i = 0; i < swapchain_image_views.size(); i++) {
+
+        VkImageView attachments[] = { swapchain_image_views[i] };
+
+        VkFramebufferCreateInfo framebuffer_create_info{};
+        framebuffer_create_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebuffer_create_info.renderPass = render_pass;
+        framebuffer_create_info.attachmentCount = 1;
+        framebuffer_create_info.pAttachments = attachments;
+        framebuffer_create_info.width = swapchain_extent.width;
+        framebuffer_create_info.height = swapchain_extent.height;
+        framebuffer_create_info.layers = 1;
+
+        vkCreateFramebuffer(device, &framebuffer_create_info, nullptr, &swapchain_framebuffers[i]);
+    }
+
+    VkCommandPool command_pool{};
+    VkCommandPoolCreateInfo command_pool_create_info{};
+    command_pool_create_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    command_pool_create_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    command_pool_create_info.queueFamilyIndex = graphics_queue_family_index;
+
+    vkCreateCommandPool(device, &command_pool_create_info, nullptr, &command_pool);
+
+    constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+    std::vector<VkCommandBuffer> command_buffers(MAX_FRAMES_IN_FLIGHT);
+    VkCommandBufferAllocateInfo command_buffer_allocate_info{};
+    command_buffer_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    command_buffer_allocate_info.commandBufferCount = command_buffers.size();
+    command_buffer_allocate_info.commandPool = command_pool;
+    command_buffer_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+    vkAllocateCommandBuffers(device, &command_buffer_allocate_info, command_buffers.data());
+
+    std::vector<VkSemaphore> image_avaliable_semaphores(MAX_FRAMES_IN_FLIGHT);
+    std::vector<VkSemaphore> render_finished_semaphores(MAX_FRAMES_IN_FLIGHT);
+    std::vector<VkFence> in_flight_fences(MAX_FRAMES_IN_FLIGHT);
+
+    VkSemaphoreCreateInfo semaphore_create_info{};
+    semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fence_create_info{};
+    fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vkCreateSemaphore(device, &semaphore_create_info, nullptr, &image_avaliable_semaphores[i]);
+        vkCreateSemaphore(device, &semaphore_create_info, nullptr, &render_finished_semaphores[i]);
+        vkCreateFence(device, &fence_create_info, nullptr, &in_flight_fences[i]);
+    }
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
     }
