@@ -315,8 +315,8 @@ int main_1() {
     VkRenderPass render_pass{};
     vkCreateRenderPass(device, &render_pass_create_info, nullptr, &render_pass);
 
-    std::string vert_source = load_shader(/*L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv"*/L"");
-    std::string frag_source = load_shader(/*L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv"*/L"");
+    std::string vert_source = load_shader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+    std::string frag_source = load_shader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
     VkShaderModule vert_shader_module = create_shader_module(vert_source, device);
     VkShaderModule frag_shader_module = create_shader_module(frag_source, device);
