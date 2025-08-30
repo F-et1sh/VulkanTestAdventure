@@ -1,10 +1,17 @@
-#include <vulkan/vulkan_raii.hpp>
-#include <GLFW/glfw3.h>
+#include "Application.h"
 
-#include <iostream>
-#include <unordered_set>
-#include <fstream>
-#include <filesystem>
+int main() {
+    Application app{};
+    
+    try {
+        app.Run();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "ERROR : " << e.what() << std::endl;
+    }
+
+    return 0;
+}
 
 VkShaderModule create_shader_module(const std::string& code, VkDevice device) {
     VkShaderModuleCreateInfo shader_module_create_info{};
@@ -69,7 +76,7 @@ void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index,
     vkEndCommandBuffer(command_buffer);
 }
 
-int main() {
+int main_1() {
     if (!glfwInit()) {
         std::cerr << "Failed to init GLFW" << std::endl;
         return -1;
@@ -98,6 +105,8 @@ int main() {
     VkInstance instance{};
     if (vkCreateInstance(&create_info, nullptr, &instance) != VK_SUCCESS)
         throw std::runtime_error("ERROR : Failed to create Vulkan Instance");
+
+    //
 
     VkSurfaceKHR surface{};
     glfwCreateWindowSurface(instance, window, nullptr, &surface);
