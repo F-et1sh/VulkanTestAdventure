@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Application.h"
 
 void Application::InitializeWindow() {
@@ -34,6 +35,46 @@ void Application::CreateInstance() {
     m_Instance = vk::raii::Instance(m_Context, create_info);
 }
 
+void Application::PickPhysicalDevice() {
+    static const std::vector<const char*> DEVICE_EXTENSIONS = {
+        vk::KHRSwapchainExtensionName,
+        vk::KHRSpirv14ExtensionName,
+        vk::KHRSynchronization2ExtensionName,
+        vk::KHRCreateRenderpass2ExtensionName
+    };
+
+    std::vector<vk::raii::PhysicalDevice> devices = m_Instance.enumeratePhysicalDevices();
+    const auto device_iterator = std::ranges::find_if(devices,
+        [&](auto const& device) {
+            auto queue_families = device.getQueueFamilyProperties();
+            bool is_suitable = device.getProperties().apiVersion >= VK_API_VERSION_1_3;
+            
+            const auto qfp_iterator = std::ranges::find_if(queue_families, [](vk::QueueFamilyProperties const& qfp) {
+                return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0);
+                });
+
+            is_suitable = is_suitable && (qfp_iterator != queue_families.end());
+            auto extensions = device.enumerateDeviceExtensionProperties();
+            bool found = true;
+
+            for (auto const& extension : DEVICE_EXTENSIONS) {
+                auto extension_iterator = std::ranges::find_if(extensions, [extension](auto const& ext) {return strcmp(ext.extensionName, extension) == 0; });
+                found = found && extension_iterator != extensions.end();
+            }
+            
+            is_suitable = is_suitable && found;
+            if (is_suitable) m_PhysicalDevice = device;
+
+            return is_suitable;
+        });
+
+    if (device_iterator == devices.end()) throw std::runtime_error("ERROR : Failed to find a suitable GPU");
+}
+
+void Application::CreateLogicalDevice() {
+    // ..
+}
+
 void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
     const std::vector<const char*> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
 
@@ -57,4 +98,13 @@ void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) co
 
     if (!layers_supported) throw std::runtime_error("ERROR : Validation layers requested, but not available!");
     if (!VALIDATION_LAYERS.empty()) create_info.setPpEnabledLayerNames(VALIDATION_LAYERS.data());
+}
+
+uint32_t Application::FindQueueFamilies() const {
+    std::vector<vk::QueueFamilyProperties> queue_family_properties = m_PhysicalDevice.getQueueFamilyProperties();
+
+    auto graphics_queue_family_property = std::find_if(queue_family_properties.begin(), queue_family_properties.end(),
+        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; });
+
+    return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
 }
