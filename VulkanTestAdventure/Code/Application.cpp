@@ -37,11 +37,11 @@ void Application::CreateInstance() {
     m_Instance = vk::raii::Instance(m_Context, create_info);
 }
 
-static const std::vector<const char*> DEVICE_EXTENSIONS = {
-        vk::KHRSwapchainExtensionName,
-        vk::KHRSpirv14ExtensionName,
-        vk::KHRSynchronization2ExtensionName,
-        vk::KHRCreateRenderpass2ExtensionName
+constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
+    vk::KHRSwapchainExtensionName,
+    vk::KHRSpirv14ExtensionName,
+    vk::KHRSynchronization2ExtensionName,
+    vk::KHRCreateRenderpass2ExtensionName
 };
 
 void Application::PickPhysicalDevice() {
@@ -208,6 +208,97 @@ void Application::CreateImageViews() {
     }
 }
 
+void Application::CreateGraphicsPipeline() {
+    auto code_vert = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+    auto code_frag = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+
+    vk::raii::ShaderModule shader_module_vert = this->CreateShaderModule(code_vert);
+    vk::raii::ShaderModule shader_module_frag = this->CreateShaderModule(code_frag);
+
+    vk::PipelineShaderStageCreateInfo vert_shader_stage_info{ vk::PipelineShaderStageCreateFlags{}, vk::ShaderStageFlagBits::eVertex, shader_module_vert, "main" };
+    vk::PipelineShaderStageCreateInfo frag_shader_stage_info{ vk::PipelineShaderStageCreateFlags{}, vk::ShaderStageFlagBits::eFragment, shader_module_frag, "main" };
+
+    vk::PipelineShaderStageCreateInfo shader_stages[] = { vert_shader_stage_info, frag_shader_stage_info };
+
+    std::vector dynamic_states = {
+        vk::DynamicState::eViewport,
+        vk::DynamicState::eScissor
+    };
+
+    vk::PipelineDynamicStateCreateInfo dynamic_state{ vk::PipelineDynamicStateCreateFlags{}, static_cast<uint32_t>(dynamic_states.size()), dynamic_states.data() };
+
+    vk::PipelineVertexInputStateCreateInfo vertex_input_info{};
+    vk::PipelineInputAssemblyStateCreateInfo input_assembly{ vk::PipelineInputAssemblyStateCreateFlags{}, vk::PrimitiveTopology::eTriangleList };
+
+    vk::Viewport{ 0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f };
+    vk::Rect2D{ vk::Offset2D{ 0, 0 }, m_SwapchainExtent };
+
+    vk::PipelineViewportStateCreateInfo viewport_state{ vk::PipelineViewportStateCreateFlags{}, 1, nullptr, 1, nullptr };
+
+    vk::PipelineRasterizationStateCreateInfo rasterizer{
+        vk::PipelineRasterizationStateCreateFlags{},
+        vk::False,
+        vk::False,
+        vk::PolygonMode::eFill,
+        vk::CullModeFlagBits::eBack,
+        vk::FrontFace::eClockwise,
+        vk::False,
+        0.0f,
+        0.0f,
+        0.0f,
+        1.0f
+    };
+
+    vk::PipelineMultisampleStateCreateInfo multisampling{ vk::PipelineMultisampleStateCreateFlags{}, vk::SampleCountFlagBits::e1, vk::False };
+
+    vk::PipelineColorBlendAttachmentState color_blend_attachment{
+        vk::True,
+        vk::BlendFactor::eSrcAlpha,
+        vk::BlendFactor::eOneMinusSrcAlpha,
+        vk::BlendOp::eAdd,
+        vk::BlendFactor::eOne,
+        vk::BlendFactor::eZero,
+        vk::BlendOp::eAdd,
+        vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA
+    };
+
+    vk::PipelineColorBlendStateCreateInfo color_blending{ vk::PipelineColorBlendStateCreateFlags{}, vk::False, vk::LogicOp::eCopy, 1, &color_blend_attachment };
+
+    vk::PipelineLayoutCreateInfo pipeline_layout_info{};
+
+    m_PipelineLayout = vk::raii::PipelineLayout(m_Device, pipeline_layout_info);
+
+    vk::PipelineRenderingCreateInfo pipeline_rendering_create_info{ {}, 1, &m_SwapchainImageFormat };
+
+    vk::GraphicsPipelineCreateInfo pipeline_info{
+        vk::PipelineCreateFlags{},
+        static_cast<uint32_t>(std::size(shader_stages)),
+        shader_stages,
+        &vertex_input_info,
+        &input_assembly,
+        nullptr,
+        &viewport_state,
+        &rasterizer,
+        &multisampling,
+        nullptr,
+        &color_blending,
+        &dynamic_state,
+        *m_PipelineLayout,
+        nullptr,
+        0,
+        nullptr,
+        -1,
+        &pipeline_rendering_create_info
+    };
+
+    m_GraphicsPipeline = vk::raii::Pipeline(m_Device, nullptr, pipeline_info);
+}
+
+void Application::CreateCommandPool() {
+    vk::CommandPoolCreateInfo pool_info{ vk::CommandPoolCreateFlagBits::eResetCommandBuffer, m_GraphicsQueueFamilyIndex };
+    m_CommandPool = vk::raii::CommandPool(m_Device, pool_info);
+}
+
 void Application::CreateSurface() {
     VkSurfaceKHR surface{};
     if (glfwCreateWindowSurface(*m_Instance, m_Window, nullptr, &surface) != 0)
@@ -215,9 +306,9 @@ void Application::CreateSurface() {
     m_Surface = vk::raii::SurfaceKHR(m_Instance, surface);
 }
 
-void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
-    const std::vector<const char*> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
+constexpr static std::array<const char*, 1> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
 
+void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
     auto available_layers = m_Context.enumerateInstanceLayerProperties();
 
     bool layers_supported = true;
@@ -249,21 +340,21 @@ uint32_t Application::FindQueueFamilies() const {
     return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
 }
 
-vk::SurfaceFormatKHR Application::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats) {
+vk::SurfaceFormatKHR Application::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const {
     for (const auto& availableFormat : available_formats)
         if (availableFormat.format == vk::Format::eB8G8R8A8Srgb && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
             return availableFormat;
     return available_formats[0];
 }
 
-vk::PresentModeKHR Application::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes) {
+vk::PresentModeKHR Application::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes)const {
     for (const auto& available_present_mode : available_present_modes)
         if (available_present_mode == vk::PresentModeKHR::eMailbox)
             return available_present_mode;
     return vk::PresentModeKHR::eFifo;
 }
 
-vk::Extent2D Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) {
+vk::Extent2D Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)const {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) return capabilities.currentExtent;
 
     int width = 0;
@@ -274,4 +365,19 @@ vk::Extent2D Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& cap
         std::clamp<uint32_t>(width , capabilities.minImageExtent.width , capabilities.maxImageExtent.width),
         std::clamp<uint32_t>(height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height)
     };
+}
+
+std::vector<char> Application::LoadShader(const std::filesystem::path& path)const {
+    std::ifstream file(path, std::ios::binary);
+    if (!file.good()) {
+        std::cerr << "ERROR : Failed to load shader file\nPath : " << path << std::endl;
+        return {};
+    }
+    return { (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
+}
+
+vk::raii::ShaderModule Application::CreateShaderModule(const std::vector<char>& code)const {
+    vk::ShaderModuleCreateInfo create_info{ vk::ShaderModuleCreateFlags{}, code.size() * sizeof(char), reinterpret_cast<const uint32_t*>(code.data())};
+    vk::raii::ShaderModule shader_module{ m_Device, create_info };
+    return shader_module;
 }

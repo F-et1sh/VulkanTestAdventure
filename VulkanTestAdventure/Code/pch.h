@@ -6,6 +6,7 @@
 #include <fstream>
 #include <filesystem>
 #include <map>
+#include <array>
 
 // Vulkan
 #include <vulkan/vulkan_raii.hpp>
