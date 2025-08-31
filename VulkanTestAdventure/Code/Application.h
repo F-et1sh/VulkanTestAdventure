@@ -7,11 +7,21 @@ public:
 
     inline void Run() {
         this->InitializeWindow();
+
         this->CreateInstance();
         this->CreateSurface();
         this->PickPhysicalDevice();
         this->CreateLogicalDevice();
         this->CreateSwapchain();
+        this->CreateImageViews();
+        this->CreateGraphicsPipeline();
+        this->CreateCommandPool();
+        this->CreateCommandBuffer();
+        this->CreateSyncObjects();
+
+        this->MainLoop();
+
+        this->Release();
     }
 
 private:
@@ -24,6 +34,8 @@ private:
     void CreateImageViews();
     void CreateGraphicsPipeline();
     void CreateCommandPool();
+    void CreateCommandBuffer();
+    void CreateSyncObjects();
 
 private:
     void EnableValidationLayers(vk::InstanceCreateInfo& create_info)const;
@@ -36,6 +48,24 @@ private:
 
     [[nodiscard]] std::vector<char> LoadShader(const std::filesystem::path& path)const;
     [[nodiscard]] vk::raii::ShaderModule CreateShaderModule(const std::vector<char>& code)const;
+
+    void RecordCommandBuffer(uint32_t image_index);
+    
+    void TransitionImageLayout(
+        uint32_t image_index,
+        vk::ImageLayout old_layout,
+        vk::ImageLayout new_layout,
+        vk::AccessFlags2 src_access_mask,
+        vk::AccessFlags2 dst_access_mask,
+        vk::PipelineStageFlags2 src_stage_mask,
+        vk::PipelineStageFlags2 dst_stage_mask
+    )const;
+
+    void DrawFrame();
+
+    void MainLoop();
+
+    void Release();
 
 private:
     GLFWwindow* m_Window = nullptr;
@@ -69,4 +99,8 @@ private:
 
     vk::raii::CommandPool m_CommandPool = nullptr;
     vk::raii::CommandBuffer m_CommandBuffer = nullptr;
+
+    vk::raii::Semaphore m_PresentCompleteSemaphore = nullptr;
+    vk::raii::Semaphore m_RenderFinishedSemaphore = nullptr;
+    vk::raii::Fence m_DrawFence = nullptr;
 };

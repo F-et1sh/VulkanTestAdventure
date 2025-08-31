@@ -299,6 +299,59 @@ void Application::CreateCommandPool() {
     m_CommandPool = vk::raii::CommandPool(m_Device, pool_info);
 }
 
+void Application::CreateCommandBuffer() {
+    vk::CommandBufferAllocateInfo allocate_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, 1 };
+    m_CommandBuffer = std::move(vk::raii::CommandBuffers(m_Device, allocate_info).front());
+}
+
+void Application::CreateSyncObjects() {
+    m_PresentCompleteSemaphore = vk::raii::Semaphore(m_Device, vk::SemaphoreCreateInfo());
+    m_RenderFinishedSemaphore = vk::raii::Semaphore(m_Device, vk::SemaphoreCreateInfo());
+    vk::FenceCreateInfo fence_create_info{ vk::FenceCreateFlagBits::eSignaled };
+    m_DrawFence = vk::raii::Fence(m_Device, fence_create_info);
+}
+
+void Application::DrawFrame() {
+    m_GraphicsQueue.waitIdle();
+
+    auto [result, image_index] = m_Swapchain.acquireNextImage(UINT64_MAX, *m_PresentCompleteSemaphore, nullptr);
+    RecordCommandBuffer(image_index);
+
+    m_Device.resetFences(*m_DrawFence);
+
+    vk::PipelineStageFlags wait_destination_stage_mask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
+    const vk::SubmitInfo submit_info{ 1, &*m_PresentCompleteSemaphore, &wait_destination_stage_mask, 1, &*m_CommandBuffer, 1, &*m_RenderFinishedSemaphore };
+    m_GraphicsQueue.submit(submit_info, *m_DrawFence);
+
+    while (vk::Result::eTimeout == m_Device.waitForFences(*m_DrawFence, vk::True, UINT64_MAX));
+
+    const vk::PresentInfoKHR presentInfoKHR{ 1, &*m_RenderFinishedSemaphore, 1, &*m_Swapchain, &image_index };
+    result = m_GraphicsQueue.presentKHR(presentInfoKHR);
+    switch (result) {
+        case vk::Result::eSuccess: break;
+
+        case vk::Result::eSuboptimalKHR:
+            std::cerr << "ERROR : vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR" << std::endl;
+        break;
+        
+        default: break;
+    }
+}
+
+void Application::MainLoop() {
+    while (!glfwWindowShouldClose(m_Window)) {
+        glfwPollEvents();
+        this->DrawFrame();
+    }
+
+    m_Device.waitIdle();
+}
+
+void Application::Release() {
+    glfwDestroyWindow(m_Window);
+    glfwTerminate();
+}
+
 void Application::CreateSurface() {
     VkSurfaceKHR surface{};
     if (glfwCreateWindowSurface(*m_Instance, m_Window, nullptr, &surface) != 0)
@@ -380,4 +433,94 @@ vk::raii::ShaderModule Application::CreateShaderModule(const std::vector<char>& 
     vk::ShaderModuleCreateInfo create_info{ vk::ShaderModuleCreateFlags{}, code.size() * sizeof(char), reinterpret_cast<const uint32_t*>(code.data())};
     vk::raii::ShaderModule shader_module{ m_Device, create_info };
     return shader_module;
+}
+
+void Application::RecordCommandBuffer(uint32_t image_index) {
+    m_CommandBuffer.begin(vk::CommandBufferBeginInfo{});
+
+    TransitionImageLayout(
+        image_index,
+        vk::ImageLayout::eUndefined,
+        vk::ImageLayout::eColorAttachmentOptimal,
+        vk::AccessFlagBits2KHR::eNone,
+        vk::AccessFlagBits2KHR::eColorAttachmentWrite,
+        vk::PipelineStageFlagBits2KHR::eTopOfPipe,
+        vk::PipelineStageFlagBits2KHR::eColorAttachmentOutput
+    );
+
+    vk::ClearValue clear_color = vk::ClearColorValue(0.05f, 0.05f, 0.05f, 1.0f);
+    vk::RenderingAttachmentInfo attachment_info{
+        m_SwapchainImageViews[image_index],
+        vk::ImageLayout::eColorAttachmentOptimal,
+        {},
+        {},
+        {},
+        vk::AttachmentLoadOp::eClear,
+        vk::AttachmentStoreOp::eStore,
+        clear_color
+    };
+
+    vk::RenderingInfo rendering_info{
+        vk::RenderingFlags{},
+        {{ 0, 0 }, m_SwapchainExtent },
+        1,
+        {},
+        1,
+        &attachment_info
+    };
+
+    m_CommandBuffer.beginRendering(rendering_info);
+
+    m_CommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_GraphicsPipeline);
+    m_CommandBuffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f));
+    m_CommandBuffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
+
+    m_CommandBuffer.draw(3, 1, 0, 0);
+
+    m_CommandBuffer.endRendering();
+
+    TransitionImageLayout(
+        image_index,
+        vk::ImageLayout::eColorAttachmentOptimal,
+        vk::ImageLayout::ePresentSrcKHR,
+        vk::AccessFlagBits2::eColorAttachmentWrite,
+        {},
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::PipelineStageFlagBits2::eBottomOfPipe
+    );
+
+    m_CommandBuffer.end();
+}
+
+void Application::TransitionImageLayout(
+    uint32_t image_index,
+    vk::ImageLayout old_layout,
+    vk::ImageLayout new_layout,
+    vk::AccessFlags2 src_access_mask,
+    vk::AccessFlags2 dst_access_mask,
+    vk::PipelineStageFlags2 src_stage_mask,
+    vk::PipelineStageFlags2 dst_stage_mask)
+    const {
+
+    vk::ImageMemoryBarrier2 barrier = {
+            src_stage_mask,
+            src_access_mask,
+            dst_stage_mask,
+            dst_access_mask,
+            old_layout,
+            new_layout,
+            VK_QUEUE_FAMILY_IGNORED,
+            VK_QUEUE_FAMILY_IGNORED,
+            m_SwapchainImages[image_index],
+            {
+                vk::ImageAspectFlagBits::eColor,
+                0,
+                1,
+                0,
+                1
+            }
+    };
+
+    vk::DependencyInfo dependency_info{ {}, {}, {}, {}, {}, 1, &barrier };
+    m_CommandBuffer.pipelineBarrier2(dependency_info);
 }
