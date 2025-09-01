@@ -1,5 +1,16 @@
 #pragma once
 
+constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
+    vk::KHRSwapchainExtensionName,
+    vk::KHRSpirv14ExtensionName,
+    vk::KHRSynchronization2ExtensionName,
+    vk::KHRCreateRenderpass2ExtensionName
+};
+
+constexpr static std::array<const char*, 1> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
+
+constexpr static int MAX_FRAMES_IN_FLIGHT = 2;
+
 class Application {
 public:
     Application() = default;
@@ -16,7 +27,7 @@ public:
         this->CreateImageViews();
         this->CreateGraphicsPipeline();
         this->CreateCommandPool();
-        this->CreateCommandBuffer();
+        this->CreateCommandBuffers();
         this->CreateSyncObjects();
 
         this->MainLoop();
@@ -34,8 +45,10 @@ private:
     void CreateImageViews();
     void CreateGraphicsPipeline();
     void CreateCommandPool();
-    void CreateCommandBuffer();
+    void CreateCommandBuffers();
     void CreateSyncObjects();
+    void MainLoop();
+    void Release();
 
 private:
     void EnableValidationLayers(vk::InstanceCreateInfo& create_info)const;
@@ -49,9 +62,10 @@ private:
     [[nodiscard]] std::vector<char> LoadShader(const std::filesystem::path& path)const;
     [[nodiscard]] vk::raii::ShaderModule CreateShaderModule(const std::vector<char>& code)const;
 
-    void RecordCommandBuffer(uint32_t image_index);
+    void RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index);
     
     void TransitionImageLayout(
+        vk::raii::CommandBuffer& command_buffer,
         uint32_t image_index,
         vk::ImageLayout old_layout,
         vk::ImageLayout new_layout,
@@ -63,9 +77,11 @@ private:
 
     void DrawFrame();
 
-    void MainLoop();
+    void ReleaseSwapchain();
+    void RecreateSwapchain();
 
-    void Release();
+private:
+    static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 
 private:
     GLFWwindow* m_Window = nullptr;
@@ -98,9 +114,13 @@ private:
     vk::raii::Pipeline m_GraphicsPipeline = nullptr;
 
     vk::raii::CommandPool m_CommandPool = nullptr;
-    vk::raii::CommandBuffer m_CommandBuffer = nullptr;
+    std::vector<vk::raii::CommandBuffer> m_CommandBuffers;
 
-    vk::raii::Semaphore m_PresentCompleteSemaphore = nullptr;
-    vk::raii::Semaphore m_RenderFinishedSemaphore = nullptr;
-    vk::raii::Fence m_DrawFence = nullptr;
+    std::vector<vk::raii::Semaphore> m_PresentCompleteSemaphores;
+    std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores;
+    std::vector<vk::raii::Fence> m_InFlightFences;
+
+    bool m_FramebufferResized = false;
+
+    uint32_t m_CurrentFrame = 0;
 };

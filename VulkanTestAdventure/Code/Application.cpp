@@ -7,6 +7,8 @@ void Application::InitializeWindow() {
     if (!glfwInit()) throw std::runtime_error("Failed to init GLFW");
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     m_Window = glfwCreateWindow(800, 600, "VulkanTestAdventure", nullptr, nullptr);
+    glfwSetWindowUserPointer(m_Window, this);
+    glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
 }
 
 void Application::CreateInstance() {
@@ -36,13 +38,6 @@ void Application::CreateInstance() {
 
     m_Instance = vk::raii::Instance(m_Context, create_info);
 }
-
-constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
-    vk::KHRSwapchainExtensionName,
-    vk::KHRSpirv14ExtensionName,
-    vk::KHRSynchronization2ExtensionName,
-    vk::KHRCreateRenderpass2ExtensionName
-};
 
 void Application::PickPhysicalDevice() {
     std::vector<vk::raii::PhysicalDevice> devices = m_Instance.enumeratePhysicalDevices();
@@ -83,28 +78,28 @@ void Application::CreateLogicalDevice() {
 
     uint32_t graphics_index = static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
 
-    auto presentIndex = m_PhysicalDevice.getSurfaceSupportKHR(graphics_index, *m_Surface) ? graphics_index : static_cast<uint32_t>(queue_family_properties.size());
+    auto present_index = m_PhysicalDevice.getSurfaceSupportKHR(graphics_index, *m_Surface) ? graphics_index : static_cast<uint32_t>(queue_family_properties.size());
 
-    if (presentIndex == queue_family_properties.size()) {
+    if (present_index == queue_family_properties.size()) {
         for (size_t i = 0; i < queue_family_properties.size(); i++) {
 
             if ((queue_family_properties[i].queueFlags & vk::QueueFlagBits::eGraphics) && m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *m_Surface)) {
                 graphics_index = static_cast<uint32_t>(i);
-                presentIndex = graphics_index;
+                present_index = graphics_index;
                 break;
             }
         }
-        if (presentIndex == queue_family_properties.size()) {
+        if (present_index == queue_family_properties.size()) {
             for (size_t i = 0; i < queue_family_properties.size(); i++) {
                 if (m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *m_Surface)) {
-                    presentIndex = static_cast<uint32_t>(i);
+                    present_index = static_cast<uint32_t>(i);
                     break;
                 }
             }
         }
     }
 
-    if ((graphics_index == queue_family_properties.size()) || (presentIndex == queue_family_properties.size()))
+    if ((graphics_index == queue_family_properties.size()) || (present_index == queue_family_properties.size()))
         throw std::runtime_error("ERROR : Could not find a queue for graphics or present");
 
     auto features = m_PhysicalDevice.getFeatures2();
@@ -133,10 +128,10 @@ void Application::CreateLogicalDevice() {
 
     m_Device = vk::raii::Device(m_PhysicalDevice, device_create_info);
     m_GraphicsQueue = vk::raii::Queue(m_Device, graphics_index, 0);
-    m_PresentQueue = vk::raii::Queue(m_Device, presentIndex, 0);
+    m_PresentQueue = vk::raii::Queue(m_Device, present_index, 0);
 
     m_GraphicsQueueFamilyIndex = graphics_index;
-    m_PresentQueueFamilyIndex = presentIndex;
+    m_PresentQueueFamilyIndex = present_index;
 }
 
 void Application::CreateSwapchain() {
@@ -172,7 +167,7 @@ void Application::CreateSwapchain() {
         surface_capabilities.currentTransform,
         vk::CompositeAlphaFlagBitsKHR::eOpaque,
         ChooseSwapPresentMode(m_PhysicalDevice.getSurfacePresentModesKHR(m_Surface)),
-        {},
+        vk::True,
         nullptr
     };
 
@@ -299,55 +294,136 @@ void Application::CreateCommandPool() {
     m_CommandPool = vk::raii::CommandPool(m_Device, pool_info);
 }
 
-void Application::CreateCommandBuffer() {
-    vk::CommandBufferAllocateInfo allocate_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, 1 };
-    m_CommandBuffer = std::move(vk::raii::CommandBuffers(m_Device, allocate_info).front());
+void Application::CreateCommandBuffers() {
+    m_CommandBuffers.clear();
+    vk::CommandBufferAllocateInfo alloc_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, MAX_FRAMES_IN_FLIGHT };
+    m_CommandBuffers = vk::raii::CommandBuffers(m_Device, alloc_info);
 }
 
 void Application::CreateSyncObjects() {
-    m_PresentCompleteSemaphore = vk::raii::Semaphore(m_Device, vk::SemaphoreCreateInfo());
-    m_RenderFinishedSemaphore = vk::raii::Semaphore(m_Device, vk::SemaphoreCreateInfo());
-    vk::FenceCreateInfo fence_create_info{ vk::FenceCreateFlagBits::eSignaled };
-    m_DrawFence = vk::raii::Fence(m_Device, fence_create_info);
-}
+    m_PresentCompleteSemaphores.clear();
+    m_RenderFinishedSemaphores.clear();
+    m_InFlightFences.clear();
 
-void Application::DrawFrame() {
-    m_GraphicsQueue.waitIdle();
-
-    auto [result, image_index] = m_Swapchain.acquireNextImage(UINT64_MAX, *m_PresentCompleteSemaphore, nullptr);
-    RecordCommandBuffer(image_index);
-
-    m_Device.resetFences(*m_DrawFence);
-
-    vk::PipelineStageFlags wait_destination_stage_mask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
-    const vk::SubmitInfo submit_info{ 1, &*m_PresentCompleteSemaphore, &wait_destination_stage_mask, 1, &*m_CommandBuffer, 1, &*m_RenderFinishedSemaphore };
-    m_GraphicsQueue.submit(submit_info, *m_DrawFence);
-
-    while (vk::Result::eTimeout == m_Device.waitForFences(*m_DrawFence, vk::True, UINT64_MAX));
-
-    const vk::PresentInfoKHR presentInfoKHR{ 1, &*m_RenderFinishedSemaphore, 1, &*m_Swapchain, &image_index };
-    result = m_GraphicsQueue.presentKHR(presentInfoKHR);
-    switch (result) {
-        case vk::Result::eSuccess: break;
-
-        case vk::Result::eSuboptimalKHR:
-            std::cerr << "ERROR : vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR" << std::endl;
-        break;
-        
-        default: break;
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        m_PresentCompleteSemaphores.emplace_back(m_Device, vk::SemaphoreCreateInfo{});
+        m_RenderFinishedSemaphores.emplace_back(m_Device, vk::SemaphoreCreateInfo{});
+        m_InFlightFences.emplace_back(m_Device, vk::FenceCreateInfo{ vk::FenceCreateFlagBits::eSignaled });
     }
 }
 
+void Application::DrawFrame() {
+    m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
+    auto [result, imageIndex] = m_Swapchain.acquireNextImage(UINT64_MAX, m_PresentCompleteSemaphores[m_CurrentFrame], nullptr);
+
+    if (result == vk::Result::eErrorOutOfDateKHR) {
+        this->RecreateSwapchain();
+        return;
+    }
+    else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
+        throw std::runtime_error("ERROR : failed to acquire swap chain image");
+    }
+
+    m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
+
+    m_CommandBuffers[m_CurrentFrame].reset();
+    this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], imageIndex);
+
+    vk::PipelineStageFlags waitStages = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+    vk::SubmitInfo submitInfo{
+        1,
+        &* m_PresentCompleteSemaphores[m_CurrentFrame],
+        &waitStages,
+        1,
+        &*m_CommandBuffers[m_CurrentFrame],
+        1,
+        &*m_RenderFinishedSemaphores[m_CurrentFrame]
+    };
+
+    m_GraphicsQueue.submit(submitInfo, m_InFlightFences[m_CurrentFrame]);
+
+    vk::PresentInfoKHR presentInfo{
+        1,
+        &*m_RenderFinishedSemaphores[m_CurrentFrame],
+        1,
+        &*m_Swapchain,
+        &imageIndex
+    };
+
+    result = m_GraphicsQueue.presentKHR(presentInfo);
+
+    if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR || m_FramebufferResized) {
+        m_FramebufferResized = false;
+        RecreateSwapchain();
+    }
+    else if (result != vk::Result::eSuccess)
+        throw std::runtime_error("ERROR : Failed to present swap chain image");
+
+    m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
+void Application::ReleaseSwapchain() {
+    m_GraphicsPipeline = nullptr;
+    m_PipelineLayout = nullptr;
+    m_SwapchainImageViews.clear();
+    m_Swapchain = nullptr;
+}
+
+void Application::RecreateSwapchain() {
+    int width = 0;
+    int height = 0;
+    glfwGetFramebufferSize(m_Window, &width, &height);
+    
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(m_Window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    m_Device.waitIdle();
+
+    this->ReleaseSwapchain();
+
+    CreateSwapchain();
+    CreateImageViews();
+    CreateGraphicsPipeline();
+
+    CreateCommandBuffers();
+
+    m_CurrentFrame = 0;
+    m_FramebufferResized = false;
+}
+
+void Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
+    auto app = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
+    app->m_FramebufferResized = true;
+}
+
 void Application::MainLoop() {
+    using clock = std::chrono::high_resolution_clock;
+    auto last_time = clock::now();
+    int frames = 0;
+
     while (!glfwWindowShouldClose(m_Window)) {
         glfwPollEvents();
         this->DrawFrame();
+
+        frames++;
+        auto now = clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - last_time);
+
+        if (duration.count() >= 1) {
+            std::cout << "FPS : " << frames << std::endl;
+            frames = 0;
+            last_time = now;
+        }
     }
 
     m_Device.waitIdle();
 }
 
 void Application::Release() {
+    this->ReleaseSwapchain();
+
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
@@ -358,8 +434,6 @@ void Application::CreateSurface() {
         throw std::runtime_error("ERROR : Failed to create window surface");
     m_Surface = vk::raii::SurfaceKHR(m_Instance, surface);
 }
-
-constexpr static std::array<const char*, 1> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
 
 void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
     auto available_layers = m_Context.enumerateInstanceLayerProperties();
@@ -435,10 +509,11 @@ vk::raii::ShaderModule Application::CreateShaderModule(const std::vector<char>& 
     return shader_module;
 }
 
-void Application::RecordCommandBuffer(uint32_t image_index) {
-    m_CommandBuffer.begin(vk::CommandBufferBeginInfo{});
+void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
+    command_buffer.begin(vk::CommandBufferBeginInfo{});
 
     TransitionImageLayout(
+        command_buffer,
         image_index,
         vk::ImageLayout::eUndefined,
         vk::ImageLayout::eColorAttachmentOptimal,
@@ -469,30 +544,32 @@ void Application::RecordCommandBuffer(uint32_t image_index) {
         &attachment_info
     };
 
-    m_CommandBuffer.beginRendering(rendering_info);
+    command_buffer.beginRendering(rendering_info);
 
-    m_CommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_GraphicsPipeline);
-    m_CommandBuffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f));
-    m_CommandBuffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
+    command_buffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_GraphicsPipeline);
+    command_buffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f));
+    command_buffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
 
-    m_CommandBuffer.draw(3, 1, 0, 0);
+    command_buffer.draw(3, 1, 0, 0);
 
-    m_CommandBuffer.endRendering();
+    command_buffer.endRendering();
 
     TransitionImageLayout(
+        command_buffer,
         image_index,
         vk::ImageLayout::eColorAttachmentOptimal,
         vk::ImageLayout::ePresentSrcKHR,
         vk::AccessFlagBits2::eColorAttachmentWrite,
         {},
         vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-        vk::PipelineStageFlagBits2::eBottomOfPipe
+        vk::PipelineStageFlagBits2::eNone
     );
 
-    m_CommandBuffer.end();
+    command_buffer.end();
 }
 
 void Application::TransitionImageLayout(
+    vk::raii::CommandBuffer& command_buffer,
     uint32_t image_index,
     vk::ImageLayout old_layout,
     vk::ImageLayout new_layout,
@@ -522,5 +599,5 @@ void Application::TransitionImageLayout(
     };
 
     vk::DependencyInfo dependency_info{ {}, {}, {}, {}, {}, 1, &barrier };
-    m_CommandBuffer.pipelineBarrier2(dependency_info);
+    command_buffer.pipelineBarrier2(dependency_info);
 }
