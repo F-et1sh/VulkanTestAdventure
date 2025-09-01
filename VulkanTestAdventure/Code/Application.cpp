@@ -313,27 +313,34 @@ void Application::CreateSyncObjects() {
 }
 
 void Application::DrawFrame() {
-    m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
-    auto [result, imageIndex] = m_Swapchain.acquireNextImage(UINT64_MAX, m_PresentCompleteSemaphores[m_CurrentFrame], nullptr);
+    vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
+    if (wait_result != vk::Result::eSuccess) {
+        throw std::runtime_error("ERROR : waitForFences failed");
+    }
 
-    if (result == vk::Result::eErrorOutOfDateKHR) {
+    //auto [result, image_index] = m_Swapchain.acquireNextImage(UINT64_MAX, m_PresentCompleteSemaphores[m_CurrentFrame], nullptr);
+
+    uint32_t image_index = 0;
+    VkResult result = vkAcquireNextImageKHR(*m_Device, *m_Swapchain, UINT64_MAX, *m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         this->RecreateSwapchain();
         return;
     }
-    else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
+    else if (result != 0 && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("ERROR : failed to acquire swap chain image");
     }
 
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
 
     m_CommandBuffers[m_CurrentFrame].reset();
-    this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], imageIndex);
+    this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], image_index);
 
-    vk::PipelineStageFlags waitStages = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+    vk::PipelineStageFlags wait_stages = vk::PipelineStageFlagBits::eColorAttachmentOutput;
     vk::SubmitInfo submitInfo{
         1,
         &* m_PresentCompleteSemaphores[m_CurrentFrame],
-        &waitStages,
+        & wait_stages,
         1,
         &*m_CommandBuffers[m_CurrentFrame],
         1,
@@ -342,21 +349,22 @@ void Application::DrawFrame() {
 
     m_GraphicsQueue.submit(submitInfo, m_InFlightFences[m_CurrentFrame]);
 
-    vk::PresentInfoKHR presentInfo{
+    vk::PresentInfoKHR present_info{
         1,
         &*m_RenderFinishedSemaphores[m_CurrentFrame],
         1,
         &*m_Swapchain,
-        &imageIndex
+        & image_index
     };
 
-    result = m_GraphicsQueue.presentKHR(presentInfo);
-
-    if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR || m_FramebufferResized) {
+    //result = m_GraphicsQueue.presentKHR(present_info);
+    result = vkQueuePresentKHR(*m_GraphicsQueue, present_info);
+    
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_FramebufferResized) {
         m_FramebufferResized = false;
         RecreateSwapchain();
     }
-    else if (result != vk::Result::eSuccess)
+    else if (result != 0)
         throw std::runtime_error("ERROR : Failed to present swap chain image");
 
     m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
@@ -383,12 +391,12 @@ void Application::RecreateSwapchain() {
 
     this->ReleaseSwapchain();
 
-    CreateSwapchain();
-    CreateImageViews();
-    CreateGraphicsPipeline();
+    this->CreateSwapchain();
+    this->CreateImageViews();
+    this->CreateGraphicsPipeline();
 
-    CreateCommandBuffers();
-
+    this->CreateCommandBuffers();
+    
     m_CurrentFrame = 0;
     m_FramebufferResized = false;
 }
@@ -412,7 +420,6 @@ void Application::MainLoop() {
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - last_time);
 
         if (duration.count() >= 1) {
-            std::cout << "FPS : " << frames << std::endl;
             frames = 0;
             last_time = now;
         }
