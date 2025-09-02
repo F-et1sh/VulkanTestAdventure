@@ -105,7 +105,7 @@ int main_1() {
 
     VkInstance instance{};
     if (vkCreateInstance(&create_info, nullptr, &instance) != VK_SUCCESS)
-        throw std::runtime_error("ERROR : Failed to create Vulkan Instance");
+        throw std::runtime_error("Failed to create Vulkan Instance");
 
     //
 
@@ -144,7 +144,7 @@ int main_1() {
     }
 
     if (graphics_queue_family_index == UINT32_MAX)
-        throw std::runtime_error("ERROR : No graphics queue found");
+        throw std::runtime_error("No graphics queue found");
 
     VkPhysicalDeviceFeatures device_features{};
 
@@ -182,7 +182,7 @@ int main_1() {
 
     VkDevice device{};
     if (vkCreateDevice(physical_device, &device_create_info, nullptr, &device) != VK_SUCCESS)
-        throw std::runtime_error("ERROR : Failed to create device");
+        throw std::runtime_error("Failed to create device");
 
     VkQueue graphics_queue{};
     VkQueue present_queue{};

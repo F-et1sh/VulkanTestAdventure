@@ -6,7 +6,7 @@
 void Application::InitializeWindow() {
     if (!glfwInit()) throw std::runtime_error("Failed to init GLFW");
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    m_Window = glfwCreateWindow(800, 600, "VulkanTestAdventure", nullptr, nullptr);
+    m_Window = glfwCreateWindow(1920, 1080, "VulkanTestAdventure", nullptr, nullptr);
     glfwSetWindowUserPointer(m_Window, this);
     glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
 }
@@ -25,7 +25,7 @@ void Application::CreateInstance() {
             };
 
         if (std::ranges::none_of(extension_properties, lambda))
-            throw std::runtime_error("ERROR : Required GLFW extension not supported : " + std::string(glfw_extensions[i]));
+            throw std::runtime_error("Required GLFW extension not supported : " + std::string(glfw_extensions[i]));
     }
 
     vk::InstanceCreateInfo create_info{ vk::InstanceCreateFlags{}, &app_info, 0, nullptr, glfw_extension_count, glfw_extensions };
@@ -65,7 +65,7 @@ void Application::PickPhysicalDevice() {
             return is_suitable;
         });
 
-    if (device_iterator == devices.end()) throw std::runtime_error("ERROR : Failed to find a suitable GPU");
+    if (device_iterator == devices.end()) throw std::runtime_error("Failed to find a suitable GPU");
 }
 
 void Application::CreateLogicalDevice() {
@@ -100,7 +100,7 @@ void Application::CreateLogicalDevice() {
     }
 
     if ((graphics_index == queue_family_properties.size()) || (present_index == queue_family_properties.size()))
-        throw std::runtime_error("ERROR : Could not find a queue for graphics or present");
+        throw std::runtime_error("Could not find a queue for graphics or present");
 
     auto features = m_PhysicalDevice.getFeatures2();
     vk::PhysicalDeviceVulkan13Features vulkan13_features;
@@ -314,11 +314,9 @@ void Application::CreateSyncObjects() {
 
 void Application::DrawFrame() {
     vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
-    if (wait_result != vk::Result::eSuccess) {
-        throw std::runtime_error("ERROR : waitForFences failed");
-    }
+    if (wait_result != vk::Result::eSuccess) throw std::runtime_error("waitForFences failed");
 
-    //auto [result, image_index] = m_Swapchain.acquireNextImage(UINT64_MAX, m_PresentCompleteSemaphores[m_CurrentFrame], nullptr);
+    // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
     uint32_t image_index = 0;
     VkResult result = vkAcquireNextImageKHR(*m_Device, *m_Swapchain, UINT64_MAX, *m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
@@ -327,8 +325,8 @@ void Application::DrawFrame() {
         this->RecreateSwapchain();
         return;
     }
-    else if (result != 0 && result != VK_SUBOPTIMAL_KHR) {
-        throw std::runtime_error("ERROR : failed to acquire swap chain image");
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        throw std::runtime_error("Failed to acquire swap chain image");
     }
 
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
@@ -337,35 +335,33 @@ void Application::DrawFrame() {
     this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], image_index);
 
     vk::PipelineStageFlags wait_stages = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-    vk::SubmitInfo submitInfo{
+    vk::SubmitInfo submit_info{
         1,
-        &* m_PresentCompleteSemaphores[m_CurrentFrame],
-        & wait_stages,
+        &*m_PresentCompleteSemaphores[m_CurrentFrame],
+        &wait_stages,
         1,
         &*m_CommandBuffers[m_CurrentFrame],
         1,
         &*m_RenderFinishedSemaphores[m_CurrentFrame]
     };
 
-    m_GraphicsQueue.submit(submitInfo, m_InFlightFences[m_CurrentFrame]);
+    m_GraphicsQueue.submit(submit_info, m_InFlightFences[m_CurrentFrame]);
 
     vk::PresentInfoKHR present_info{
         1,
         &*m_RenderFinishedSemaphores[m_CurrentFrame],
         1,
         &*m_Swapchain,
-        & image_index
+        &image_index
     };
 
-    //result = m_GraphicsQueue.presentKHR(present_info);
     result = vkQueuePresentKHR(*m_GraphicsQueue, present_info);
-    
+
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_FramebufferResized) {
         m_FramebufferResized = false;
         RecreateSwapchain();
     }
-    else if (result != 0)
-        throw std::runtime_error("ERROR : Failed to present swap chain image");
+    else if (result != VK_SUCCESS) throw std::runtime_error("Failed to present swap chain image");
 
     m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -438,7 +434,7 @@ void Application::Release() {
 void Application::CreateSurface() {
     VkSurfaceKHR surface{};
     if (glfwCreateWindowSurface(*m_Instance, m_Window, nullptr, &surface) != 0)
-        throw std::runtime_error("ERROR : Failed to create window surface");
+        throw std::runtime_error("Failed to create window surface");
     m_Surface = vk::raii::SurfaceKHR(m_Instance, surface);
 }
 
@@ -461,7 +457,7 @@ void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) co
         }
     }
 
-    if (!layers_supported) throw std::runtime_error("ERROR : Validation layers requested, but not available!");
+    if (!layers_supported) throw std::runtime_error("Validation layers requested, but not available!");
     if (!VALIDATION_LAYERS.empty()) create_info.setPpEnabledLayerNames(VALIDATION_LAYERS.data());
 }
 
@@ -530,7 +526,7 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
         vk::PipelineStageFlagBits2KHR::eColorAttachmentOutput
     );
 
-    vk::ClearValue clear_color = vk::ClearColorValue(0.05f, 0.05f, 0.05f, 1.0f);
+    vk::ClearValue clear_color = vk::ClearColorValue(0.01f, 0.01f, 0.01f, 1.0f);
     vk::RenderingAttachmentInfo attachment_info{
         m_SwapchainImageViews[image_index],
         vk::ImageLayout::eColorAttachmentOptimal,
