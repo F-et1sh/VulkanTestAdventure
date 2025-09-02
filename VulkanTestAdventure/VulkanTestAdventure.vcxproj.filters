@@ -19,6 +19,9 @@
     <Filter Include="Code\PCH">
       <UniqueIdentifier>{d6a345f6-b3b8-4229-bfca-c25dc559ef3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Vertex">
+      <UniqueIdentifier>{ce33b62d-9bb8-41e2-bf69-6baa4508e81a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -29,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="Code\pch.cpp">
       <Filter>Code\PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Vertex.cpp">
+      <Filter>Code\Vertex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="Code\pch.h">
       <Filter>Code\PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Vertex.h">
+      <Filter>Code\Vertex</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

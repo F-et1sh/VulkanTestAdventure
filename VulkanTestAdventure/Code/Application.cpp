@@ -222,7 +222,10 @@ void Application::CreateGraphicsPipeline() {
 
     vk::PipelineDynamicStateCreateInfo dynamic_state{ vk::PipelineDynamicStateCreateFlags{}, static_cast<uint32_t>(dynamic_states.size()), dynamic_states.data() };
 
-    vk::PipelineVertexInputStateCreateInfo vertex_input_info{};
+    auto binding_description = Vertex::getBindingDescription();
+    auto attribute_descriptions = Vertex::getAttributeDescriptions();
+
+    vk::PipelineVertexInputStateCreateInfo vertex_input_info{ vk::PipelineVertexInputStateCreateFlags{}, 1, &binding_description, attribute_descriptions.size(), attribute_descriptions.data() };
     vk::PipelineInputAssemblyStateCreateInfo input_assembly{ vk::PipelineInputAssemblyStateCreateFlags{}, vk::PrimitiveTopology::eTriangleList };
 
     vk::Viewport{ 0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f };
@@ -312,9 +315,30 @@ void Application::CreateSyncObjects() {
     }
 }
 
+void Application::CreateVertexBuffer() {
+    vk::BufferCreateInfo buffer_info(vk::BufferCreateFlags{}, sizeof(VERTICES[0]) * VERTICES.size(), vk::BufferUsageFlagBits::eVertexBuffer, vk::SharingMode::eExclusive);
+    m_VertexBuffer = vk::raii::Buffer(m_Device, buffer_info);
+    vk::MemoryRequirements memory_requirements = m_VertexBuffer.getMemoryRequirements();
+
+    vk::MemoryAllocateInfo memory_allocate_info(memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
+
+    m_VertexBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info);
+    m_VertexBuffer.bindMemory(*m_VertexBufferMemory, 0);
+
+    void* data = m_VertexBufferMemory.mapMemory(0, buffer_info.size);
+    memcpy(data, VERTICES.data(), buffer_info.size);
+    m_VertexBufferMemory.unmapMemory();
+}
+
 void Application::DrawFrame() {
-    vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
-    if (wait_result != vk::Result::eSuccess) throw std::runtime_error("waitForFences failed");
+    m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
+    m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
+
+    VERTICES[0].position.x = 0.5f * glm::sin(glfwGetTime() * 15.0f);
+
+    void* data = m_VertexBufferMemory.mapMemory(0, sizeof(VERTICES[0]) * VERTICES.size());
+    memcpy(data, VERTICES.data(), sizeof(VERTICES[0]) * VERTICES.size());
+    m_VertexBufferMemory.unmapMemory();
 
     // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
@@ -395,6 +419,14 @@ void Application::RecreateSwapchain() {
     
     m_CurrentFrame = 0;
     m_FramebufferResized = false;
+}
+
+uint32_t Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties) const {
+    vk::PhysicalDeviceMemoryProperties memory_properties = m_PhysicalDevice.getMemoryProperties();
+    for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++)
+        if ((type_filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties)
+            return i;
+    throw std::runtime_error("Failed to find suitable memory type");
 }
 
 void Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
@@ -549,9 +581,11 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
 
     command_buffer.beginRendering(rendering_info);
 
-    command_buffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_GraphicsPipeline);
+    command_buffer.bindPipeline(vk::PipelineBindPoint::eGraphics, *m_GraphicsPipeline);
     command_buffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(m_SwapchainExtent.width), static_cast<float>(m_SwapchainExtent.height), 0.0f, 1.0f));
     command_buffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
+
+    command_buffer.bindVertexBuffers(0, *m_VertexBuffer, { 0 });
 
     command_buffer.draw(3, 1, 0, 0);
 

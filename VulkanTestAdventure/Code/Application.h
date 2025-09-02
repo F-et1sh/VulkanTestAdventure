@@ -1,4 +1,5 @@
 #pragma once
+#include "Vertex.h"
 
 constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
     vk::KHRSwapchainExtensionName,
@@ -29,6 +30,7 @@ public:
         this->CreateCommandPool();
         this->CreateCommandBuffers();
         this->CreateSyncObjects();
+        this->CreateVertexBuffer();
 
         this->MainLoop();
 
@@ -47,6 +49,7 @@ private:
     void CreateCommandPool();
     void CreateCommandBuffers();
     void CreateSyncObjects();
+    void CreateVertexBuffer();
     void MainLoop();
     void Release();
 
@@ -79,6 +82,8 @@ private:
 
     void ReleaseSwapchain();
     void RecreateSwapchain();
+
+    uint32_t FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties)const;
 
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
@@ -123,4 +128,7 @@ private:
     bool m_FramebufferResized = false;
 
     uint32_t m_CurrentFrame = 0;
+
+    vk::raii::Buffer m_VertexBuffer = nullptr;
+    vk::raii::DeviceMemory m_VertexBufferMemory = nullptr;
 };
