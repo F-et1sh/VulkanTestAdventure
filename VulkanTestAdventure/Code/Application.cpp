@@ -47,7 +47,7 @@ void Application::PickPhysicalDevice() {
             bool is_suitable = device.getProperties().apiVersion >= VK_API_VERSION_1_3;
             
             const auto qfp_iterator = std::ranges::find_if(queue_families, [](vk::QueueFamilyProperties const& qfp) {
-                return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0);
+                return (qfp.queueFlags & REQUIRED_QUEUE_FAMILY_FLAGS) != static_cast<vk::QueueFlags>(0);
                 });
 
             is_suitable = is_suitable && (qfp_iterator != queue_families.end());
@@ -73,7 +73,7 @@ void Application::CreateLogicalDevice() {
 
     auto graphics_queue_family_property = std::ranges::find_if(
         queue_family_properties,
-        [](auto const& qfp) { return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0); }
+        [](auto const& qfp) { return (qfp.queueFlags & REQUIRED_QUEUE_FAMILY_FLAGS) != static_cast<vk::QueueFlags>(0); }
     );
 
     uint32_t graphics_index = static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
@@ -83,7 +83,7 @@ void Application::CreateLogicalDevice() {
     if (present_index == queue_family_properties.size()) {
         for (size_t i = 0; i < queue_family_properties.size(); i++) {
 
-            if ((queue_family_properties[i].queueFlags & vk::QueueFlagBits::eGraphics) && m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *m_Surface)) {
+            if ((queue_family_properties[i].queueFlags & REQUIRED_QUEUE_FAMILY_FLAGS) && m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *m_Surface)) {
                 graphics_index = static_cast<uint32_t>(i);
                 present_index = graphics_index;
                 break;
@@ -146,10 +146,7 @@ void Application::CreateSwapchain() {
     uint32_t queue_family_indices[] = { m_GraphicsQueueFamilyIndex, m_PresentQueueFamilyIndex };
     bool same_queue = (m_GraphicsQueueFamilyIndex == m_PresentQueueFamilyIndex);
 
-    vk::SharingMode sharing_mode = same_queue ?
-        vk::SharingMode::eExclusive :
-        vk::SharingMode::eConcurrent;
-
+    constexpr vk::SharingMode sharing_mode = vk::SharingMode::eExclusive;
     constexpr uint32_t image_array_layers = 1;
 
     vk::SwapchainCreateInfoKHR swapchain_create_info{
@@ -316,29 +313,44 @@ void Application::CreateSyncObjects() {
 }
 
 void Application::CreateVertexBuffer() {
-    vk::BufferCreateInfo buffer_info(vk::BufferCreateFlags{}, sizeof(VERTICES[0]) * VERTICES.size(), vk::BufferUsageFlagBits::eVertexBuffer, vk::SharingMode::eExclusive);
+    vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
+
+    vk::BufferCreateInfo staging_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive };
+    m_StagingBuffer = vk::raii::Buffer(m_Device, staging_info);
+    vk::MemoryRequirements memory_requirements_staging = m_StagingBuffer.getMemoryRequirements();
+    vk::MemoryAllocateInfo memory_allocate_info_staging{ memory_requirements_staging.size, FindMemoryType(memory_requirements_staging.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent) };
+    m_StagingBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info_staging);
+
+    m_StagingBuffer.bindMemory(m_StagingBufferMemory, 0);
+    void* data_staging = m_StagingBufferMemory.mapMemory(0, staging_info.size);
+    memcpy(data_staging, VERTICES.data(), staging_info.size);
+    m_StagingBufferMemory.unmapMemory();
+
+    vk::BufferCreateInfo buffer_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::SharingMode::eExclusive };
     m_VertexBuffer = vk::raii::Buffer(m_Device, buffer_info);
+
     vk::MemoryRequirements memory_requirements = m_VertexBuffer.getMemoryRequirements();
-
-    vk::MemoryAllocateInfo memory_allocate_info(memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
-
+    vk::MemoryAllocateInfo memory_allocate_info{ memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal) };
     m_VertexBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info);
+
     m_VertexBuffer.bindMemory(*m_VertexBufferMemory, 0);
 
-    void* data = m_VertexBufferMemory.mapMemory(0, buffer_info.size);
-    memcpy(data, VERTICES.data(), buffer_info.size);
-    m_VertexBufferMemory.unmapMemory();
+    CopyBuffer(m_StagingBuffer, m_VertexBuffer, staging_info.size);
 }
 
 void Application::DrawFrame() {
-    m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
+    vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
 
     VERTICES[0].position.x = 0.5f * glm::sin(glfwGetTime() * 15.0f);
 
-    void* data = m_VertexBufferMemory.mapMemory(0, sizeof(VERTICES[0]) * VERTICES.size());
+    void* data = m_StagingBufferMemory.mapMemory(0, sizeof(VERTICES[0]) * VERTICES.size());
     memcpy(data, VERTICES.data(), sizeof(VERTICES[0]) * VERTICES.size());
-    m_VertexBufferMemory.unmapMemory();
+    m_StagingBufferMemory.unmapMemory();
+
+    vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
+    vk::BufferCreateInfo staging_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive };
+    CopyBuffer(m_StagingBuffer, m_VertexBuffer, staging_info.size);
 
     // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
@@ -429,6 +441,29 @@ uint32_t Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFla
     throw std::runtime_error("Failed to find suitable memory type");
 }
 
+void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory) {
+    vk::BufferCreateInfo buffer_info(vk::BufferCreateFlags{}, sizeof(VERTICES[0]) * VERTICES.size(), vk::BufferUsageFlagBits::eVertexBuffer, vk::SharingMode::eConcurrent);
+    m_VertexBuffer = vk::raii::Buffer(m_Device, buffer_info);
+    vk::MemoryRequirements memory_requirements = m_VertexBuffer.getMemoryRequirements();
+
+    vk::MemoryAllocateInfo memory_allocate_info(memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
+
+    m_VertexBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info);
+    m_VertexBuffer.bindMemory(*m_VertexBufferMemory, 0);
+}
+
+void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) {
+    vk::CommandBufferAllocateInfo allocate_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, 1 };
+    vk::raii::CommandBuffer command_copy_buffer = std::move(m_Device.allocateCommandBuffers(allocate_info).front());
+
+    command_copy_buffer.begin(vk::CommandBufferBeginInfo{ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+    command_copy_buffer.copyBuffer(src_buffer, dst_buffer, vk::BufferCopy(0, 0, size));
+    command_copy_buffer.end();
+
+    m_GraphicsQueue.submit(vk::SubmitInfo{ {}, {}, {}, 1, &*command_copy_buffer });
+    m_GraphicsQueue.waitIdle();
+}
+
 void Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
     app->m_FramebufferResized = true;
@@ -448,6 +483,7 @@ void Application::MainLoop() {
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - last_time);
 
         if (duration.count() >= 1) {
+            std::cerr << "FPS : " << frames << std::endl;
             frames = 0;
             last_time = now;
         }
@@ -497,7 +533,7 @@ uint32_t Application::FindQueueFamilies() const {
     std::vector<vk::QueueFamilyProperties> queue_family_properties = m_PhysicalDevice.getQueueFamilyProperties();
 
     auto graphics_queue_family_property = std::find_if(queue_family_properties.begin(), queue_family_properties.end(),
-        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; });
+        [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & REQUIRED_QUEUE_FAMILY_FLAGS; });
 
     return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
 }

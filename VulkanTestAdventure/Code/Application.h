@@ -12,6 +12,8 @@ constexpr static std::array<const char*, 1> VALIDATION_LAYERS = { "VK_LAYER_KHRO
 
 constexpr static int MAX_FRAMES_IN_FLIGHT = 2;
 
+constexpr static auto REQUIRED_QUEUE_FAMILY_FLAGS = vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eTransfer;
+
 class Application {
 public:
     Application() = default;
@@ -85,6 +87,9 @@ private:
 
     uint32_t FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties)const;
 
+    void CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory);
+    void CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size);
+
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 
@@ -131,4 +136,7 @@ private:
 
     vk::raii::Buffer m_VertexBuffer = nullptr;
     vk::raii::DeviceMemory m_VertexBufferMemory = nullptr;
+    
+    vk::raii::Buffer m_StagingBuffer = nullptr;
+    vk::raii::DeviceMemory m_StagingBufferMemory = nullptr;
 };
