@@ -315,42 +315,63 @@ void Application::CreateSyncObjects() {
 void Application::CreateVertexBuffer() {
     vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
 
-    vk::BufferCreateInfo staging_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive };
-    m_StagingBuffer = vk::raii::Buffer(m_Device, staging_info);
-    vk::MemoryRequirements memory_requirements_staging = m_StagingBuffer.getMemoryRequirements();
-    vk::MemoryAllocateInfo memory_allocate_info_staging{ memory_requirements_staging.size, FindMemoryType(memory_requirements_staging.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent) };
-    m_StagingBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info_staging);
+    vk::raii::Buffer staging_buffer{ {} };
+    vk::raii::DeviceMemory staging_buffer_memory{ {} };
+    this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
 
-    m_StagingBuffer.bindMemory(m_StagingBufferMemory, 0);
-    void* data_staging = m_StagingBufferMemory.mapMemory(0, staging_info.size);
-    memcpy(data_staging, VERTICES.data(), staging_info.size);
-    m_StagingBufferMemory.unmapMemory();
+    void* data_staging = staging_buffer_memory.mapMemory(0, buffer_size);
+    memcpy(data_staging, VERTICES.data(), buffer_size);
+    staging_buffer_memory.unmapMemory();
 
-    vk::BufferCreateInfo buffer_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::SharingMode::eExclusive };
-    m_VertexBuffer = vk::raii::Buffer(m_Device, buffer_info);
+    this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_VertexBuffer, m_VertexBufferMemory);
+    this->CopyBuffer(staging_buffer, m_VertexBuffer, buffer_size);
+}
 
-    vk::MemoryRequirements memory_requirements = m_VertexBuffer.getMemoryRequirements();
-    vk::MemoryAllocateInfo memory_allocate_info{ memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal) };
-    m_VertexBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info);
+void Application::CreateIndexBuffer() {
+    vk::DeviceSize buffer_size = sizeof(INDICES[0]) * INDICES.size();
 
-    m_VertexBuffer.bindMemory(*m_VertexBufferMemory, 0);
+    vk::raii::Buffer staging_buffer{ {} };
+    vk::raii::DeviceMemory staging_buffer_memory{ {} };
+    CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
 
-    CopyBuffer(m_StagingBuffer, m_VertexBuffer, staging_info.size);
+    void* data_staging = staging_buffer_memory.mapMemory(0, buffer_size);
+    memcpy(data_staging, INDICES.data(), buffer_size);
+    staging_buffer_memory.unmapMemory();
+
+    this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eIndexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_IndexBuffer, m_IndexBufferMemory);
+    this->CopyBuffer(staging_buffer, m_IndexBuffer, buffer_size);
+}
+
+void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
+    vk::BufferCreateInfo buffer_info{ vk::BufferCreateFlags{}, size, usage, vk::SharingMode::eExclusive };
+    buffer = vk::raii::Buffer(m_Device, buffer_info);
+    vk::MemoryRequirements memory_requirements = buffer.getMemoryRequirements();
+    vk::MemoryAllocateInfo allocate_info{ memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, properties) };
+    buffer_memory = vk::raii::DeviceMemory(m_Device, allocate_info);
+    buffer.bindMemory(*buffer_memory, 0);
+}
+
+void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) {
+    vk::raii::CommandBuffer& command_copy_buffer = m_CommandBuffers[m_CurrentFrame];
+    command_copy_buffer.reset();
+
+    vk::raii::Fence copy_fence{ m_Device, vk::FenceCreateInfo{} };
+
+    command_copy_buffer.begin(vk::CommandBufferBeginInfo{ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+    command_copy_buffer.copyBuffer(src_buffer, dst_buffer, vk::BufferCopy(0, 0, size));
+    command_copy_buffer.end();
+
+    vk::SubmitInfo submit_info{ {}, {}, {}, 1, &*command_copy_buffer };
+    m_GraphicsQueue.submit(submit_info, *copy_fence);
+
+    vk::Result result = m_Device.waitForFences({ *copy_fence }, VK_TRUE, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+        throw std::runtime_error("waitForFence failed. " + std::to_string(static_cast<size_t>(result)));
 }
 
 void Application::DrawFrame() {
     vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
-
-    VERTICES[0].position.x = 0.5f * glm::sin(glfwGetTime() * 15.0f);
-
-    void* data = m_StagingBufferMemory.mapMemory(0, sizeof(VERTICES[0]) * VERTICES.size());
-    memcpy(data, VERTICES.data(), sizeof(VERTICES[0]) * VERTICES.size());
-    m_StagingBufferMemory.unmapMemory();
-
-    vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
-    vk::BufferCreateInfo staging_info{ vk::BufferCreateFlags{}, buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::SharingMode::eExclusive };
-    CopyBuffer(m_StagingBuffer, m_VertexBuffer, staging_info.size);
 
     // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
@@ -441,29 +462,6 @@ uint32_t Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFla
     throw std::runtime_error("Failed to find suitable memory type");
 }
 
-void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory) {
-    vk::BufferCreateInfo buffer_info(vk::BufferCreateFlags{}, sizeof(VERTICES[0]) * VERTICES.size(), vk::BufferUsageFlagBits::eVertexBuffer, vk::SharingMode::eConcurrent);
-    m_VertexBuffer = vk::raii::Buffer(m_Device, buffer_info);
-    vk::MemoryRequirements memory_requirements = m_VertexBuffer.getMemoryRequirements();
-
-    vk::MemoryAllocateInfo memory_allocate_info(memory_requirements.size, FindMemoryType(memory_requirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
-
-    m_VertexBufferMemory = vk::raii::DeviceMemory(m_Device, memory_allocate_info);
-    m_VertexBuffer.bindMemory(*m_VertexBufferMemory, 0);
-}
-
-void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) {
-    vk::CommandBufferAllocateInfo allocate_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, 1 };
-    vk::raii::CommandBuffer command_copy_buffer = std::move(m_Device.allocateCommandBuffers(allocate_info).front());
-
-    command_copy_buffer.begin(vk::CommandBufferBeginInfo{ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
-    command_copy_buffer.copyBuffer(src_buffer, dst_buffer, vk::BufferCopy(0, 0, size));
-    command_copy_buffer.end();
-
-    m_GraphicsQueue.submit(vk::SubmitInfo{ {}, {}, {}, 1, &*command_copy_buffer });
-    m_GraphicsQueue.waitIdle();
-}
-
 void Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
     app->m_FramebufferResized = true;
@@ -493,6 +491,7 @@ void Application::MainLoop() {
 }
 
 void Application::Release() {
+    this->m_CommandBuffers.clear();
     this->ReleaseSwapchain();
 
     glfwDestroyWindow(m_Window);
@@ -622,8 +621,9 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
     command_buffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
 
     command_buffer.bindVertexBuffers(0, *m_VertexBuffer, { 0 });
+    command_buffer.bindIndexBuffer(*m_IndexBuffer, 0, vk::IndexType::eUint16);
 
-    command_buffer.draw(3, 1, 0, 0);
+    command_buffer.drawIndexed(INDICES.size(), 1, 0, 0, 0);
 
     command_buffer.endRendering();
 

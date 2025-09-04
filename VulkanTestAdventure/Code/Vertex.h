@@ -22,7 +22,12 @@ struct Vertex {
 };
 
 static std::vector<Vertex> VERTICES{
-    Vertex{glm::vec2{ 0.0f, -0.5f}, glm::vec3{1.0f, 0.0f, 0.0f}},
-    Vertex{glm::vec2{ 0.5f,  0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}},
-    Vertex{glm::vec2{-0.5f,  0.5f}, glm::vec3{0.0f, 0.0f, 1.0f}}
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{ 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{ 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}}
+};
+
+static std::vector<uint16_t> INDICES = {
+    0, 1, 2, 2, 3, 0
 };

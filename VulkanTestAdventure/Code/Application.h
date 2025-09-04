@@ -33,6 +33,7 @@ public:
         this->CreateCommandBuffers();
         this->CreateSyncObjects();
         this->CreateVertexBuffer();
+        this->CreateIndexBuffer();
 
         this->MainLoop();
 
@@ -52,6 +53,7 @@ private:
     void CreateCommandBuffers();
     void CreateSyncObjects();
     void CreateVertexBuffer();
+    void CreateIndexBuffer();
     void MainLoop();
     void Release();
 
@@ -87,7 +89,7 @@ private:
 
     uint32_t FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties)const;
 
-    void CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory);
+    void CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const;
     void CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size);
 
 private:
@@ -136,7 +138,7 @@ private:
 
     vk::raii::Buffer m_VertexBuffer = nullptr;
     vk::raii::DeviceMemory m_VertexBufferMemory = nullptr;
-    
-    vk::raii::Buffer m_StagingBuffer = nullptr;
-    vk::raii::DeviceMemory m_StagingBufferMemory = nullptr;
+
+    vk::raii::Buffer m_IndexBuffer = nullptr;
+    vk::raii::DeviceMemory m_IndexBufferMemory = nullptr;
 };
