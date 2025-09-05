@@ -1,6 +1,18 @@
 #pragma once
 #include "Vertex.h"
 
+struct UniformBufferObject {
+    glm::mat4 model = glm::mat4();
+    glm::mat4 view = glm::mat4();
+    glm::mat4 proj = glm::mat4();
+
+    UniformBufferObject() = default;
+    ~UniformBufferObject() = default;
+
+    constexpr UniformBufferObject(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj)
+        : model(model), view(view), proj(proj) {}
+};
+
 constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
     vk::KHRSwapchainExtensionName,
     vk::KHRSpirv14ExtensionName,
@@ -28,12 +40,16 @@ public:
         this->CreateLogicalDevice();
         this->CreateSwapchain();
         this->CreateImageViews();
+        this->CreateDescriptorSetLayout();
         this->CreateGraphicsPipeline();
         this->CreateCommandPool();
         this->CreateCommandBuffers();
         this->CreateSyncObjects();
         this->CreateVertexBuffer();
         this->CreateIndexBuffer();
+        this->CreateUniformBuffers();
+        this->CreateDescriptorPool();
+        this->CreateDescriptorSets();
 
         this->MainLoop();
 
@@ -48,12 +64,16 @@ private:
     void CreateLogicalDevice();
     void CreateSwapchain();
     void CreateImageViews();
+    void CreateDescriptorSetLayout();
     void CreateGraphicsPipeline();
     void CreateCommandPool();
     void CreateCommandBuffers();
     void CreateSyncObjects();
     void CreateVertexBuffer();
     void CreateIndexBuffer();
+    void CreateUniformBuffers();
+    void CreateDescriptorPool();
+    void CreateDescriptorSets();
     void MainLoop();
     void Release();
 
@@ -92,6 +112,8 @@ private:
     void CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const;
     void CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size);
 
+    void UpdateUniformBuffer(uint32_t current_image);
+
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 
@@ -122,6 +144,7 @@ private:
 
     std::vector<vk::raii::ImageView> m_SwapchainImageViews;
 
+    vk::raii::DescriptorSetLayout m_DescriptorSetLayout = nullptr;
     vk::raii::PipelineLayout m_PipelineLayout = nullptr;
     vk::raii::Pipeline m_GraphicsPipeline = nullptr;
 
@@ -141,4 +164,11 @@ private:
 
     vk::raii::Buffer m_IndexBuffer = nullptr;
     vk::raii::DeviceMemory m_IndexBufferMemory = nullptr;
+
+    std::vector<vk::raii::Buffer> m_UniformBuffers;
+    std::vector<vk::raii::DeviceMemory> m_UniformBuffersMemory;
+    std::vector<void*> m_UniformBuffersMapped;
+
+    vk::raii::DescriptorPool m_DescriptorPool = nullptr;
+    std::vector<vk::raii::DescriptorSet> m_DescriptorSets;
 };

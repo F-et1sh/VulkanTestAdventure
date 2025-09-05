@@ -200,6 +200,13 @@ void Application::CreateImageViews() {
     }
 }
 
+void Application::CreateDescriptorSetLayout() {
+    vk::DescriptorSetLayoutBinding ubo_layout_binding{ 0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eAllGraphics, nullptr };
+
+    vk::DescriptorSetLayoutCreateInfo layout_info{ vk::DescriptorSetLayoutCreateFlags{}, 1, &ubo_layout_binding };
+    m_DescriptorSetLayout = vk::raii::DescriptorSetLayout{ m_Device, layout_info };
+}
+
 void Application::CreateGraphicsPipeline() {
     auto code_vert = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
     auto code_frag = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
@@ -234,14 +241,14 @@ void Application::CreateGraphicsPipeline() {
         vk::PipelineRasterizationStateCreateFlags{},
         vk::False,
         vk::False,
-        vk::PolygonMode::eFill,
-        vk::CullModeFlagBits::eBack,
-        vk::FrontFace::eClockwise,
+        vk::PolygonMode::eLine,
+        vk::CullModeFlagBits::eNone,
+        vk::FrontFace::eCounterClockwise,
         vk::False,
         0.0f,
         0.0f,
         0.0f,
-        1.0f
+        5.0f
     };
 
     vk::PipelineMultisampleStateCreateInfo multisampling{ vk::PipelineMultisampleStateCreateFlags{}, vk::SampleCountFlagBits::e1, vk::False };
@@ -259,11 +266,10 @@ void Application::CreateGraphicsPipeline() {
 
     vk::PipelineColorBlendStateCreateInfo color_blending{ vk::PipelineColorBlendStateCreateFlags{}, vk::False, vk::LogicOp::eCopy, 1, &color_blend_attachment };
 
-    vk::PipelineLayoutCreateInfo pipeline_layout_info{};
-
+    vk::PipelineLayoutCreateInfo pipeline_layout_info{ vk::PipelineLayoutCreateFlags{}, 1, &*m_DescriptorSetLayout, 0 };
     m_PipelineLayout = vk::raii::PipelineLayout(m_Device, pipeline_layout_info);
 
-    vk::PipelineRenderingCreateInfo pipeline_rendering_create_info{ {}, 1, &m_SwapchainImageFormat };
+    vk::PipelineRenderingCreateInfo pipeline_rendering_create_info{ 0, 1, &m_SwapchainImageFormat };
 
     vk::GraphicsPipelineCreateInfo pipeline_info{
         vk::PipelineCreateFlags{},
@@ -342,6 +348,43 @@ void Application::CreateIndexBuffer() {
     this->CopyBuffer(staging_buffer, m_IndexBuffer, buffer_size);
 }
 
+void Application::CreateUniformBuffers() {
+    m_UniformBuffers.clear();
+    m_UniformBuffersMemory.clear();
+    m_UniformBuffersMapped.clear();
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vk::DeviceSize buffer_size = sizeof(UniformBufferObject);
+        vk::raii::Buffer buffer({});
+        vk::raii::DeviceMemory buffer_memory({});
+        this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, buffer, buffer_memory);
+        m_UniformBuffers.emplace_back(std::move(buffer));
+        m_UniformBuffersMemory.emplace_back(std::move(buffer_memory));
+        m_UniformBuffersMapped.emplace_back(m_UniformBuffersMemory[i].mapMemory(0, buffer_size));
+    }
+}
+
+void Application::CreateDescriptorPool() {
+    vk::DescriptorPoolSize pool_size{ vk::DescriptorType::eUniformBuffer, MAX_FRAMES_IN_FLIGHT };
+    vk::DescriptorPoolCreateInfo pool_info{ vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, MAX_FRAMES_IN_FLIGHT, 1, &pool_size };
+
+    m_DescriptorPool = vk::raii::DescriptorPool(m_Device, pool_info);
+}
+
+void Application::CreateDescriptorSets() {
+    std::vector<vk::DescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, *m_DescriptorSetLayout);
+    vk::DescriptorSetAllocateInfo allocate_info{ m_DescriptorPool, static_cast<uint32_t>(layouts.size()), layouts.data() };
+    
+    m_DescriptorSets.clear();
+    m_DescriptorSets = m_Device.allocateDescriptorSets(allocate_info);
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vk::DescriptorBufferInfo buffer_info{ m_UniformBuffers[i], 0, sizeof(UniformBufferObject) };
+        vk::WriteDescriptorSet descriptor_write{ m_DescriptorSets[i], 0, 0, 1, vk::DescriptorType::eUniformBuffer, {}, &buffer_info };
+        m_Device.updateDescriptorSets(descriptor_write, {});
+    }
+}
+
 void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
     vk::BufferCreateInfo buffer_info{ vk::BufferCreateFlags{}, size, usage, vk::SharingMode::eExclusive };
     buffer = vk::raii::Buffer(m_Device, buffer_info);
@@ -369,6 +412,18 @@ void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst
         throw std::runtime_error("waitForFence failed. " + std::to_string(static_cast<size_t>(result)));
 }
 
+void Application::UpdateUniformBuffer(uint32_t current_image) {
+    UniformBufferObject ubo{};
+    
+    float time = glfwGetTime();
+    ubo.model = rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    ubo.view = lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_SwapchainExtent.width) / static_cast<float>(m_SwapchainExtent.height), 0.1f, 10.0f);
+    ubo.proj[1][1] *= -1;
+
+    memcpy(m_UniformBuffersMapped[current_image], &ubo, sizeof(ubo));
+}
+
 void Application::DrawFrame() {
     vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
@@ -386,8 +441,10 @@ void Application::DrawFrame() {
         throw std::runtime_error("Failed to acquire swap chain image");
     }
 
-    m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
+    UpdateUniformBuffer(m_CurrentFrame);
 
+    m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
+    
     m_CommandBuffers[m_CurrentFrame].reset();
     this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], image_index);
 
@@ -623,6 +680,7 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
     command_buffer.bindVertexBuffers(0, *m_VertexBuffer, { 0 });
     command_buffer.bindIndexBuffer(*m_IndexBuffer, 0, vk::IndexType::eUint16);
 
+    command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_PipelineLayout, 0, *m_DescriptorSets[m_CurrentFrame], nullptr);
     command_buffer.drawIndexed(INDICES.size(), 1, 0, 0, 0);
 
     command_buffer.endRendering();
