@@ -38,11 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Lisenses\VULKAN_LICENSE.txt">
-      <Filter>Licenses</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="..\Files\Shaders\Test1\shader.vert">
       <Filter>Shaders\Test1</Filter>
     </CustomBuild>
@@ -60,5 +55,16 @@
     <ClInclude Include="Code\Vertex.h">
       <Filter>Code\Vertex</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Include\GLFW\GLFW_LICENSE.txt">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Include\STB\STB_LICENSE.txt">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -212,8 +212,8 @@ void Application::CreateDescriptorSetLayout() {
 }
 
 void Application::CreateGraphicsPipeline() {
-    auto code_vert = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-    auto code_frag = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+    auto code_vert = LoadShader(L"Files/Shaders/Test1/shader.vert.spv");
+    auto code_frag = LoadShader(L"Files/Shaders/Test1/shader.frag.spv");
 
     vk::raii::ShaderModule shader_module_vert = this->CreateShaderModule(code_vert);
     vk::raii::ShaderModule shader_module_frag = this->CreateShaderModule(code_frag);
@@ -323,7 +323,15 @@ void Application::CreateSyncObjects() {
 }
 
 void Application::CreateTextureImage() {
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+    stbi_uc* pixels = stbi_load("Files/Textures/texture.jpg", &width, &height, &channels, STBI_rgb_alpha);
+    vk::DeviceSize image_size = width * height * 4;
 
+    if (!pixels) {
+        throw std::runtime_error("failed to load texture image!");
+    }
 }
 
 void Application::CreateVertexBuffer() {

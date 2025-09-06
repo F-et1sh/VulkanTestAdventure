@@ -76,7 +76,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -107,7 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -136,7 +136,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -169,7 +169,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -206,7 +206,9 @@
     <ClCompile Include="Code\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Lisenses\VULKAN_LICENSE.txt" />
+    <CopyFileToFolders Include="Include\GLFW\GLFW_LICENSE.txt" />
+    <CopyFileToFolders Include="Include\STB\STB_LICENSE.txt" />
+    <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\Files\Shaders\Test1\shader.frag">
