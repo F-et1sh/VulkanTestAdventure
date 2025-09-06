@@ -46,6 +46,8 @@ public:
         this->CreateCommandBuffers();
         this->CreateSyncObjects();
         this->CreateTextureImage();
+        this->CreateTextureImageView();
+        this->CreateTextureSampler();
         this->CreateVertexBuffer();
         this->CreateIndexBuffer();
         this->CreateUniformBuffers();
@@ -71,6 +73,8 @@ private:
     void CreateCommandBuffers();
     void CreateSyncObjects();
     void CreateTextureImage();
+    void CreateTextureImageView();
+    void CreateTextureSampler();
     void CreateVertexBuffer();
     void CreateIndexBuffer();
     void CreateUniformBuffers();
@@ -115,6 +119,16 @@ private:
     void CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size);
 
     void UpdateUniformBuffer(uint32_t current_image);
+
+    void CreateImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const;
+
+    vk::raii::CommandBuffer BeginSingleTimeCommands()const;
+    void EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)const;
+
+    void TransitionTextureImageLayout(const vk::raii::Image& image, vk::ImageLayout old_layout, vk::ImageLayout new_layout)const;
+    void CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::raii::Image& image, uint32_t width, uint32_t height)const;
+
+    vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format)const;
 
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
@@ -173,4 +187,9 @@ private:
 
     vk::raii::DescriptorPool m_DescriptorPool = nullptr;
     std::vector<vk::raii::DescriptorSet> m_DescriptorSets;
+
+    vk::raii::Image m_TextureImage = nullptr;
+    vk::raii::DeviceMemory m_TextureImageMemory = nullptr;
+    vk::raii::ImageView m_TextureImageView = nullptr;
+    vk::raii::Sampler m_TextureSampler = nullptr;
 };
