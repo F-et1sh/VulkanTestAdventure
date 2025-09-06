@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Application.h"
 
+// STB Image
+#define STB_IMAGE_IMPLEMENTATION
+#include "STB/stb_image.h"
+
 #undef max
 
 void Application::InitializeWindow() {
@@ -241,14 +245,14 @@ void Application::CreateGraphicsPipeline() {
         vk::PipelineRasterizationStateCreateFlags{},
         vk::False,
         vk::False,
-        vk::PolygonMode::eLine,
+        vk::PolygonMode::eFill,
         vk::CullModeFlagBits::eNone,
         vk::FrontFace::eCounterClockwise,
         vk::False,
         0.0f,
         0.0f,
         0.0f,
-        5.0f
+        1.0f
     };
 
     vk::PipelineMultisampleStateCreateInfo multisampling{ vk::PipelineMultisampleStateCreateFlags{}, vk::SampleCountFlagBits::e1, vk::False };
@@ -316,6 +320,10 @@ void Application::CreateSyncObjects() {
         m_RenderFinishedSemaphores.emplace_back(m_Device, vk::SemaphoreCreateInfo{});
         m_InFlightFences.emplace_back(m_Device, vk::FenceCreateInfo{ vk::FenceCreateFlagBits::eSignaled });
     }
+}
+
+void Application::CreateTextureImage() {
+
 }
 
 void Application::CreateVertexBuffer() {
@@ -416,7 +424,7 @@ void Application::UpdateUniformBuffer(uint32_t current_image) {
     UniformBufferObject ubo{};
     
     float time = glfwGetTime();
-    ubo.model = rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    ubo.model = rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_SwapchainExtent.width) / static_cast<float>(m_SwapchainExtent.height), 0.1f, 10.0f);
     ubo.proj[1][1] *= -1;

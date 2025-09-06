@@ -45,6 +45,7 @@ public:
         this->CreateCommandPool();
         this->CreateCommandBuffers();
         this->CreateSyncObjects();
+        this->CreateTextureImage();
         this->CreateVertexBuffer();
         this->CreateIndexBuffer();
         this->CreateUniformBuffers();
@@ -69,6 +70,7 @@ private:
     void CreateCommandPool();
     void CreateCommandBuffers();
     void CreateSyncObjects();
+    void CreateTextureImage();
     void CreateVertexBuffer();
     void CreateIndexBuffer();
     void CreateUniformBuffers();
