@@ -10,6 +10,7 @@
 void Application::InitializeWindow() {
     if (!glfwInit()) throw std::runtime_error("Failed to init GLFW");
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     m_Window = glfwCreateWindow(1920, 1080, "VulkanTestAdventure", nullptr, nullptr);
     glfwSetWindowUserPointer(m_Window, this);
     glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
@@ -18,6 +19,8 @@ void Application::InitializeWindow() {
 void Application::CreateInstance() {
     constexpr vk::ApplicationInfo app_info{ "VulkanTestAdventure", VK_MAKE_VERSION(1, 0, 0), "No Engine", VK_MAKE_VERSION(1, 0, 0), vk::ApiVersion14 };
 
+    std::vector<const char*> extensions = { VK_EXT_DEBUG_UTILS_EXTENSION_NAME };
+    
     uint32_t glfw_extension_count = 0;
     const char** glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 
@@ -30,9 +33,11 @@ void Application::CreateInstance() {
 
         if (std::ranges::none_of(extension_properties, lambda))
             throw std::runtime_error("Required GLFW extension not supported : " + std::string(glfw_extensions[i]));
+
+        extensions.emplace_back(glfw_extensions[i]);
     }
 
-    vk::InstanceCreateInfo create_info{ vk::InstanceCreateFlags{}, &app_info, 0, nullptr, glfw_extension_count, glfw_extensions };
+    vk::InstanceCreateInfo create_info{ vk::InstanceCreateFlags{}, &app_info, 0, nullptr, static_cast<uint32_t>(extensions.size()), extensions.data() };
 
 #ifdef NDEBUG
     // nothing here..
@@ -41,6 +46,19 @@ void Application::CreateInstance() {
 #endif
 
     m_Instance = vk::raii::Instance(m_Context, create_info);
+
+#ifdef NDEBUG
+    // nothing here..
+#else
+    vk::DebugUtilsMessengerCreateInfoEXT messenger_create_info{
+        vk::DebugUtilsMessengerCreateFlagsEXT{},
+        vk::DebugUtilsMessageSeverityFlagsEXT::BitsType::eError | vk::DebugUtilsMessageSeverityFlagsEXT::BitsType::eWarning | vk::DebugUtilsMessageSeverityFlagsEXT::BitsType::eVerbose,
+        vk::DebugUtilsMessageTypeFlagsEXT::BitsType::eGeneral | vk::DebugUtilsMessageTypeFlagsEXT::BitsType::eValidation | vk::DebugUtilsMessageTypeFlagsEXT::BitsType::ePerformance,
+        DebugCallback
+    };
+
+    m_DebugMessenger = m_Instance.createDebugUtilsMessengerEXT(messenger_create_info);
+#endif
 }
 
 void Application::PickPhysicalDevice() {
@@ -562,6 +580,11 @@ vk::raii::ImageView Application::CreateImageView(vk::raii::Image& image, vk::For
     return vk::raii::ImageView(m_Device, view_info);
 }
 
+VKAPI_ATTR vk::Bool32 VKAPI_CALL Application::DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*) {
+    std::cerr << "Validation layer : type " << to_string(type) << " Message : " << callback_data->pMessage << std::endl;
+    return vk::False;
+}
+
 void Application::DrawFrame() {
     vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
@@ -580,8 +603,6 @@ void Application::DrawFrame() {
     }
 
     UpdateUniformBuffer(m_CurrentFrame);
-
-    m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
     
     m_CommandBuffers[m_CurrentFrame].reset();
     this->RecordCommandBuffer(m_CommandBuffers[m_CurrentFrame], image_index);
@@ -681,8 +702,6 @@ void Application::MainLoop() {
             last_time = now;
         }
     }
-
-    m_Device.waitIdle();
 }
 
 void Application::Release() {

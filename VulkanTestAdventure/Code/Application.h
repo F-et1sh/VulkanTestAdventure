@@ -18,9 +18,24 @@ constexpr static std::array<const char*, 4> DEVICE_EXTENSIONS = {
     vk::KHRSpirv14ExtensionName,
     vk::KHRSynchronization2ExtensionName,
     vk::KHRCreateRenderpass2ExtensionName
-};
+};  
 
-constexpr static std::array<const char*, 1> VALIDATION_LAYERS = { "VK_LAYER_KHRONOS_validation" };
+constexpr static std::array VALIDATION_LAYERS = {
+    "VK_LAYER_NV_optimus",
+    "VK_LAYER_NV_present",
+    "VK_LAYER_RENDERDOC_Capture",
+    "VK_LAYER_VALVE_steam_overlay",
+    "VK_LAYER_VALVE_steam_fossilize",
+    "VK_LAYER_LUNARG_api_dump",
+    "VK_LAYER_LUNARG_gfxreconstruct",
+    "VK_LAYER_KHRONOS_synchronization2",
+    "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_LUNARG_monitor",
+    "VK_LAYER_LUNARG_screenshot",
+    "VK_LAYER_KHRONOS_profiles",
+    "VK_LAYER_KHRONOS_shader_object",
+    "VK_LAYER_LUNARG_crash_diagnostic",
+};
 
 constexpr static int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -130,6 +145,8 @@ private:
 
     vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format)const;
 
+    static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*);
+
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 
@@ -140,6 +157,7 @@ private:
     vk::raii::Context m_Context = {};
 
     vk::raii::Instance m_Instance = nullptr;
+    vk::raii::DebugUtilsMessengerEXT m_DebugMessenger = nullptr;
     
     vk::raii::PhysicalDevice m_PhysicalDevice = nullptr;
     vk::raii::Device m_Device = nullptr;
