@@ -66,5 +66,8 @@
     <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt">
       <Filter>Licenses</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -41,6 +41,9 @@ constexpr static int MAX_FRAMES_IN_FLIGHT = 2;
 
 constexpr static auto REQUIRED_QUEUE_FAMILY_FLAGS = vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eTransfer;
 
+const static std::string MODEL_PATH = "C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/2eaeee605051fb13a4b0c452f2cc87d7.obj";
+const static std::string TEXTURE_PATH = "C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/texture_pbr_v128.png";
+
 class Application {
 public:
     Application() = default;
@@ -64,6 +67,7 @@ public:
         this->CreateTextureImage();
         this->CreateTextureImageView();
         this->CreateTextureSampler();
+        this->LoadModel();
         this->CreateVertexBuffer();
         this->CreateIndexBuffer();
         this->CreateUniformBuffers();
@@ -92,6 +96,7 @@ private:
     void CreateTextureImage();
     void CreateTextureImageView();
     void CreateTextureSampler();
+    void LoadModel();
     void CreateVertexBuffer();
     void CreateIndexBuffer();
     void CreateUniformBuffers();
@@ -198,6 +203,9 @@ private:
     bool m_FramebufferResized = false;
 
     uint32_t m_CurrentFrame = 0;
+
+    std::vector<Vertex> m_Vertices;
+    std::vector<uint32_t> m_Indices;
 
     vk::raii::Buffer m_VertexBuffer = nullptr;
     vk::raii::DeviceMemory m_VertexBufferMemory = nullptr;

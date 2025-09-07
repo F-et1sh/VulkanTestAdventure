@@ -223,6 +223,9 @@
     <ClInclude Include="Code\pch.h" />
     <ClInclude Include="Code\Vertex.h" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

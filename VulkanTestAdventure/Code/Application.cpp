@@ -5,6 +5,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB/stb_image.h"
 
+// Tiny Obj Loader
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "TinyObjLoader/tiny_obj_loader.h"
+
 #undef max
 
 void Application::InitializeWindow() {
@@ -214,12 +218,6 @@ void Application::CreateImageViews() {
         nullptr
     };
 
-    image_view_create_info.subresourceRange.setAspectMask(vk::ImageAspectFlagBits::eColor);
-    image_view_create_info.subresourceRange.setBaseMipLevel(0);
-    image_view_create_info.subresourceRange.setLevelCount(1);
-    image_view_create_info.subresourceRange.setBaseArrayLayer(0);
-    image_view_create_info.subresourceRange.setLayerCount(1);
-
     for (auto image : m_SwapchainImages) {
         image_view_create_info.image = image;
         m_SwapchainImageViews.emplace_back(m_Device, image_view_create_info);
@@ -377,11 +375,11 @@ void Application::CreateTextureImage() {
     int width = 0;
     int height = 0;
     int channels = 0;
-    stbi_uc* pixels = stbi_load("C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Textures/texture.jpg", &width, &height, &channels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &width, &height, &channels, STBI_rgb_alpha);
     vk::DeviceSize image_size = width * height * 4;
 
     if (!pixels)
-        throw std::runtime_error(std::string("Failed to load texture image\nPath : ") + std::string("C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Textures/texture.jpg"));
+        throw std::runtime_error(std::string("Failed to load texture image\nPath : ") + TEXTURE_PATH);
 
     vk::raii::Buffer staging_buffer{ {} };
     vk::raii::DeviceMemory staging_buffer_memory{ {} };
@@ -416,15 +414,50 @@ void Application::CreateTextureSampler() {
     m_TextureSampler = vk::raii::Sampler(m_Device, sampler_info);
 }
 
+void Application::LoadModel() {
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err;
+
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str()))
+        throw std::runtime_error(err);
+
+    m_Vertices.reserve(shapes.size());
+    m_Indices.reserve(shapes.size());
+
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
+            Vertex vertex{};
+
+            vertex.position = {
+                attrib.vertices[3 * index.vertex_index + 0],
+                attrib.vertices[3 * index.vertex_index + 1],
+                attrib.vertices[3 * index.vertex_index + 2]
+            };
+
+            vertex.texture_coord = {
+                 attrib.texcoords[2 * index.texcoord_index + 0],
+                 1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+            };
+
+            vertex.color = { 1.0f, 1.0f, 1.0f };
+            
+            m_Vertices.emplace_back(vertex);
+            m_Indices.emplace_back(m_Indices.size());
+        }
+    }
+}
+
 void Application::CreateVertexBuffer() {
-    vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
+    vk::DeviceSize buffer_size = sizeof(m_Vertices[0]) * m_Vertices.size();
 
     vk::raii::Buffer staging_buffer{ {} };
     vk::raii::DeviceMemory staging_buffer_memory{ {} };
     this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
 
     void* data_staging = staging_buffer_memory.mapMemory(0, buffer_size);
-    memcpy(data_staging, VERTICES.data(), buffer_size);
+    memcpy(data_staging, m_Vertices.data(), buffer_size);
     staging_buffer_memory.unmapMemory();
 
     this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_VertexBuffer, m_VertexBufferMemory);
@@ -432,14 +465,14 @@ void Application::CreateVertexBuffer() {
 }
 
 void Application::CreateIndexBuffer() {
-    vk::DeviceSize buffer_size = sizeof(INDICES[0]) * INDICES.size();
+    vk::DeviceSize buffer_size = sizeof(m_Indices[0]) * m_Indices.size();
 
     vk::raii::Buffer staging_buffer{ {} };
     vk::raii::DeviceMemory staging_buffer_memory{ {} };
     CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
 
     void* data_staging = staging_buffer_memory.mapMemory(0, buffer_size);
-    memcpy(data_staging, INDICES.data(), buffer_size);
+    memcpy(data_staging, m_Indices.data(), buffer_size);
     staging_buffer_memory.unmapMemory();
 
     this->CreateBuffer(buffer_size, vk::BufferUsageFlagBits::eIndexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_IndexBuffer, m_IndexBufferMemory);
@@ -508,11 +541,45 @@ void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst
 
 void Application::UpdateUniformBuffer(uint32_t current_image) {
     UniformBufferObject ubo{};
-    
-    float time = glfwGetTime();
-    ubo.model = rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.view = lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_SwapchainExtent.width) / static_cast<float>(m_SwapchainExtent.height), 0.1f, 10.0f);
+
+    double mouse_x = 0.0;
+    double mouse_y = 0.0;
+    glfwGetCursorPos(m_Window, &mouse_x, &mouse_y);
+
+    float normalized_mouse_x = static_cast<float>(mouse_x - m_SwapchainExtent.width / 2.0) / (m_SwapchainExtent.width / 2.0);
+    float normalized_mouse_y = static_cast<float>(mouse_y - m_SwapchainExtent.height / 2.0) / (m_SwapchainExtent.height / 2.0);
+
+    float rotation_speed = 1.0f;
+    float yaw = normalized_mouse_x * glm::radians(180.0f) * rotation_speed;
+    float pitch = normalized_mouse_y * glm::radians(90.0f) * rotation_speed;
+
+    static glm::vec3 position{ 0.0f, 0.0f, 2.0f };
+
+    float camera_speed = 0.001f;
+    if (glfwGetKey(m_Window, GLFW_KEY_W))
+        position += camera_speed * glm::vec3(0.0f, 0.0f, -1.0f);
+    if (glfwGetKey(m_Window, GLFW_KEY_S))
+        position -= camera_speed * glm::vec3(0.0f, 0.0f, -1.0f);
+    if (glfwGetKey(m_Window, GLFW_KEY_A))
+        position += camera_speed * glm::vec3(-1.0f, 0.0f, 0.0f);
+    if (glfwGetKey(m_Window, GLFW_KEY_D))
+        position += camera_speed * glm::vec3(1.0f, 0.0f, 0.0f);
+    if (glfwGetKey(m_Window, GLFW_KEY_Q))
+        position += camera_speed * glm::vec3(0.0f, 1.0f, 0.0f);
+    if (glfwGetKey(m_Window, GLFW_KEY_E))
+        position += camera_speed * glm::vec3(0.0f, -1.0f, 0.0f);
+
+
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    modelMatrix = glm::rotate(modelMatrix, yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, pitch, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    ubo.model = modelMatrix;
+
+    glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+    ubo.view = glm::lookAt(position, center, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(m_SwapchainExtent.width) / static_cast<float>(m_SwapchainExtent.height), 0.1f, 100.0f);
     ubo.proj[1][1] *= -1;
 
     memcpy(m_UniformBuffersMapped[current_image], &ubo, sizeof(ubo));
@@ -707,10 +774,9 @@ void Application::ReleaseSwapchain() {
 }
 
 void Application::RecreateSwapchain() {
-    int width = 0;
-    int height = 0;
+    int width = 0, height = 0;
     glfwGetFramebufferSize(m_Window, &width, &height);
-    
+
     while (width == 0 || height == 0) {
         glfwGetFramebufferSize(m_Window, &width, &height);
         glfwWaitEvents();
@@ -722,10 +788,13 @@ void Application::RecreateSwapchain() {
 
     this->CreateSwapchain();
     this->CreateImageViews();
+
+    this->CreateDepthResources();
+
     this->CreateGraphicsPipeline();
 
     this->CreateCommandBuffers();
-    
+
     m_CurrentFrame = 0;
     m_FramebufferResized = false;
 }
@@ -909,10 +978,10 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
     command_buffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), m_SwapchainExtent));
 
     command_buffer.bindVertexBuffers(0, *m_VertexBuffer, { 0 });
-    command_buffer.bindIndexBuffer(*m_IndexBuffer, 0, vk::IndexType::eUint16);
+    command_buffer.bindIndexBuffer(*m_IndexBuffer, 0, vk::IndexType::eUint32);
 
     command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_PipelineLayout, 0, *m_DescriptorSets[m_CurrentFrame], nullptr);
-    command_buffer.drawIndexed(INDICES.size(), 1, 0, 0, 0);
+    command_buffer.draw(m_Vertices.size(), 1, 0, 0);
 
     command_buffer.endRendering();
 
