@@ -56,6 +56,7 @@ public:
         this->CreateSwapchain();
         this->CreateImageViews();
         this->CreateDescriptorSetLayout();
+        this->CreateDepthResources();
         this->CreateGraphicsPipeline();
         this->CreateCommandPool();
         this->CreateCommandBuffers();
@@ -87,6 +88,7 @@ private:
     void CreateCommandPool();
     void CreateCommandBuffers();
     void CreateSyncObjects();
+    void CreateDepthResources();
     void CreateTextureImage();
     void CreateTextureImageView();
     void CreateTextureSampler();
@@ -140,15 +142,19 @@ private:
     vk::raii::CommandBuffer BeginSingleTimeCommands()const;
     void EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)const;
 
-    void TransitionTextureImageLayout(const vk::raii::Image& image, vk::ImageLayout old_layout, vk::ImageLayout new_layout)const;
+    void TransitionTextureImageLayout(const vk::Image& image, vk::Format format, vk::ImageLayout old_layout, vk::ImageLayout new_layout)const;
     void CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::raii::Image& image, uint32_t width, uint32_t height)const;
 
-    vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format)const;
+    vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspect_flags)const;
 
-    static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*);
+    vk::Format FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
+    vk::Format FindDepthFormat()const;
+
+    inline bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
 
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
+    static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*);
 
 private:
     GLFWwindow* m_Window = nullptr;
@@ -210,4 +216,8 @@ private:
     vk::raii::DeviceMemory m_TextureImageMemory = nullptr;
     vk::raii::ImageView m_TextureImageView = nullptr;
     vk::raii::Sampler m_TextureSampler = nullptr;
+
+    vk::raii::Image m_DepthImage = nullptr;
+    vk::raii::DeviceMemory m_DepthImageMemory = nullptr;
+    vk::raii::ImageView m_DepthImageView = nullptr;
 };

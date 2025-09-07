@@ -19,5 +19,6 @@
 #include <GLFW/glfw3native.h>
 
 // GLM
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
