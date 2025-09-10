@@ -142,20 +142,22 @@ private:
 
     void UpdateUniformBuffer(uint32_t current_image);
 
-    void CreateImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const;
+    void CreateImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const;
 
     vk::raii::CommandBuffer BeginSingleTimeCommands()const;
     void EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)const;
 
-    void TransitionTextureImageLayout(const vk::Image& image, vk::Format format, vk::ImageLayout old_layout, vk::ImageLayout new_layout)const;
+    void TransitionTextureImageLayout(const vk::Image& image, vk::Format format, vk::ImageLayout old_layout, vk::ImageLayout new_layout, uint32_t mip_levels)const;
     void CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::raii::Image& image, uint32_t width, uint32_t height)const;
 
-    vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspect_flags)const;
+    vk::raii::ImageView CreateImageView(vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
 
     vk::Format FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
     vk::Format FindDepthFormat()const;
 
     inline bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
+
+    void GenerateMipmaps(vk::raii::Image& image, vk::Format image_format, int32_t width, int32_t height, uint32_t mip_levels)const;
 
 private:
     static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
@@ -220,6 +222,7 @@ private:
     vk::raii::DescriptorPool m_DescriptorPool = nullptr;
     std::vector<vk::raii::DescriptorSet> m_DescriptorSets;
 
+    uint32_t m_MipLevels = 0;
     vk::raii::Image m_TextureImage = nullptr;
     vk::raii::DeviceMemory m_TextureImageMemory = nullptr;
     vk::raii::ImageView m_TextureImageView = nullptr;
