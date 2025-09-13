@@ -11,7 +11,7 @@
 
 #undef max
 
-void Application::InitializeWindow() {
+void VK_HPP::Application::InitializeWindow() {
     if (!glfwInit()) throw std::runtime_error("Failed to init GLFW");
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -20,7 +20,7 @@ void Application::InitializeWindow() {
     glfwSetFramebufferSizeCallback(m_Window, FramebufferResizeCallback);
 }
 
-void Application::CreateInstance() {
+void VK_HPP::Application::CreateInstance() {
     constexpr vk::ApplicationInfo app_info{ "VulkanTestAdventure", VK_MAKE_VERSION(1, 0, 0), "No Engine", VK_MAKE_VERSION(1, 0, 0), vk::ApiVersion14 };
 
     std::vector<const char*> extensions = { VK_EXT_DEBUG_UTILS_EXTENSION_NAME };
@@ -65,7 +65,7 @@ void Application::CreateInstance() {
 #endif
 }
 
-void Application::PickPhysicalDevice() {
+void VK_HPP::Application::PickPhysicalDevice() {
     std::vector<vk::raii::PhysicalDevice> devices = m_Instance.enumeratePhysicalDevices();
     const auto device_iterator = std::ranges::find_if(devices,
         [&](auto const& device) {
@@ -98,7 +98,7 @@ void Application::PickPhysicalDevice() {
     if (device_iterator == devices.end()) throw std::runtime_error("Failed to find a suitable GPU");
 }
 
-void Application::CreateLogicalDevice() {
+void VK_HPP::Application::CreateLogicalDevice() {
     std::vector<vk::QueueFamilyProperties> queue_family_properties = m_PhysicalDevice.getQueueFamilyProperties();
 
     auto graphics_queue_family_property = std::ranges::find_if(
@@ -167,7 +167,7 @@ void Application::CreateLogicalDevice() {
     m_PresentQueueFamilyIndex = present_index;
 }
 
-void Application::CreateSwapchain() {
+void VK_HPP::Application::CreateSwapchain() {
     auto surface_capabilities = m_PhysicalDevice.getSurfaceCapabilitiesKHR(m_Surface);
     auto swapchain_surface_format = ChooseSwapSurfaceFormat(m_PhysicalDevice.getSurfaceFormatsKHR(m_Surface));
     auto swapchain_extent = ChooseSwapExtent(surface_capabilities);
@@ -208,7 +208,7 @@ void Application::CreateSwapchain() {
     m_SwapchainExtent = swapchain_extent;
 }
 
-void Application::CreateImageViews() {
+void VK_HPP::Application::CreateImageViews() {
     m_SwapchainImageViews.clear();
 
     vk::ImageViewCreateInfo image_view_create_info{
@@ -227,7 +227,7 @@ void Application::CreateImageViews() {
     }
 }
 
-void Application::CreateDescriptorSetLayout() {
+void VK_HPP::Application::CreateDescriptorSetLayout() {
     constexpr static std::array bindings = {
         vk::DescriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr),
         vk::DescriptorSetLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment, nullptr)
@@ -237,7 +237,7 @@ void Application::CreateDescriptorSetLayout() {
     m_DescriptorSetLayout = vk::raii::DescriptorSetLayout(m_Device, layout_info);
 }
 
-void Application::CreateGraphicsPipeline() {
+void VK_HPP::Application::CreateGraphicsPipeline() {
     auto code_vert = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
     auto code_frag = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
@@ -345,18 +345,18 @@ void Application::CreateGraphicsPipeline() {
     m_GraphicsPipeline = vk::raii::Pipeline(m_Device, nullptr, pipeline_info);
 }
 
-void Application::CreateCommandPool() {
+void VK_HPP::Application::CreateCommandPool() {
     vk::CommandPoolCreateInfo pool_info{ vk::CommandPoolCreateFlagBits::eResetCommandBuffer, m_GraphicsQueueFamilyIndex };
     m_CommandPool = vk::raii::CommandPool(m_Device, pool_info);
 }
 
-void Application::CreateCommandBuffers() {
+void VK_HPP::Application::CreateCommandBuffers() {
     m_CommandBuffers.clear();
     vk::CommandBufferAllocateInfo alloc_info{ m_CommandPool, vk::CommandBufferLevel::ePrimary, MAX_FRAMES_IN_FLIGHT };
     m_CommandBuffers = vk::raii::CommandBuffers(m_Device, alloc_info);
 }
 
-void Application::CreateSyncObjects() {
+void VK_HPP::Application::CreateSyncObjects() {
     m_PresentCompleteSemaphores.clear();
     m_RenderFinishedSemaphores.clear();
     m_InFlightFences.clear();
@@ -368,13 +368,13 @@ void Application::CreateSyncObjects() {
     }
 }
 
-void Application::CreateDepthResources() {
+void VK_HPP::Application::CreateDepthResources() {
     vk::Format depth_format = this->FindDepthFormat();
     this->CreateImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, depth_format, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, m_DepthImage, m_DepthImageMemory);
     m_DepthImageView = this->CreateImageView(m_DepthImage, depth_format, vk::ImageAspectFlagBits::eDepth, 1);
 }
 
-void Application::CreateTextureImage() {
+void VK_HPP::Application::CreateTextureImage() {
     int width = 0;
     int height = 0;
     int channels = 0;
@@ -408,11 +408,11 @@ void Application::CreateTextureImage() {
     this->GenerateMipmaps(m_TextureImage, vk::Format::eR8G8B8A8Srgb, width, height, m_MipLevels);
 }
 
-void Application::CreateTextureImageView() {
+void VK_HPP::Application::CreateTextureImageView() {
     m_TextureImageView = this->CreateImageView(m_TextureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor, m_MipLevels);
 }
 
-void Application::CreateTextureSampler() {
+void VK_HPP::Application::CreateTextureSampler() {
     vk::PhysicalDeviceProperties properties = m_PhysicalDevice.getProperties();
     vk::SamplerCreateInfo sampler_info{
         vk::SamplerCreateFlags{},
@@ -432,7 +432,7 @@ void Application::CreateTextureSampler() {
     m_TextureSampler = vk::raii::Sampler(m_Device, sampler_info);
 }
 
-void Application::LoadModel() {
+void VK_HPP::Application::LoadModel() {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -467,7 +467,7 @@ void Application::LoadModel() {
     }
 }
 
-void Application::CreateVertexBuffer() {
+void VK_HPP::Application::CreateVertexBuffer() {
     vk::DeviceSize buffer_size = sizeof(m_Vertices[0]) * m_Vertices.size();
 
     vk::raii::Buffer staging_buffer{ {} };
@@ -482,7 +482,7 @@ void Application::CreateVertexBuffer() {
     this->CopyBuffer(staging_buffer, m_VertexBuffer, buffer_size);
 }
 
-void Application::CreateIndexBuffer() {
+void VK_HPP::Application::CreateIndexBuffer() {
     vk::DeviceSize buffer_size = sizeof(m_Indices[0]) * m_Indices.size();
 
     vk::raii::Buffer staging_buffer{ {} };
@@ -497,7 +497,7 @@ void Application::CreateIndexBuffer() {
     this->CopyBuffer(staging_buffer, m_IndexBuffer, buffer_size);
 }
 
-void Application::CreateUniformBuffers() {
+void VK_HPP::Application::CreateUniformBuffers() {
     m_UniformBuffers.clear();
     m_UniformBuffersMemory.clear();
     m_UniformBuffersMapped.clear();
@@ -513,7 +513,7 @@ void Application::CreateUniformBuffers() {
     }
 }
 
-void Application::CreateDescriptorPool() {
+void VK_HPP::Application::CreateDescriptorPool() {
     constexpr static std::array pool_size{
         vk::DescriptorPoolSize(vk::DescriptorType::eUniformBuffer, MAX_FRAMES_IN_FLIGHT),
         vk::DescriptorPoolSize(vk::DescriptorType::eCombinedImageSampler, MAX_FRAMES_IN_FLIGHT)
@@ -523,7 +523,7 @@ void Application::CreateDescriptorPool() {
     m_DescriptorPool = vk::raii::DescriptorPool(m_Device, pool_info);
 }
 
-void Application::CreateDescriptorSets() {
+void VK_HPP::Application::CreateDescriptorSets() {
     std::vector<vk::DescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, *m_DescriptorSetLayout);
     vk::DescriptorSetAllocateInfo allocate_info{ m_DescriptorPool, static_cast<uint32_t>(layouts.size()), layouts.data() };
     
@@ -542,7 +542,7 @@ void Application::CreateDescriptorSets() {
     }
 }
 
-void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
+void VK_HPP::Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
     vk::BufferCreateInfo buffer_info{ vk::BufferCreateFlags{}, size, usage, vk::SharingMode::eExclusive };
     buffer = vk::raii::Buffer(m_Device, buffer_info);
     vk::MemoryRequirements memory_requirements = buffer.getMemoryRequirements();
@@ -551,13 +551,13 @@ void Application::CreateBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, 
     buffer.bindMemory(*buffer_memory, 0);
 }
 
-void Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) {
+void VK_HPP::Application::CopyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) {
     vk::raii::CommandBuffer commandCopyBuffer = BeginSingleTimeCommands();
     commandCopyBuffer.copyBuffer(src_buffer, dst_buffer, vk::BufferCopy(0, 0, size));
     EndSingleTimeCommands(commandCopyBuffer);
 }
 
-void Application::UpdateUniformBuffer(uint32_t current_image) {
+void VK_HPP::Application::UpdateUniformBuffer(uint32_t current_image) {
     UniformBufferObject ubo{};
 
     double mouse_x = 0.0;
@@ -603,7 +603,7 @@ void Application::UpdateUniformBuffer(uint32_t current_image) {
     memcpy(m_UniformBuffersMapped[current_image], &ubo, sizeof(ubo));
 }
 
-void Application::CreateImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const {
+void VK_HPP::Application::CreateImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const {
     vk::ImageCreateInfo image_info{ vk::ImageCreateFlags{}, vk::ImageType::e2D, format, { width, height, 1 }, mip_levels, 1, vk::SampleCountFlagBits::e1, tiling, usage, vk::SharingMode::eExclusive, 0 };
 
     image = vk::raii::Image(m_Device, image_info);
@@ -614,7 +614,7 @@ void Application::CreateImage(uint32_t width, uint32_t height, uint32_t mip_leve
     image.bindMemory(image_memory, 0);
 }
 
-vk::raii::CommandBuffer Application::BeginSingleTimeCommands()const {
+vk::raii::CommandBuffer VK_HPP::Application::BeginSingleTimeCommands()const {
     vk::CommandBufferAllocateInfo allocate_info(m_CommandPool, vk::CommandBufferLevel::ePrimary, 1);
     vk::raii::CommandBuffer command_buffers = std::move(m_Device.allocateCommandBuffers(allocate_info).front());
 
@@ -624,7 +624,7 @@ vk::raii::CommandBuffer Application::BeginSingleTimeCommands()const {
     return command_buffers;
 }
 
-void Application::EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)const {
+void VK_HPP::Application::EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)const {
     commandBuffer.end();
     
     vk::raii::Fence copy_fence{ m_Device, vk::FenceCreateInfo{} };
@@ -636,7 +636,7 @@ void Application::EndSingleTimeCommands(vk::raii::CommandBuffer& commandBuffer)c
         throw std::runtime_error("waitForFence failed. " + std::to_string(static_cast<size_t>(result)));
 }
 
-void Application::TransitionTextureImageLayout(const vk::Image& image, vk::Format format, vk::ImageLayout old_layout, vk::ImageLayout new_layout, uint32_t mip_levels)const {
+void VK_HPP::Application::TransitionTextureImageLayout(const vk::Image& image, vk::Format format, vk::ImageLayout old_layout, vk::ImageLayout new_layout, uint32_t mip_levels)const {
     auto command_buffer = BeginSingleTimeCommands();
 
     vk::ImageMemoryBarrier barrier{ {}, {}, old_layout, new_layout, {}, {}, image, vk::ImageSubresourceRange{ vk::ImageAspectFlagBits::eColor, 0, mip_levels, 0, 1 } };
@@ -680,7 +680,7 @@ void Application::TransitionTextureImageLayout(const vk::Image& image, vk::Forma
     EndSingleTimeCommands(command_buffer);
 }
 
-void Application::CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::raii::Image& image, uint32_t width, uint32_t height)const {
+void VK_HPP::Application::CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::raii::Image& image, uint32_t width, uint32_t height)const {
     auto cmd = BeginSingleTimeCommands();
 
     vk::BufferImageCopy region(
@@ -701,12 +701,12 @@ void Application::CopyBufferToImage(const vk::raii::Buffer& buffer, const vk::ra
     EndSingleTimeCommands(cmd);
 }
 
-vk::raii::ImageView Application::CreateImageView(vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const {
+vk::raii::ImageView VK_HPP::Application::CreateImageView(vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const {
     vk::ImageViewCreateInfo view_info{ vk::ImageViewCreateFlags{}, image, vk::ImageViewType::e2D, format, {}, vk::ImageSubresourceRange{ aspect_flags, 0, mip_levels, 0, 1 }};
     return vk::raii::ImageView(m_Device, view_info);
 }
 
-vk::Format Application::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const {
+vk::Format VK_HPP::Application::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const {
     for (auto format : candidates) {
         vk::FormatProperties properties = m_PhysicalDevice.getFormatProperties(format);
 
@@ -717,7 +717,7 @@ vk::Format Application::FindSupportedFormat(const std::vector<vk::Format>& candi
     throw std::runtime_error("Failed to find supported format");
 }
 
-vk::Format Application::FindDepthFormat()const {
+vk::Format VK_HPP::Application::FindDepthFormat()const {
     return this->FindSupportedFormat(
         { vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint },
         vk::ImageTiling::eOptimal,
@@ -725,19 +725,19 @@ vk::Format Application::FindDepthFormat()const {
     );
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL Application::DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*) {
+VKAPI_ATTR vk::Bool32 VKAPI_CALL VK_HPP::Application::DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*) {
     std::cerr << "Validation layer : type " << to_string(type) << " Message : " << callback_data->pMessage << std::endl;
     return vk::False;
 }
 
-void Application::DrawFrame() {
+void VK_HPP::Application::DrawFrame() {
     vk::Result wait_result = m_Device.waitForFences(*m_InFlightFences[m_CurrentFrame], vk::True, UINT64_MAX);
     m_Device.resetFences(*m_InFlightFences[m_CurrentFrame]);
 
     // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
     uint32_t image_index = 0;
-    VkResult result = vkAcquireNextImageKHR(*m_Device, *m_Swapchain, UINT64_MAX, *m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
+    VkResult result = vkAcquireNextImageKHR(*m_Device, (VkSwapchainKHR)*m_Swapchain, UINT64_MAX, (VkSemaphore)*m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         this->RecreateSwapchain();
@@ -784,14 +784,14 @@ void Application::DrawFrame() {
     m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void Application::ReleaseSwapchain() {
+void VK_HPP::Application::ReleaseSwapchain() {
     m_GraphicsPipeline = nullptr;
     m_PipelineLayout = nullptr;
     m_SwapchainImageViews.clear();
     m_Swapchain = nullptr;
 }
 
-void Application::RecreateSwapchain() {
+void VK_HPP::Application::RecreateSwapchain() {
     int width = 0, height = 0;
     glfwGetFramebufferSize(m_Window, &width, &height);
 
@@ -817,7 +817,7 @@ void Application::RecreateSwapchain() {
     m_FramebufferResized = false;
 }
 
-uint32_t Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties) const {
+uint32_t VK_HPP::Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties) const {
     vk::PhysicalDeviceMemoryProperties memory_properties = m_PhysicalDevice.getMemoryProperties();
     for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++)
         if ((type_filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties)
@@ -825,7 +825,7 @@ uint32_t Application::FindMemoryType(uint32_t type_filter, vk::MemoryPropertyFla
     throw std::runtime_error("Failed to find suitable memory type");
 }
 
-void Application::GenerateMipmaps(vk::raii::Image& image, vk::Format image_format, int32_t width, int32_t height, uint32_t mip_levels)const {
+void VK_HPP::Application::GenerateMipmaps(vk::raii::Image& image, vk::Format image_format, int32_t width, int32_t height, uint32_t mip_levels)const {
     vk::FormatProperties format_properties = m_PhysicalDevice.getFormatProperties(image_format);
     if (!(format_properties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImageFilterLinear))
         throw std::runtime_error("Texture image format does not support linear blitting");
@@ -915,12 +915,12 @@ void Application::GenerateMipmaps(vk::raii::Image& image, vk::Format image_forma
     this->EndSingleTimeCommands(command_buffer);
 }
 
-void Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
+void VK_HPP::Application::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
     app->m_FramebufferResized = true;
 }
 
-void Application::MainLoop() {
+void VK_HPP::Application::MainLoop() {
     using clock = std::chrono::high_resolution_clock;
     auto last_time = clock::now();
     int frames = 0;
@@ -941,7 +941,7 @@ void Application::MainLoop() {
     }
 }
 
-void Application::Release() {
+void VK_HPP::Application::Release() {
     this->m_CommandBuffers.clear();
     this->ReleaseSwapchain();
 
@@ -949,14 +949,14 @@ void Application::Release() {
     glfwTerminate();
 }
 
-void Application::CreateSurface() {
+void VK_HPP::Application::CreateSurface() {
     VkSurfaceKHR surface{};
     if (glfwCreateWindowSurface(*m_Instance, m_Window, nullptr, &surface) != 0)
         throw std::runtime_error("Failed to create window surface");
     m_Surface = vk::raii::SurfaceKHR(m_Instance, surface);
 }
 
-void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
+void VK_HPP::Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) const {
     auto available_layers = m_Context.enumerateInstanceLayerProperties();
 
     bool layers_supported = true;
@@ -979,7 +979,7 @@ void Application::EnableValidationLayers(vk::InstanceCreateInfo& create_info) co
     if (!VALIDATION_LAYERS.empty()) create_info.setPpEnabledLayerNames(VALIDATION_LAYERS.data());
 }
 
-uint32_t Application::FindQueueFamilies() const {
+uint32_t VK_HPP::Application::FindQueueFamilies() const {
     std::vector<vk::QueueFamilyProperties> queue_family_properties = m_PhysicalDevice.getQueueFamilyProperties();
 
     auto graphics_queue_family_property = std::find_if(queue_family_properties.begin(), queue_family_properties.end(),
@@ -988,21 +988,21 @@ uint32_t Application::FindQueueFamilies() const {
     return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
 }
 
-vk::SurfaceFormatKHR Application::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const {
+vk::SurfaceFormatKHR VK_HPP::Application::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const {
     for (const auto& availableFormat : available_formats)
         if (availableFormat.format == vk::Format::eB8G8R8A8Srgb && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
             return availableFormat;
     return available_formats[0];
 }
 
-vk::PresentModeKHR Application::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes)const {
+vk::PresentModeKHR VK_HPP::Application::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes)const {
     for (const auto& available_present_mode : available_present_modes)
         if (available_present_mode == vk::PresentModeKHR::eMailbox)
             return available_present_mode;
     return vk::PresentModeKHR::eFifo;
 }
 
-vk::Extent2D Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)const {
+vk::Extent2D VK_HPP::Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)const {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) return capabilities.currentExtent;
 
     int width = 0;
@@ -1015,7 +1015,7 @@ vk::Extent2D Application::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& cap
     };
 }
 
-std::vector<char> Application::LoadShader(const std::filesystem::path& path)const {
+std::vector<char> VK_HPP::Application::LoadShader(const std::filesystem::path& path)const {
     std::ifstream file(path, std::ios::binary);
     if (!file.good()) {
         std::cerr << "ERROR : Failed to load shader file\nPath : " << path << std::endl;
@@ -1024,13 +1024,13 @@ std::vector<char> Application::LoadShader(const std::filesystem::path& path)cons
     return { (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
 }
 
-vk::raii::ShaderModule Application::CreateShaderModule(const std::vector<char>& code)const {
+vk::raii::ShaderModule VK_HPP::Application::CreateShaderModule(const std::vector<char>& code)const {
     vk::ShaderModuleCreateInfo create_info{ vk::ShaderModuleCreateFlags{}, code.size() * sizeof(char), reinterpret_cast<const uint32_t*>(code.data())};
     vk::raii::ShaderModule shader_module{ m_Device, create_info };
     return shader_module;
 }
 
-void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
+void VK_HPP::Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
     command_buffer.begin(vk::CommandBufferBeginInfo{});
 
     vk::ClearValue clear_color = vk::ClearColorValue(0.01f, 0.01f, 0.01f, 1.0f);
@@ -1107,7 +1107,7 @@ void Application::RecordCommandBuffer(vk::raii::CommandBuffer& command_buffer, u
     command_buffer.end();
 }
 
-void Application::TransitionImageLayout(
+void VK_HPP::Application::TransitionImageLayout(
     vk::raii::CommandBuffer& command_buffer,
     uint32_t image_index,
     vk::ImageLayout old_layout,

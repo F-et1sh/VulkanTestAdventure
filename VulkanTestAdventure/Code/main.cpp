@@ -2,7 +2,7 @@
 #include "Application.h"
 
 int main() {
-    Application app{};
+    VK_HPP::Application app{};
     
     try {
         app.Run();
