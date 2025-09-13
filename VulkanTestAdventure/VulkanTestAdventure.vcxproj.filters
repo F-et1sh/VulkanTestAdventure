@@ -13,14 +13,17 @@
     <Filter Include="Shaders\Test1">
       <UniqueIdentifier>{a931e0dd-66f7-410b-ab9f-6083b94a95b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Application">
+    <Filter Include="Code\VulkanHpp %28 Frozen %29">
+      <UniqueIdentifier>{4ec5f2b4-1574-4079-9363-c31dd693fe47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\VulkanHpp %28 Frozen %29\Application">
       <UniqueIdentifier>{974263ea-a318-4468-a92c-9dca3edc3af6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\VulkanHpp %28 Frozen %29\Vertex">
+      <UniqueIdentifier>{ce33b62d-9bb8-41e2-bf69-6baa4508e81a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Code\PCH">
       <UniqueIdentifier>{d6a345f6-b3b8-4229-bfca-c25dc559ef3e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Vertex">
-      <UniqueIdentifier>{ce33b62d-9bb8-41e2-bf69-6baa4508e81a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,13 +31,13 @@
       <Filter>Code</Filter>
     </ClCompile>
     <ClCompile Include="Code\Application.cpp">
-      <Filter>Code\Application</Filter>
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClCompile>
     <ClCompile Include="Code\pch.cpp">
       <Filter>Code\PCH</Filter>
     </ClCompile>
     <ClCompile Include="Code\Vertex.cpp">
-      <Filter>Code\Vertex</Filter>
+      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,13 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Application.h">
-      <Filter>Code\Application</Filter>
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClInclude>
     <ClInclude Include="Code\pch.h">
       <Filter>Code\PCH</Filter>
     </ClInclude>
     <ClInclude Include="Code\Vertex.h">
-      <Filter>Code\Vertex</Filter>
+      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

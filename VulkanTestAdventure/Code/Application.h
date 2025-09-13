@@ -155,7 +155,7 @@ private:
     vk::Format FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
     vk::Format FindDepthFormat()const;
 
-    inline bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
+    inline constexpr bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
 
     void GenerateMipmaps(vk::raii::Image& image, vk::Format image_format, int32_t width, int32_t height, uint32_t mip_levels)const;
 

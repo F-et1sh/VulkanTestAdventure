@@ -132,12 +132,15 @@ void Application::CreateLogicalDevice() {
     if ((graphics_index == queue_family_properties.size()) || (present_index == queue_family_properties.size()))
         throw std::runtime_error("Could not find a queue for graphics or present");
 
-    auto features = m_PhysicalDevice.getFeatures2();
-    vk::PhysicalDeviceVulkan13Features vulkan13_features;
     vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT extended_dynamic_state_features;
-    vulkan13_features.dynamicRendering = vk::True;
     extended_dynamic_state_features.extendedDynamicState = vk::True;
+    
+    vk::PhysicalDeviceVulkan13Features vulkan13_features;
+    vulkan13_features.dynamicRendering = vk::True;
+    vulkan13_features.synchronization2 = vk::True;
     vulkan13_features.pNext = &extended_dynamic_state_features;
+    
+    auto features = m_PhysicalDevice.getFeatures2();
     features.pNext = &vulkan13_features;
 
     float queue_priority = 0.0f;
