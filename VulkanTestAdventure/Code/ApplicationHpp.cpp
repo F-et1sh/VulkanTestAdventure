@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Application.h"
+#include "ApplicationHpp.h"
 
 // STB Image
 #define STB_IMAGE_IMPLEMENTATION
@@ -725,9 +725,25 @@ vk::Format VK_HPP::Application::FindDepthFormat()const {
     );
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL VK_HPP::Application::DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*) {
-    std::cerr << "Validation layer : type " << to_string(type) << " Message : " << callback_data->pMessage << std::endl;
-    return vk::False;
+VkBool32 VKAPI_CALL VK_HPP::Application::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_types, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
+    std::cerr << "Validation layer : ";
+
+    if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {
+        std::cerr << "VERBOSE : ";
+    }
+    if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) {
+        std::cerr << "INFO : ";
+    }
+    if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+        std::cerr << "WARNING : ";
+    }
+    if (message_severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+        std::cerr << "ERROR : ";
+    }
+
+    std::cerr << callback_data->pMessage << std::endl;
+
+    return VK_FALSE;
 }
 
 void VK_HPP::Application::DrawFrame() {
@@ -737,7 +753,7 @@ void VK_HPP::Application::DrawFrame() {
     // here I used C-style code because vk::Result, unlike legacy vkResult, works incorrectly and always returns vk::Result::eSuccess
 
     uint32_t image_index = 0;
-    VkResult result = vkAcquireNextImageKHR(*m_Device, (VkSwapchainKHR)*m_Swapchain, UINT64_MAX, (VkSemaphore)*m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
+    VkResult result = vkAcquireNextImageKHR(*m_Device, *m_Swapchain, UINT64_MAX, *m_PresentCompleteSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         this->RecreateSwapchain();
@@ -773,7 +789,7 @@ void VK_HPP::Application::DrawFrame() {
         &image_index
     };
 
-    result = vkQueuePresentKHR(*m_GraphicsQueue, present_info);
+    result = vkQueuePresentKHR(*m_GraphicsQueue, (VkPresentInfoKHR*)&present_info);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_FramebufferResized) {
         m_FramebufferResized = false;

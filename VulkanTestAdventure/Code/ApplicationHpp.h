@@ -1,5 +1,5 @@
 #pragma once
-#include "Vertex.h"
+#include "VertexHpp.h"
 
 namespace VK_HPP {
 
@@ -35,7 +35,7 @@ namespace VK_HPP {
         "VK_LAYER_KHRONOS_validation",
         "VK_LAYER_LUNARG_monitor",
         "VK_LAYER_LUNARG_screenshot",
-        "VK_LAYER_KHRONOS_profiles",
+        //"VK_LAYER_KHRONOS_profiles",
         "VK_LAYER_KHRONOS_shader_object",
         "VK_LAYER_LUNARG_crash_diagnostic",
     };
@@ -158,13 +158,13 @@ namespace VK_HPP {
         vk::Format FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
         vk::Format FindDepthFormat()const;
 
-        inline constexpr bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
+        inline bool HasStencilComponent(vk::Format format)const noexcept { return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint; }
 
         void GenerateMipmaps(vk::raii::Image& image, vk::Format image_format, int32_t width, int32_t height, uint32_t mip_levels)const;
 
     private:
         static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
-        static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT severity, vk::DebugUtilsMessageTypeFlagsEXT type, const vk::DebugUtilsMessengerCallbackDataEXT* callback_data, void*);
+        static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_types, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data);
 
     private:
         GLFWwindow* m_Window = nullptr;

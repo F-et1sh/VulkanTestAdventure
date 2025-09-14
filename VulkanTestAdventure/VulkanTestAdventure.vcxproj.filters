@@ -30,14 +30,14 @@
     <ClCompile Include="Code\main.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Application.cpp">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Code\pch.cpp">
       <Filter>Code\PCH</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Vertex.cpp">
+    <ClCompile Include="Code\VertexHpp.cpp">
       <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ApplicationHpp.cpp">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,14 +49,14 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Application.h">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Code\pch.h">
       <Filter>Code\PCH</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Vertex.h">
+    <ClInclude Include="Code\VertexHpp.h">
       <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ApplicationHpp.h">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

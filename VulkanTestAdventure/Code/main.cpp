@@ -1,16 +1,9 @@
 #include "pch.h"
-#include "Application.h"
+#include "ApplicationHpp.h"
 
 int main() {
     VK_HPP::Application app{};
-    
-    try {
-        app.Run();
-    }
-    catch (const std::exception& e) {
-        std::cerr << "ERROR : " << e.what() << std::endl;
-    }
-
+    app.Run();
     return 0;
 }
 
@@ -77,7 +70,7 @@ void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index,
     vkEndCommandBuffer(command_buffer);
 }
 
-int main_1() {
+int main_() {
     if (!glfwInit()) {
         std::cerr << "Failed to init GLFW" << std::endl;
         return -1;
@@ -95,7 +88,7 @@ int main_1() {
     app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     app_info.pEngineName = nullptr;
     app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    app_info.apiVersion = VK_API_VERSION_1_4;
+    app_info.apiVersion = VK_API_VERSION_1_3;
 
     VkInstanceCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

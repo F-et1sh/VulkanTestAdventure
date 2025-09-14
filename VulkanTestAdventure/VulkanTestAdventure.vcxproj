@@ -84,7 +84,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(SolutionDir)VulkanTestAdventure\Libraries\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib32;$(SolutionDir)VulkanTestAdventure\Libraries\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -117,7 +117,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(SolutionDir)VulkanTestAdventure\Libraries\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib32;$(SolutionDir)VulkanTestAdventure\Libraries\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -199,7 +199,8 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Application.cpp" />
+    <ClCompile Include="Code\VertexHpp.cpp" />
+    <ClCompile Include="Code\ApplicationHpp.cpp" />
     <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -207,7 +208,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Code\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Include\GLFW\GLFW_LICENSE.txt" />
@@ -223,9 +223,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Application.h" />
+    <ClInclude Include="Code\ApplicationHpp.h" />
     <ClInclude Include="Code\pch.h" />
-    <ClInclude Include="Code\Vertex.h" />
+    <ClInclude Include="Code\VertexHpp.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt" />
