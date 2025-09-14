@@ -25,6 +25,9 @@
     <Filter Include="Code\PCH">
       <UniqueIdentifier>{d6a345f6-b3b8-4229-bfca-c25dc559ef3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Old %28 Frozen %29">
+      <UniqueIdentifier>{048dc7eb-1700-4e94-81c4-6ab1e19e887a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -32,12 +35,6 @@
     </ClCompile>
     <ClCompile Include="Code\pch.cpp">
       <Filter>Code\PCH</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\VertexHpp.cpp">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\ApplicationHpp.cpp">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -51,12 +48,6 @@
   <ItemGroup>
     <ClInclude Include="Code\pch.h">
       <Filter>Code\PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\VertexHpp.h">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\ApplicationHpp.h">
-      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -72,5 +63,22 @@
     <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt">
       <Filter>Licenses</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Code\main_old.cpp">
+      <Filter>Code\Old %28 Frozen %29</Filter>
+    </None>
+    <None Include="Code\VertexHpp.h">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
+    </None>
+    <None Include="Code\VertexHpp.cpp">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Vertex</Filter>
+    </None>
+    <None Include="Code\ApplicationHpp.h">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
+    </None>
+    <None Include="Code\ApplicationHpp.cpp">
+      <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@
 #include <array>
 
 // Vulkan
-#include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan.h>
 
 // GLFW
 #define VK_USE_PLATFORM_WIN32_KHR

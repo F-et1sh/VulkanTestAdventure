@@ -199,8 +199,9 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Code\VertexHpp.cpp" />
-    <ClCompile Include="Code\ApplicationHpp.cpp" />
+    <None Include="Code\main_old.cpp" />
+    <None Include="Code\VertexHpp.cpp" />
+    <None Include="Code\ApplicationHpp.cpp" />
     <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -223,9 +224,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\ApplicationHpp.h" />
+    <None Include="Code\ApplicationHpp.h" />
     <ClInclude Include="Code\pch.h" />
-    <ClInclude Include="Code\VertexHpp.h" />
+    <None Include="Code\VertexHpp.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt" />
