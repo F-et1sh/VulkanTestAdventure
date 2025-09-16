@@ -199,6 +199,12 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.vert">
+      <FileType>Document</FileType>
+    </CustomBuild>
     <None Include="Code\main_old.cpp" />
     <None Include="Code\VertexHpp.cpp" />
     <None Include="Code\ApplicationHpp.cpp" />
