@@ -222,8 +222,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Include\GLFW\GLFW_LICENSE.txt" />
-    <CopyFileToFolders Include="Include\STB\STB_LICENSE.txt" />
     <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -240,7 +238,10 @@
     <None Include="Code\VertexHpp.h" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt" />
+    <CopyFileToFolders Include="Lisenses\GLFW_LICENSE.txt" />
+    <CopyFileToFolders Include="Lisenses\STB_LICENSE.txt" />
+    <CopyFileToFolders Include="Lisenses\TinyGLTF_LICENSE.txt" />
+    <CopyFileToFolders Include="Lisenses\TINY_OBJ_LOADER_LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
