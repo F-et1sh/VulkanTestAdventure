@@ -242,6 +242,11 @@
   <ItemGroup>
     <CopyFileToFolders Include="Include\TinyObjLoader\TINY_OBJ_LOADER_LICENSE.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Files\Shaders\ComputeParticle\ComputeParticle.comp">
+      <FileType>Document</FileType>
+    </CustomBuild>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
