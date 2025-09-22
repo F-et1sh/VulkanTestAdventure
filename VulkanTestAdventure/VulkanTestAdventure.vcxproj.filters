@@ -31,6 +31,9 @@
     <Filter Include="Shaders\SimpleTriangle">
       <UniqueIdentifier>{959075a7-423f-4981-867e-a3e8e8c67a3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\ComputeParticle">
+      <UniqueIdentifier>{31816d26-6749-4915-aab0-222955784c51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -52,6 +55,9 @@
     </CustomBuild>
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
       <Filter>Shaders\SimpleTriangle</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\Files\Shaders\ComputeParticle\ComputeParticle.comp">
+      <Filter>Shaders\ComputeParticle</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
