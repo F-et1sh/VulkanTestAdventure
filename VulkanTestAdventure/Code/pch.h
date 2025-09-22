@@ -15,7 +15,7 @@
 
 // GLFW & Vulkan
 #define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 // GLM
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
