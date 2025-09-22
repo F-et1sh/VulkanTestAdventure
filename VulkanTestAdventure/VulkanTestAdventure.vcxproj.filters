@@ -81,6 +81,9 @@
     <CopyFileToFolders Include="Lisenses\TinyGLTF_LICENSE.txt">
       <Filter>Licenses</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Lisenses\KTX-Software_LICENSE.md">
+      <Filter>Licenses</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="Code\main_old.cpp">
@@ -97,9 +100,6 @@
     </None>
     <None Include="Code\ApplicationHpp.cpp">
       <Filter>Code\VulkanHpp %28 Frozen %29\Application</Filter>
-    </None>
-    <None Include="Lisenses\KTX-Software_LICENSE.md">
-      <Filter>Licenses</Filter>
     </None>
   </ItemGroup>
 </Project>
