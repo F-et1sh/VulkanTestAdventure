@@ -220,6 +220,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <None Include="Lisenses\KTX-Software_LICENSE.md" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt" />
