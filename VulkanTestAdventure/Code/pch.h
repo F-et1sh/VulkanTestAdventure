@@ -14,10 +14,13 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <ranges>
 
-// GLFW & Vulkan
-#define GLFW_INCLUDE_VULKAN
+// GLFW
 #include <glfw3.h>
+
+// Vulkan
+#include <vulkan/vulkan_raii.hpp>
 
 // GLM
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE

@@ -3,7 +3,7 @@
 #define SAY(message) std::wcerr << std::endl << message << std::endl
 #define SAY_withoutBreak(message) std::wcerr << message
 
-#define RUNTIME_ERROR(message) throw std::runtime_error("RUNTIME ERROR : " + std::string(message))
+#define RUNTIME_ERROR(message) throw std::runtime_error(message)
 
 namespace VKTest {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
