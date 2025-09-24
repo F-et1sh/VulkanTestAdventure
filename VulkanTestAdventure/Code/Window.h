@@ -18,7 +18,7 @@ namespace VKTest {
 		void PollEvents()const noexcept;
 
 		inline constexpr bool isRunning()const noexcept { return m_IsRunning; }
-		inline constexpr GLFWwindow* getGLFWwindow()const noexcept { return p_GLFWWindow; }
+		inline constexpr GLFWwindow* getGLFWWindow()const noexcept { return p_GLFWWindow; }
 
 	private:
 		static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {

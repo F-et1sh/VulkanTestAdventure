@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "Renderer.h"
 
 namespace VKTest {
 	class Application {
@@ -12,5 +13,6 @@ namespace VKTest {
 
 	private:
 		Window m_Window;
+		Renderer m_Renderer;
 	};
 }
