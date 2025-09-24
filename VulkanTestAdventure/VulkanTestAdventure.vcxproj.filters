@@ -46,13 +46,31 @@
     <Filter Include="Code\Main\Application">
       <UniqueIdentifier>{836a0a30-9348-41c9-a04b-a6aca8cf1ef6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Window">
+      <UniqueIdentifier>{51a7cc6f-03e4-455c-9809-b524611b6d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\PathManager">
+      <UniqueIdentifier>{7c13b5fe-c12e-49eb-b2a0-5dadebc89abc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities">
+      <UniqueIdentifier>{67fddd86-fd5b-4625-82a6-2c12c7cc123c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
       <Filter>Code\PCH</Filter>
     </ClCompile>
-    <ClCompile Include="Code\vulkan_tutorial_main.cpp">
-      <Filter>Code\Frozen\VulkanTutorial %28 C-Style %29</Filter>
+    <ClCompile Include="Code\main.cpp">
+      <Filter>Code\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Application.cpp">
+      <Filter>Code\Main\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Window.cpp">
+      <Filter>Code\Main\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PathManager.cpp">
+      <Filter>Code\Main\PathManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +93,21 @@
   <ItemGroup>
     <ClInclude Include="Code\pch.h">
       <Filter>Code\PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Application.h">
+      <Filter>Code\Main\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Window.h">
+      <Filter>Code\Main\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PathManager.h">
+      <Filter>Code\Main\PathManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\utilities.hpp">
+      <Filter>Code\Main\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\traits.hpp">
+      <Filter>Code\Main\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +145,9 @@
     </None>
     <None Include="Code\ApplicationHpp.cpp">
       <Filter>Code\Frozen\DocsVulkanTutorial %28 VKHpp %29\Application</Filter>
+    </None>
+    <None Include="Code\vulkan_tutorial_main.cpp">
+      <Filter>Code\Frozen\VulkanTutorial %28 C-Style %29</Filter>
     </None>
   </ItemGroup>
 </Project>

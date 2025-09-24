@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <limits>
 #include <algorithm>
+#include <filesystem>
+#include <fstream>
 
 // GLFW & Vulkan
 #define GLFW_INCLUDE_VULKAN
@@ -21,3 +23,10 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+// Utilities
+#include "utilities.hpp"
+#include "traits.hpp"
+
+// Path Manager
+#include "PathManager.h"

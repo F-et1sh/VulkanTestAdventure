@@ -169,6 +169,8 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\PathManager.cpp" />
+    <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
       <FileType>Document</FileType>
     </CustomBuild>
@@ -178,12 +180,14 @@
     <None Include="Code\main_old.cpp" />
     <None Include="Code\VertexHpp.cpp" />
     <None Include="Code\ApplicationHpp.cpp" />
-    <ClCompile Include="Code\vulkan_tutorial_main.cpp">
+    <ClCompile Include="Code\Application.cpp" />
+    <ClCompile Include="Code\main.cpp" />
+    <None Include="Code\vulkan_tutorial_main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    </None>
     <ClCompile Include="Code\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -206,7 +210,12 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\PathManager.h" />
+    <ClInclude Include="Code\traits.hpp" />
+    <ClInclude Include="Code\utilities.hpp" />
+    <ClInclude Include="Code\Window.h" />
     <None Include="Code\ApplicationHpp.h" />
+    <ClInclude Include="Code\Application.h" />
     <ClInclude Include="Code\pch.h" />
     <None Include="Code\VertexHpp.h" />
   </ItemGroup>
