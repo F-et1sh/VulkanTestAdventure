@@ -1,6 +1,8 @@
 #pragma once
 
 namespace VKTest {
+	class Renderer; // forward declaration
+
 	class DeviceManager {
 	private:
 #ifdef _DEBUG
@@ -13,8 +15,15 @@ namespace VKTest {
 			"VK_LAYER_KHRONOS_validation"
 		};
 
+		constexpr static std::array REQUIRED_DEVICE_EXTENSION = {
+			vk::KHRSwapchainExtensionName,
+			vk::KHRSpirv14ExtensionName,
+			vk::KHRSynchronization2ExtensionName,
+			vk::KHRCreateRenderpass2ExtensionName
+		};
+
 	public:
-		DeviceManager() {
+		DeviceManager(Renderer* renderer) : p_Renderer{ renderer } {
 			this->CreateInstance();
 			this->SetupDebugMessenger();
 			this->PickPhysicalDevice();
@@ -48,6 +57,8 @@ namespace VKTest {
 		}
 
 	private:
+		Renderer* p_Renderer = nullptr;
+
 		vk::raii::Context m_Context{};
 		vk::raii::Instance m_Instance = VK_NULL_HANDLE;
 		vk::raii::PhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;

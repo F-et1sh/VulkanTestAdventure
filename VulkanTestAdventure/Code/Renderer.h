@@ -10,8 +10,8 @@ namespace VKTest {
 		~Renderer() = default;
 
 	private:
-		DeviceManager m_DeviceManager;
-		SwapchainManager m_SwapchainManager;
-		GPUResourceManager m_GPUResourceManager;
+		DeviceManager		m_DeviceManager{ this };
+		SwapchainManager	m_SwapchainManager{ this };
+		GPUResourceManager	m_GPUResourceManager{ this };
 	};
 }

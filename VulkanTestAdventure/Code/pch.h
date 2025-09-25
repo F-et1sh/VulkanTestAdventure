@@ -15,6 +15,7 @@
 #include <filesystem>
 #include <fstream>
 #include <ranges>
+#include <thread>
 
 // GLFW
 #include <glfw3.h>
