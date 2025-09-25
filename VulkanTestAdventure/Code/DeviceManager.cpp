@@ -141,7 +141,14 @@ void VKTest::DeviceManager::CreateLogicalDevice() {
 }
 
 void VKTest::DeviceManager::CreateCommandPool() {
+    uint32_t queue_family_indices = findQueueFamilies(m_PhysicalDevice, vk::QueueFlagBits::eGraphics);
 
+    vk::CommandPoolCreateInfo pool_info{
+        vk::CommandPoolCreateFlagBits::eResetCommandBuffer, // Flags
+        queue_family_indices                                // Queue Family Index
+    };
+
+    m_CommandPool = m_Device.createCommandPool(pool_info);
 }
 
 void VKTest::DeviceManager::configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)noexcept {
@@ -158,4 +165,16 @@ std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
     if (ENABLE_VALIDATION_LAYERS) extensions.push_back(vk::EXTDebugUtilsExtensionName);
 
     return extensions;
+}
+
+uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags) {
+    // find the index of the first queue family that supports graphics
+    std::vector<vk::QueueFamilyProperties> queue_family_properties = device.getQueueFamilyProperties();
+
+    auto lambda = [supported_flags](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & supported_flags; };
+
+    // get the first index into queueFamilyProperties which supports graphics
+    auto graphicsQueueFamilyProperty = std::find_if(queue_family_properties.begin(), queue_family_properties.end(), lambda);
+
+    return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphicsQueueFamilyProperty));
 }

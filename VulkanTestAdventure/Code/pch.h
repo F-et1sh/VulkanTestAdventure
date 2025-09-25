@@ -34,3 +34,5 @@
 
 // Path Manager
 #include "PathManager.h"
+
+using namespace VKTest;

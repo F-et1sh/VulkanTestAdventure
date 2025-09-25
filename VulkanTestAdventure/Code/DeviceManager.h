@@ -49,6 +49,7 @@ namespace VKTest {
 	private:
 		static void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)noexcept;
 		static std::vector<const char*> getRequiredExtensions();
+		static uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags);
 
 	private:
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {

@@ -5,7 +5,7 @@ namespace VKTest {
 
 	class SwapchainManager {
 	public:
-		SwapchainManager(Renderer* renderer) : p_Renderer{ renderer } {};
+		SwapchainManager(Renderer* renderer) : p_Renderer{ renderer } {}
 		~SwapchainManager() = default;
 
 	private:

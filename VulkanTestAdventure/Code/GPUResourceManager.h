@@ -5,7 +5,7 @@ namespace VKTest {
 
 	class GPUResourceManager {
 	public:
-		GPUResourceManager(Renderer* renderer) : p_Renderer{ renderer } {};
+		GPUResourceManager(Renderer* renderer) : p_Renderer{ renderer } {}
 		~GPUResourceManager() = default;
 
 	private:

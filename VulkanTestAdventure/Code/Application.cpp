@@ -13,9 +13,6 @@ void VKTest::Application::Initialize(const glm::vec2& window_resolution, const s
 
 void VKTest::Application::Loop() {
 	while (m_Window.isRunning()) {
-		m_Window.ClearColor(glm::vec4(1.0f));
-		m_Window.ClearScreen(GL_COLOR_BUFFER_BIT);
-		m_Window.SwapBuffers();
 		m_Window.PollEvents();
 	}
 }
