@@ -92,72 +92,32 @@ void VKTest::DeviceManager::PickPhysicalDevice() {
 }
 
 void VKTest::DeviceManager::CreateLogicalDevice() {
-    //// find the index of the first queue family that supports graphics
-    //std::vector<vk::QueueFamilyProperties> queueFamilyProperties = m_PhysicalDevice.getQueueFamilyProperties();
 
-    //// get the first index into queueFamilyProperties which supports graphics
-    //auto graphicsQueueFamilyProperty = std::ranges::find_if(queueFamilyProperties, [](auto const& qfp)
-    //    { return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0); });
+    uint32_t graphics_queue_index = this->findQueueFamilies(m_PhysicalDevice, vk::QueueFlagBits::eGraphics);
+    if (graphics_queue_index == m_PhysicalDevice.getQueueFamilyProperties().size())
+        RUNTIME_ERROR("ERROR : Could not find a queue for graphics");
+    
+    //m_PhysicalDevice.getSurfaceSupportKHR(graphics_queue_index, *m_Surface)
 
-    //auto graphicsIndex = static_cast<uint32_t>(std::distance(queueFamilyProperties.begin(), graphicsQueueFamilyProperty));
+    // query for Vulkan 1.3 features
+    auto features = m_PhysicalDevice.getFeatures2();
+    vk::PhysicalDeviceVulkan13Features vulkan13Features;
+    vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeatures;
+    vulkan13Features.dynamicRendering = vk::True;
+    extendedDynamicStateFeatures.extendedDynamicState = vk::True;
+    vulkan13Features.pNext = &extendedDynamicStateFeatures;
+    features.pNext = &vulkan13Features;
 
-    //// determine a queueFamilyIndex that supports present
-    //// first check if the graphicsIndex is good enough
-    //auto presentIndex = m_PhysicalDevice.getSurfaceSupportKHR(graphicsIndex, *surface)
-    //    ? graphicsIndex
-    //    : static_cast<uint32_t>(queueFamilyProperties.size());
-    //if (presentIndex == queueFamilyProperties.size())
-    //{
-    //    // the graphicsIndex doesn't support present -> look for another family index that supports both
-    //    // graphics and present
-    //    for (size_t i = 0; i < queueFamilyProperties.size(); i++)
-    //    {
-    //        if ((queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics) &&
-    //            m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *surface))
-    //        {
-    //            graphicsIndex = static_cast<uint32_t>(i);
-    //            presentIndex = graphicsIndex;
-    //            break;
-    //        }
-    //    }
-    //    if (presentIndex == queueFamilyProperties.size())
-    //    {
-    //        // there's nothing like a single family index that supports both graphics and present -> look for another
-    //        // family index that supports present
-    //        for (size_t i = 0; i < queueFamilyProperties.size(); i++)
-    //        {
-    //            if (m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *surface))
-    //            {
-    //                presentIndex = static_cast<uint32_t>(i);
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
-    //if ((graphicsIndex == queueFamilyProperties.size()) || (presentIndex == queueFamilyProperties.size()))
-    //{
-    //    throw std::runtime_error("Could not find a queue for graphics or present -> terminating");
-    //}
+    // create a device
+    float                     queuePriority = 0.0f;
+    vk::DeviceQueueCreateInfo deviceQueueCreateInfo{ .queueFamilyIndex = graphicsIndex, .queueCount = 1, .pQueuePriorities = &queuePriority };
+    vk::DeviceCreateInfo      deviceCreateInfo{ .pNext = &features, .queueCreateInfoCount = 1, .pQueueCreateInfos = &deviceQueueCreateInfo };
+    deviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
+    deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-    //// query for Vulkan 1.3 features
-    //auto features = m_PhysicalDevice.getFeatures2();
-    //vk::PhysicalDeviceVulkan13Features vulkan13Features;
-    //vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeatures;
-    //vulkan13Features.dynamicRendering = vk::True;
-    //extendedDynamicStateFeatures.extendedDynamicState = vk::True;
-    //vulkan13Features.pNext = &extendedDynamicStateFeatures;
-    //features.pNext = &vulkan13Features;
-
-    //// create a device
-    //float                     queuePriority = 0.0f;
-    //vk::DeviceQueueCreateInfo deviceQueueCreateInfo{ .queueFamilyIndex = graphicsIndex, .queueCount = 1, .pQueuePriorities = &queuePriority };
-    //vk::DeviceCreateInfo      deviceCreateInfo{ .pNext = &features, .queueCreateInfoCount = 1, .pQueueCreateInfos = &deviceQueueCreateInfo };
-    //deviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
-    //deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
-
-    //m_Device = vk::raii::Device{ m_PhysicalDevice, deviceCreateInfo };
-    //m_GraphicsQueue = vk::raii::Queue{ m_Device, graphicsIndex, 0 };
-    //m_PresentQueue = vk::raii::Queue{ m_Device, presentIndex, 0 };
+    m_Device = vk::raii::Device{ m_PhysicalDevice, deviceCreateInfo };
+    m_GraphicsQueue = vk::raii::Queue{ m_Device, graphicsIndex, 0 };
+    m_PresentQueue = vk::raii::Queue{ m_Device, presentIndex, 0 };
 }
 
 void VKTest::DeviceManager::CreateCommandPool() {
@@ -206,14 +166,14 @@ vk::raii::ImageView VKTest::DeviceManager::CreateImageView(vk::Image image, vk::
     return vk::raii::ImageView{ m_Device, create_info };
 }
 
-uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags)const {
+uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const {
     // find the index of the first queue family that supports graphics
     std::vector<vk::QueueFamilyProperties> queue_family_properties = device.getQueueFamilyProperties();
 
-    auto lambda = [supported_flags](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & supported_flags; };
+    auto lambda = [flags](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & flags; };
 
     // get the first index into queueFamilyProperties which supports graphics
-    auto graphicsQueueFamilyProperty = std::find_if(queue_family_properties.begin(), queue_family_properties.end(), lambda);
+    auto queue_family_property = std::find_if(queue_family_properties.begin(), queue_family_properties.end(), lambda);
 
-    return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphicsQueueFamilyProperty));
+    return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), queue_family_property));
 }

@@ -18,7 +18,6 @@ namespace VKTest {
 		SwapchainManager(DeviceManager* p_device_manager, Window* p_window);
 		~SwapchainManager() = default;
 
-	private:
 		void CreateSurface();
 		void CreateSwapchain();
 		void CreateImageViews();

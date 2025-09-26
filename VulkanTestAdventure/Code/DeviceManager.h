@@ -1,6 +1,9 @@
 #pragma once
+#include "QueueFamilyIndices.h"
 
 namespace VKTest {
+	class SwapchainManager; // forward declaration
+
 	class DeviceManager {
 	private:
 #ifdef _DEBUG
@@ -21,14 +24,14 @@ namespace VKTest {
 		};
 
 	public:
-		DeviceManager() {
-			this->CreateInstance();
-			this->SetupDebugMessenger();
-			this->PickPhysicalDevice();
-			this->CreateLogicalDevice();
-			this->CreateCommandPool();
-		}
+		DeviceManager(SwapchainManager* swapchain_manager) : p_SwapchainManager{swapchain_manager} {}
 		~DeviceManager() = default;
+
+		void CreateInstance();
+		void SetupDebugMessenger();
+		void PickPhysicalDevice();
+		void CreateLogicalDevice();
+		void CreateCommandPool();
 
 		vk::raii::Device&			getDevice			()noexcept { return m_Device; }
 		vk::raii::Instance&			getInstance			()noexcept { return m_Instance; }
@@ -39,14 +42,7 @@ namespace VKTest {
 
 	public:
 		vk::raii::ImageView CreateImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
-		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags)const;
-
-	private:
-		void CreateInstance();
-		void SetupDebugMessenger();
-		void PickPhysicalDevice();
-		void CreateLogicalDevice();
-		void CreateCommandPool();
+		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const;
 		
 	private:
 		void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept;
@@ -59,6 +55,8 @@ namespace VKTest {
 		}
 
 	private:
+		SwapchainManager* p_SwapchainManager = nullptr;
+
 		vk::raii::Context m_Context{};
 		vk::raii::Instance m_Instance = VK_NULL_HANDLE;
 		vk::raii::PhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;

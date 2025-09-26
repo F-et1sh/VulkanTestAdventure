@@ -7,7 +7,50 @@
 namespace VKTest {
 	class Renderer {
 	public:
-		Renderer(Window* p_window) : p_Window{ p_window }, m_DeviceManager{}, m_SwapchainManager{ &m_DeviceManager, p_window }, m_GPUResourceManager{} {}
+		Renderer(Window* p_window) : p_Window{ p_window }, m_DeviceManager{ &m_SwapchainManager }, m_SwapchainManager{ &m_DeviceManager, p_window }, m_GPUResourceManager{} {
+			
+			m_DeviceManager.CreateInstance();
+			m_DeviceManager.SetupDebugMessenger();
+
+			m_SwapchainManager.CreateSurface();
+
+			m_DeviceManager.PickPhysicalDevice();
+			m_DeviceManager.CreateLogicalDevice();
+			m_DeviceManager.CreateCommandPool();
+
+			m_SwapchainManager.CreateSwapchain();
+			m_SwapchainManager.CreateImageViews();
+
+			/*
+			
+			createInstance();
+			setupDebugMessenger();
+			createSurface();
+			pickPhysicalDevice();
+			createLogicalDevice();
+			createSwapChain();
+			createImageViews();
+			createRenderPass();
+			createDescriptorSetLayout();
+			createGraphicsPipeline();
+			createCommandPool();
+			createColorResources();
+			createDepthResources();
+			createFramebuffers();
+			createTextureImage();
+			createTextureImageView();
+			createTextureSampler();
+			loadModel();
+			createVertexBuffer();
+			createIndexBuffer();
+			createUniformBuffers();
+			createDescriptorPool();
+			createDescriptorSets();
+			createCommandBuffers();
+			createSyncObjects();
+
+			*/
+		}
 		~Renderer() = default;
 
 		inline Window* getWindow()noexcept { return p_Window; }
