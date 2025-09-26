@@ -13,6 +13,6 @@ namespace VKTest {
 
 	private:
 		Window m_Window;
-		Renderer m_Renderer;
+		Renderer m_Renderer{ &m_Window };
 	};
 }

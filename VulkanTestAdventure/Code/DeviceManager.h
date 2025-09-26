@@ -1,8 +1,6 @@
 #pragma once
 
 namespace VKTest {
-	class Renderer; // forward declaration
-
 	class DeviceManager {
 	private:
 #ifdef _DEBUG
@@ -23,7 +21,7 @@ namespace VKTest {
 		};
 
 	public:
-		DeviceManager(Renderer* renderer) : p_Renderer{ renderer } {
+		DeviceManager() {
 			this->CreateInstance();
 			this->SetupDebugMessenger();
 			this->PickPhysicalDevice();
@@ -32,12 +30,16 @@ namespace VKTest {
 		}
 		~DeviceManager() = default;
 
-		vk::PhysicalDevice getPhysicalDevice() const { return m_PhysicalDevice	; }
-		vk::Device		   getDevice		() const { return m_Device			; }
-		vk::Instance	   getInstance		() const { return m_Instance		; }
-		vk::CommandPool	   getCommandPool	() const { return m_CommandPool		; }
-		vk::Queue		   getPresentQueue	() const { return m_PresentQueue	; }
-		vk::Queue		   getGraphicsQueue	() const { return m_GraphicsQueue	; }
+		vk::raii::Device&			getDevice			()noexcept { return m_Device; }
+		vk::raii::Instance&			getInstance			()noexcept { return m_Instance; }
+		vk::raii::CommandPool&		getCommandPool		()noexcept { return m_CommandPool; }
+		vk::raii::Queue&			getPresentQueue		()noexcept { return m_PresentQueue; }
+		vk::raii::Queue&			getGraphicsQueue	()noexcept { return m_GraphicsQueue; }
+		vk::raii::PhysicalDevice&	getPhysicalDevice	()noexcept { return m_PhysicalDevice; }
+
+	public:
+		vk::raii::ImageView CreateImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
+		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags)const;
 
 	private:
 		void CreateInstance();
@@ -45,11 +47,10 @@ namespace VKTest {
 		void PickPhysicalDevice();
 		void CreateLogicalDevice();
 		void CreateCommandPool();
-
+		
 	private:
-		static void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)noexcept;
-		static std::vector<const char*> getRequiredExtensions();
-		static uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits supported_flags);
+		void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept;
+		std::vector<const char*> getRequiredExtensions()const;
 
 	private:
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {
@@ -58,8 +59,6 @@ namespace VKTest {
 		}
 
 	private:
-		Renderer* p_Renderer = nullptr;
-
 		vk::raii::Context m_Context{};
 		vk::raii::Instance m_Instance = VK_NULL_HANDLE;
 		vk::raii::PhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;

@@ -1,14 +1,47 @@
 #pragma once
+#include "Window.h"
+#include "DeviceManager.h"
+#include "QueueFamilyIndices.h"
 
 namespace VKTest {
-	class Renderer; // forward declaration
+	struct SwapChainSupportDetails {
+		vk::SurfaceCapabilitiesKHR capabilities;
+		std::vector<vk::SurfaceFormatKHR> formats;
+		std::vector<vk::PresentModeKHR> present_modes;
+
+		SwapChainSupportDetails() = default;
+		~SwapChainSupportDetails() = default;
+	};
 
 	class SwapchainManager {
 	public:
-		SwapchainManager(Renderer* renderer) : p_Renderer{ renderer } {}
+		SwapchainManager(DeviceManager* p_device_manager, Window* p_window);
 		~SwapchainManager() = default;
 
 	private:
-		Renderer* p_Renderer = nullptr;
+		void CreateSurface();
+		void CreateSwapchain();
+		void CreateImageViews();
+
+	private:
+		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;
+		vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const;
+		vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes)const;
+		VkExtent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)const;
+
+	private:
+		DeviceManager* p_DeviceManager = nullptr;
+		Window* p_Window = nullptr;
+		
+		vk::raii::SurfaceKHR m_Surface = VK_NULL_HANDLE;
+
+		vk::raii::SwapchainKHR m_Swapchain = VK_NULL_HANDLE;
+
+		vk::Format m_SwapchainImageFormat{};
+		vk::Extent2D m_SwapchainExtent{};
+
+		std::vector<vk::raii::Image> m_SwapchainImages;
+		std::vector<vk::raii::ImageView> m_SwapchainImageViews;
+		std::vector<vk::raii::Framebuffer> m_SwapchainFramebuffers;
 	};
 }

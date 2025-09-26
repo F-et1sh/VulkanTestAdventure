@@ -70,6 +70,9 @@
     <Filter Include="Code\Main\Backend\GPUResourceManager">
       <UniqueIdentifier>{0133c47b-3640-4739-9115-d6c592dc1c41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\QueueFamilyIndices">
+      <UniqueIdentifier>{eef72dc6-5400-4d5a-9640-4459bc1affcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="Code\GPUResourceManager.cpp">
       <Filter>Code\Main\Backend\GPUResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\QueueFamilyIndices.cpp">
+      <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="Code\GPUResourceManager.h">
       <Filter>Code\Main\Backend\GPUResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\QueueFamilyIndices.h">
+      <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
