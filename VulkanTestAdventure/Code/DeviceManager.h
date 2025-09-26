@@ -33,12 +33,13 @@ namespace VKTest {
 		void CreateLogicalDevice();
 		void CreateCommandPool();
 
-		vk::raii::Device&			getDevice			()noexcept { return m_Device; }
-		vk::raii::Instance&			getInstance			()noexcept { return m_Instance; }
-		vk::raii::CommandPool&		getCommandPool		()noexcept { return m_CommandPool; }
-		vk::raii::Queue&			getPresentQueue		()noexcept { return m_PresentQueue; }
-		vk::raii::Queue&			getGraphicsQueue	()noexcept { return m_GraphicsQueue; }
-		vk::raii::PhysicalDevice&	getPhysicalDevice	()noexcept { return m_PhysicalDevice; }
+		vk::raii::Device&			getDevice				()noexcept { return m_Device; }
+		vk::raii::Instance&			getInstance				()noexcept { return m_Instance; }
+		vk::raii::CommandPool&		getCommandPool			()noexcept { return m_CommandPool; }
+		vk::raii::Queue&			getPresentQueue			()noexcept { return m_PresentQueue; }
+		vk::raii::Queue&			getGraphicsQueue		()noexcept { return m_GraphicsQueue; }
+		vk::raii::PhysicalDevice&	getPhysicalDevice		()noexcept { return m_PhysicalDevice; }
+		QueueFamilyIndices			getQueueFamilyIndices	()noexcept { return m_QueueFamilyIndices; }
 
 	public:
 		vk::raii::ImageView CreateImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
@@ -61,6 +62,8 @@ namespace VKTest {
 		vk::raii::Instance m_Instance = VK_NULL_HANDLE;
 		vk::raii::PhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		vk::raii::Device m_Device = VK_NULL_HANDLE;
+
+		QueueFamilyIndices m_QueueFamilyIndices{};
 		
 		vk::raii::Queue m_GraphicsQueue = VK_NULL_HANDLE;
 		vk::raii::Queue m_PresentQueue = VK_NULL_HANDLE;

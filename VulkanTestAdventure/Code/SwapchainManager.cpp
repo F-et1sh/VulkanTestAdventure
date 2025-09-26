@@ -44,33 +44,29 @@ void VKTest::SwapchainManager::CreateSwapchain() {
         vk::ImageUsageFlagBits::eColorAttachment    // Image Usage
     };
 
-    //QueueFamilyIndices indices = p_DeviceManager->findQueueFamilies(physical_device);
-    uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+    auto indices = p_DeviceManager->getQueueFamilyIndices();
+    uint32_t queue_family_indices[] = { indices.graphics_family.value(), indices.present_family.value() };
 
-    if (indices.graphicsFamily != indices.presentFamily) {
-        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-        createInfo.queueFamilyIndexCount = 2;
-        createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    if (indices.graphics_family != indices.present_family) {
+        create_info.setImageSharingMode(vk::SharingMode::eConcurrent);
+        create_info.setQueueFamilyIndexCount(2);
+        create_info.pQueueFamilyIndices = queue_family_indices;
     }
-    else {
-        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    }
+    else create_info.setImageSharingMode(vk::SharingMode::eExclusive);
 
-    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
-    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-    createInfo.presentMode = presentMode;
-    createInfo.clipped = VK_TRUE;
+    create_info.setPreTransform(swapchain_support.capabilities.currentTransform);
+    create_info.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque);
+    create_info.setPresentMode(present_mode);
+    create_info.setClipped(vk::True);
 
-    if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create swap chain!");
-    }
+    auto& device = p_DeviceManager->getDevice();
 
-    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
-    swapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+    m_Swapchain = device.createSwapchainKHR(create_info);
 
-    swapChainImageFormat = surfaceFormat.format;
-    swapChainExtent = extent;
+    m_SwapchainImages = m_Swapchain.getImages();
+
+    m_SwapchainImageFormat = surface_format.format;
+    m_SwapchainExtent = extent;
 }
 
 void VKTest::SwapchainManager::CreateImageViews() {

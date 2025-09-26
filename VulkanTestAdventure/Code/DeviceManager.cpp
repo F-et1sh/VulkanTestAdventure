@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DeviceManager.h"
 
+#include "SwapchainManager.h"
+
 void VKTest::DeviceManager::CreateInstance() {
     constexpr static vk::ApplicationInfo app_info{
         "VKTest",                   // Application Name
@@ -51,10 +53,14 @@ void VKTest::DeviceManager::CreateInstance() {
 void VKTest::DeviceManager::SetupDebugMessenger() {
     if (!ENABLE_VALIDATION_LAYERS) return;
 
+#ifdef _DEBUG
     vk::DebugUtilsMessengerCreateInfoEXT create_info;
     this->configureDebugMessengerCreateInfo(create_info);
 
     m_DebugMessenger = m_Instance.createDebugUtilsMessengerEXT(create_info);
+#else
+    // ..
+#endif // _DEBUG
 }
 
 void VKTest::DeviceManager::PickPhysicalDevice() {
@@ -93,31 +99,87 @@ void VKTest::DeviceManager::PickPhysicalDevice() {
 
 void VKTest::DeviceManager::CreateLogicalDevice() {
 
-    uint32_t graphics_queue_index = this->findQueueFamilies(m_PhysicalDevice, vk::QueueFlagBits::eGraphics);
-    if (graphics_queue_index == m_PhysicalDevice.getQueueFamilyProperties().size())
-        RUNTIME_ERROR("ERROR : Could not find a queue for graphics");
-    
-    //m_PhysicalDevice.getSurfaceSupportKHR(graphics_queue_index, *m_Surface)
+    auto& surface = p_SwapchainManager->getSurface();
+
+    // find the index of the first queue family that supports graphics
+    std::vector<vk::QueueFamilyProperties> queue_family_properties = m_PhysicalDevice.getQueueFamilyProperties();
+
+    // get the first index into queue_family_properties which supports graphics
+    auto lambda = [](auto const& qfp) { return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0); };
+    auto graphics_queue_family_property = std::ranges::find_if(queue_family_properties, lambda);
+
+    auto graphics_index = static_cast<uint32_t>(std::distance(queue_family_properties.begin(), graphics_queue_family_property));
+
+    // determine a queue_family_index that supports present
+    // first check if the graphics_index is good enough
+    bool is_supports_present = m_PhysicalDevice.getSurfaceSupportKHR(graphics_index, *surface);
+    auto present_index = is_supports_present ? graphics_index : static_cast<uint32_t>(queue_family_properties.size());
+
+    if (present_index == queue_family_properties.size()) {
+        // the graphics_index doesn't support present -> look for another family index that supports both graphics and present
+        for (size_t i = 0; i < queue_family_properties.size(); i++) {
+
+            bool is_supports_present = m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *surface);
+            if ((queue_family_properties[i].queueFlags & vk::QueueFlagBits::eGraphics) && is_supports_present) {
+
+                graphics_index = static_cast<uint32_t>(i);
+                present_index = graphics_index;
+                break;
+            }
+        }
+
+        if (present_index == queue_family_properties.size()) {
+            // there's nothing like a single family index that supports both graphics and present -> look for another family index that supports present
+            for (size_t i = 0; i < queue_family_properties.size(); i++) {
+
+                bool is_supports_present = m_PhysicalDevice.getSurfaceSupportKHR(static_cast<uint32_t>(i), *surface);
+                
+                if (is_supports_present) {
+                    present_index = static_cast<uint32_t>(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    if ((graphics_index == queue_family_properties.size()) || (present_index == queue_family_properties.size()))
+        RUNTIME_ERROR("ERROR : Could not find a queue for graphics or present");
 
     // query for Vulkan 1.3 features
+    vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT extended_dynamic_state_features;
+    extended_dynamic_state_features.extendedDynamicState = vk::True;
+    
+    vk::PhysicalDeviceVulkan13Features vulkan13_features;
+    vulkan13_features.dynamicRendering = vk::True;
+    vulkan13_features.pNext = &extended_dynamic_state_features;
+    
     auto features = m_PhysicalDevice.getFeatures2();
-    vk::PhysicalDeviceVulkan13Features vulkan13Features;
-    vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT extendedDynamicStateFeatures;
-    vulkan13Features.dynamicRendering = vk::True;
-    extendedDynamicStateFeatures.extendedDynamicState = vk::True;
-    vulkan13Features.pNext = &extendedDynamicStateFeatures;
-    features.pNext = &vulkan13Features;
+    features.pNext = &vulkan13_features;
 
     // create a device
-    float                     queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo{ .queueFamilyIndex = graphicsIndex, .queueCount = 1, .pQueuePriorities = &queuePriority };
-    vk::DeviceCreateInfo      deviceCreateInfo{ .pNext = &features, .queueCreateInfoCount = 1, .pQueueCreateInfos = &deviceQueueCreateInfo };
-    deviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
-    deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+    float                     queue_priority = 0.0f;
+    vk::DeviceQueueCreateInfo device_queue_create_info{
+        vk::DeviceQueueCreateFlags{},   // Flags
+        graphics_index,                 // Queue Family Index
+        1,                              // Queue Count
+        &queue_priority                 // Priorities
+    };
 
-    m_Device = vk::raii::Device{ m_PhysicalDevice, deviceCreateInfo };
-    m_GraphicsQueue = vk::raii::Queue{ m_Device, graphicsIndex, 0 };
-    m_PresentQueue = vk::raii::Queue{ m_Device, presentIndex, 0 };
+    vk::DeviceCreateInfo device_create_info{};
+    device_create_info.setEnabledExtensionCount(REQUIRED_DEVICE_EXTENSION.size());
+    device_create_info.setPpEnabledExtensionNames(REQUIRED_DEVICE_EXTENSION.data());
+
+    device_create_info.setQueueCreateInfoCount(1);
+    device_create_info.setPQueueCreateInfos(&device_queue_create_info);
+
+    device_create_info.setPNext(&features);
+
+    m_QueueFamilyIndices.graphics_family = graphics_index;
+    m_QueueFamilyIndices.present_family = present_index;
+
+    m_Device = vk::raii::Device{ m_PhysicalDevice, device_create_info };
+    m_GraphicsQueue = vk::raii::Queue{ m_Device, graphics_index, 0 };
+    m_PresentQueue = vk::raii::Queue{ m_Device, present_index, 0 };
 }
 
 void VKTest::DeviceManager::CreateCommandPool() {
@@ -172,7 +234,7 @@ uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk:
 
     auto lambda = [flags](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & flags; };
 
-    // get the first index into queueFamilyProperties which supports graphics
+    // get the first index into queue_family_properties which supports graphics
     auto queue_family_property = std::find_if(queue_family_properties.begin(), queue_family_properties.end(), lambda);
 
     return static_cast<uint32_t>(std::distance(queue_family_properties.begin(), queue_family_property));

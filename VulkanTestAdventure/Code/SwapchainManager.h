@@ -22,6 +22,8 @@ namespace VKTest {
 		void CreateSwapchain();
 		void CreateImageViews();
 
+		inline vk::raii::SurfaceKHR& getSurface()noexcept { return m_Surface; }
+
 	private:
 		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;
 		vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const;
@@ -39,7 +41,7 @@ namespace VKTest {
 		vk::Format m_SwapchainImageFormat{};
 		vk::Extent2D m_SwapchainExtent{};
 
-		std::vector<vk::raii::Image> m_SwapchainImages;
+		std::vector<vk::Image> m_SwapchainImages;
 		std::vector<vk::raii::ImageView> m_SwapchainImageViews;
 		std::vector<vk::raii::Framebuffer> m_SwapchainFramebuffers;
 	};
