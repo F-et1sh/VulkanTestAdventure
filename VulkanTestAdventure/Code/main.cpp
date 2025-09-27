@@ -9,10 +9,10 @@ constexpr int SUCCESSFUL_EXIT = 0;
 constexpr int FAILED_EXIT = -1;
 
 int main(int argc, char* argv[]) {
-	std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>();
 	try {
 		VKTest::PATH.init(argv[0], true); // instance of the PathManager
-		app->Initialize(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
+		
+		std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
 		app->Loop();
 	}
 	catch (const std::exception& e) {

@@ -16,6 +16,8 @@
 #include <fstream>
 #include <ranges>
 #include <thread>
+#include <streambuf>
+#include <span>
 
 // GLFW
 #define GLFW_INCLUDE_VULKAN

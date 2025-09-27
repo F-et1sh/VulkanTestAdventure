@@ -23,6 +23,7 @@ namespace VKTest {
 		void CreateImageViews();
 
 		inline vk::raii::SurfaceKHR& getSurface()noexcept { return m_Surface; }
+		inline vk::Format getFormat()const noexcept { return m_SwapchainImageFormat; }
 
 	private:
 		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;

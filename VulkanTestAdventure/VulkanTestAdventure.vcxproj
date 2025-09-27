@@ -170,11 +170,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\DeviceManager.cpp" />
+    <ClCompile Include="Code\FrameData.cpp" />
     <ClCompile Include="Code\GPUResourceManager.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <ClCompile Include="Code\QueueFamilyIndices.cpp" />
     <ClCompile Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\SwapchainManager.cpp" />
+    <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
       <FileType>Document</FileType>
@@ -216,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\DeviceManager.h" />
+    <ClInclude Include="Code\FrameData.h" />
     <ClInclude Include="Code\GPUResourceManager.h" />
     <ClInclude Include="Code\PathManager.h" />
     <ClInclude Include="Code\QueueFamilyIndices.h" />
@@ -223,6 +226,7 @@
     <ClInclude Include="Code\SwapchainManager.h" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
+    <ClInclude Include="Code\Vertices.h" />
     <ClInclude Include="Code\Window.h" />
     <None Include="Code\ApplicationHpp.h" />
     <ClInclude Include="Code\Application.h" />

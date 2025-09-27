@@ -1,4 +1,6 @@
 #pragma once
+#include "Vertices.h"
+#include "FrameData.h"
 #include "Window.h"
 #include "DeviceManager.h"
 #include "SwapchainManager.h"
@@ -16,24 +18,18 @@ namespace VKTest {
 
 			m_DeviceManager.PickPhysicalDevice();
 			m_DeviceManager.CreateLogicalDevice();
-			m_DeviceManager.CreateCommandPool();
 
 			m_SwapchainManager.CreateSwapchain();
 			m_SwapchainManager.CreateImageViews();
 
+			this->CreateRenderPass();
+			//createDescriptorSetLayout();
+			this->CreateGraphicsPipeline();
+
+			m_DeviceManager.CreateCommandPool();
+
 			/*
 			
-			createInstance();
-			setupDebugMessenger();
-			createSurface();
-			pickPhysicalDevice();
-			createLogicalDevice();
-			createSwapChain();
-			createImageViews();
-			createRenderPass();
-			createDescriptorSetLayout();
-			createGraphicsPipeline();
-			createCommandPool();
 			createColorResources();
 			createDepthResources();
 			createFramebuffers();
@@ -60,10 +56,31 @@ namespace VKTest {
 		inline GPUResourceManager& getGPUResourceManager()noexcept { return m_GPUResourceManager; }
 
 	private:
-		Window* p_Window = nullptr;
+		void CreateRenderPass();
+		void CreateGraphicsPipeline();
 
-		DeviceManager		m_DeviceManager;
-		SwapchainManager	m_SwapchainManager;
-		GPUResourceManager	m_GPUResourceManager;
+	private:
+		static std::vector<char> readFile(const std::filesystem::path& path);
+		vk::raii::ShaderModule createShaderModule(const std::vector<char>& code)const;
+
+	private:
+		Window*								 p_Window = nullptr;
+											 
+		DeviceManager						 m_DeviceManager;
+		SwapchainManager					 m_SwapchainManager;
+		GPUResourceManager					 m_GPUResourceManager;
+											 
+		vk::raii::RenderPass				 m_RenderPass = VK_NULL_HANDLE;
+		vk::raii::PipelineLayout			 m_PipelineLayout = VK_NULL_HANDLE;
+		vk::raii::Pipeline					 m_GraphicsPipeline = VK_NULL_HANDLE;
+											 
+		vk::raii::DescriptorSetLayout		 m_DescriptorSetLayout = VK_NULL_HANDLE; // TODO : Transfer this to the GPUResourceManager
+		vk::raii::DescriptorPool			 m_DescriptorPool = VK_NULL_HANDLE;		 // TODO : Transfer this to the GPUResourceManager
+		std::vector<vk::raii::DescriptorSet> m_DescriptorSets;						 // TODO : Transfer this to the GPUResourceManager
+
+		vk::SampleCountFlagBits				 m_MSAA_Samples = vk::SampleCountFlagBits::e1; // TODO : configure sampling
+											 
+		std::vector<vk::raii::Framebuffer>	 m_Framebuffers;
+		std::vector<FrameData>				 m_Frames;
 	};
 }

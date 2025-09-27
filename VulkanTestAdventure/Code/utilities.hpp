@@ -5,6 +5,8 @@
 
 #define RUNTIME_ERROR(message) throw std::runtime_error(message)
 
+#define NODISCARD [[nodiscard]]
+
 namespace VKTest {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         if (!std::filesystem::exists(to)) {

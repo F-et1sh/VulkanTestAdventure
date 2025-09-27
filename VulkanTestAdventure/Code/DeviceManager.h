@@ -33,6 +33,8 @@ namespace VKTest {
 		void CreateLogicalDevice();
 		void CreateCommandPool();
 
+		const vk::raii::Device&		getDevice				()const noexcept { return m_Device; }
+		
 		vk::raii::Device&			getDevice				()noexcept { return m_Device; }
 		vk::raii::Instance&			getInstance				()noexcept { return m_Instance; }
 		vk::raii::CommandPool&		getCommandPool			()noexcept { return m_CommandPool; }

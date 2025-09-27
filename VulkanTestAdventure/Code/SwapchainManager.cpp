@@ -8,8 +8,8 @@ VKTest::SwapchainManager::SwapchainManager(DeviceManager* p_device_manager, Wind
 }
 
 void VKTest::SwapchainManager::CreateSurface() {
-    VkSurfaceKHR surface; // GLFW uses old C-Style Vulkan
-
+    VkSurfaceKHR surface = VK_NULL_HANDLE; // GLFW uses old C-Style Vulkan
+    
     if (glfwCreateWindowSurface(*p_DeviceManager->getInstance(), p_Window->getGLFWWindow(), nullptr, &surface))
         RUNTIME_ERROR("Failed to create window surface");
 

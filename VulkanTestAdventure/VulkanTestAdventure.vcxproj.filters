@@ -73,6 +73,12 @@
     <Filter Include="Code\Main\Backend\QueueFamilyIndices">
       <UniqueIdentifier>{eef72dc6-5400-4d5a-9640-4459bc1affcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\FrameData">
+      <UniqueIdentifier>{9e2e7472-21a7-44e8-8b09-46973aa9533c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Vertices">
+      <UniqueIdentifier>{fb9b6eaf-9dfd-4183-9b1e-12713803a861}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -104,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="Code\QueueFamilyIndices.cpp">
       <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\FrameData.cpp">
+      <Filter>Code\Main\Backend\FrameData</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Vertices.cpp">
+      <Filter>Code\Main\Vertices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="Code\QueueFamilyIndices.h">
       <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FrameData.h">
+      <Filter>Code\Main\Backend\FrameData</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Vertices.h">
+      <Filter>Code\Main\Vertices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

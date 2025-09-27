@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "Window.h"
 
-VKTest::Window::Window() {
+VKTest::Window::Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    this->CreateWindow(window_resolution, window_title, window_monitor);
 }
 
 VKTest::Window::~Window() {
@@ -21,6 +22,8 @@ void VKTest::Window::CreateWindow(const glm::vec2& window_resolution, const std:
     if (window_monitor > 0 && window_monitor < monitor_count) monitor = monitors[window_monitor];
 
     p_GLFWWindow = glfwCreateWindow(window_resolution.x, window_resolution.y, window_title.data(), monitor, nullptr);
+    if (!p_GLFWWindow) RUNTIME_ERROR("ERROR : Failed to create GLFW window");
+
     glfwSetWindowUserPointer(p_GLFWWindow, this);
     glfwSetFramebufferSizeCallback(p_GLFWWindow, framebufferResizeCallback);
 
