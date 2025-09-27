@@ -52,8 +52,14 @@ namespace VKTest {
 		std::vector<const char*> getRequiredExtensions()const;
 
 	private:
-		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {
-			SAY("VALIDATION LAYER : " << p_callback_data->pMessage);
+		// uses C-Style Vulkan API
+		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
+			// if not warning or error -> return
+			if (!(message_severity & VkDebugUtilsMessageSeverityFlagBitsEXT::VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) &&
+				!(message_severity & VkDebugUtilsMessageSeverityFlagBitsEXT::VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)) return VK_FALSE;
+
+			SAY("VALIDATION LAYER : " << callback_data->pMessage);
+
 			return VK_FALSE;
 		}
 

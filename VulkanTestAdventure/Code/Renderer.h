@@ -9,7 +9,7 @@
 namespace VKTest {
 	class Renderer {
 	public:
-		Renderer(Window* p_window) : p_Window{ p_window }, m_DeviceManager{ &m_SwapchainManager }, m_SwapchainManager{ &m_DeviceManager, p_window }, m_GPUResourceManager{} {
+		Renderer(Window* window) : p_Window{ window }, m_DeviceManager{ &m_SwapchainManager }, m_SwapchainManager{ &m_DeviceManager, window }, m_GPUResourceManager{} {
 			
 			m_DeviceManager.CreateInstance();
 			m_DeviceManager.SetupDebugMessenger();
