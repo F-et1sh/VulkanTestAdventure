@@ -54,8 +54,8 @@ void VKTest::Renderer::CreateRenderPass() {
 }
 
 void VKTest::Renderer::CreateGraphicsPipeline() {
-    auto vert_shader_code = this->readFile("C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-    auto frag_shader_code = this->readFile("C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+    auto vert_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+    auto frag_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
     vk::raii::ShaderModule vert_shader_module{ this->createShaderModule(vert_shader_code) };
     vk::raii::ShaderModule frag_shader_module{ this->createShaderModule(frag_shader_code) };
@@ -201,11 +201,13 @@ void VKTest::Renderer::CreateGraphicsPipeline() {
 
 std::vector<char> VKTest::Renderer::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
-    
-    if (!file.good())
-        RUNTIME_ERROR("Failed to read file\nPath : " + path.string());
-    
-    return { std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
+    if (!file.good()) RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());
+
+    std::vector<char> buffer(file.tellg());
+    file.seekg(0, std::ios::beg);
+    file.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+
+    return buffer;
 }
 
 vk::raii::ShaderModule VKTest::Renderer::createShaderModule(const std::vector<char>& code) const {

@@ -1,0 +1,2 @@
+ERROR: Shader file is empty
+Path: C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv

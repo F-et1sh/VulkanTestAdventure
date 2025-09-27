@@ -6,8 +6,8 @@ namespace VKTest {
         glm::vec3 color = glm::vec3();
         glm::vec2 texture_coord = glm::vec2();
 
-        constexpr static vk::VertexInputBindingDescription getBindingDescription()noexcept {
-            constexpr static vk::VertexInputBindingDescription binding_description{
+        static constexpr inline vk::VertexInputBindingDescription getBindingDescription()noexcept {
+            static constexpr vk::VertexInputBindingDescription binding_description{
                 0,                           // Binding
                 sizeof(Vertex),              // Stride
                 vk::VertexInputRate::eVertex // Input Rate
@@ -16,8 +16,8 @@ namespace VKTest {
             return binding_description;
         }
 
-        constexpr static std::array<vk::VertexInputAttributeDescription, 3> getAttributeDescriptions() {
-            constexpr static std::array<vk::VertexInputAttributeDescription, 3> attribute_descriptions{
+        static constexpr inline std::array<vk::VertexInputAttributeDescription, 3> getAttributeDescriptions() {
+            static constexpr std::array<vk::VertexInputAttributeDescription, 3> attribute_descriptions{
                 vk::VertexInputAttributeDescription {
                     0,                                                      // Location
                     0,                                                      // Binding
