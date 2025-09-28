@@ -6,9 +6,6 @@
 namespace VKTest {
 	class SwapchainManager; // forward declaration
 
-	constexpr int MAX_FRAMES_IN_FLIGHT = 2;
-	constexpr int MAX_OBJECTS = 3;
-
 	// define a structure to hold per-object data
 	struct GameObject {
 		glm::vec3 position = { 0.0f, 0.0f, 0.0f };

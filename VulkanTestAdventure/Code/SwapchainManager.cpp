@@ -80,7 +80,7 @@ void VKTest::SwapchainManager::CreateImageViews() {
 }
 
 void VKTest::SwapchainManager::CreateFramebuffers() {
-    m_SwapchainFramebuffers.resize(m_SwapchainImageViews.size());
+    m_SwapchainFramebuffers.reserve(m_SwapchainImageViews.size());
 
     for (size_t i = 0; i < m_SwapchainImageViews.size(); i++) {
         std::array<vk::ImageView, 3> attachments = {

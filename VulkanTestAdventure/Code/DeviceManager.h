@@ -32,6 +32,7 @@ namespace VKTest {
 		void PickPhysicalDevice();
 		void CreateLogicalDevice();
 		void CreateCommandPool();
+		void CreateCommandBuffers();
 
 		const vk::raii::Device&		getDevice				()const noexcept { return m_Device; }
 		
@@ -78,6 +79,7 @@ namespace VKTest {
 		vk::raii::Queue m_PresentQueue = VK_NULL_HANDLE;
 
 		vk::raii::CommandPool m_CommandPool = VK_NULL_HANDLE;
+		std::vector<vk::raii::CommandBuffer> m_CommandBuffers;
 
 #ifdef _DEBUG
 		vk::raii::DebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;

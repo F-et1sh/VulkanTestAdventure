@@ -53,9 +53,10 @@ namespace VKTest {
 			m_GPUResourceManager.CreateDescriptorPool();
 			m_GPUResourceManager.CreateDescriptorSets();
 
+			m_DeviceManager.CreateCommandBuffers();
+
 			/*
-			* 
-			createCommandBuffers();
+			
 			createSyncObjects();
 
 			*/

@@ -193,6 +193,16 @@ void VKTest::DeviceManager::CreateCommandPool() {
     m_CommandPool = m_Device.createCommandPool(pool_info);
 }
 
+void VKTest::DeviceManager::CreateCommandBuffers() {
+    vk::CommandBufferAllocateInfo alloc_info{
+        m_CommandPool,                                 // Command Pool
+        vk::CommandBufferLevel::ePrimary,              // Level
+        static_cast<uint32_t>(m_CommandBuffers.size()) // Command Buffer Count
+    };
+
+    m_CommandBuffers = m_Device.allocateCommandBuffers(alloc_info);
+}
+
 void VKTest::DeviceManager::configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept {
     create_info.setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
     create_info.setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance);
