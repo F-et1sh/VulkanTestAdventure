@@ -100,7 +100,7 @@ void VKTest::SwapchainManager::CreateFramebuffers() {
         };
 
         auto& device = p_DeviceManager->getDevice();
-        m_SwapchainFramebuffers[i] = device.createFramebuffer(framebuffer_info);
+        m_SwapchainFramebuffers.emplace_back(device.createFramebuffer(framebuffer_info));
     }
 }
 

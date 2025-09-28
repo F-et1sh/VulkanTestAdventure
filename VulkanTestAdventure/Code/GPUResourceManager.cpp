@@ -122,3 +122,68 @@ void VKTest::GPUResourceManager::CreateDescriptorSets() {
         }
     }
 }
+
+void VKTest::GPUResourceManager::CreateUniformBuffers() {
+    // For each game object
+    for (auto& game_object : m_GameObjects) {
+        vk::DeviceSize buffer_size = sizeof(UniformBufferObject);
+
+        game_object.uniform_buffers.reserve(MAX_FRAMES_IN_FLIGHT);
+        game_object.uniform_buffers_memory.reserve(MAX_FRAMES_IN_FLIGHT);
+        game_object.uniform_buffers_mapped.reserve(MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vk::raii::Buffer buffer = VK_NULL_HANDLE;
+            vk::raii::DeviceMemory buffer_memory = VK_NULL_HANDLE;
+
+            createBuffer(buffer_size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, buffer, buffer_memory);
+            game_object.uniform_buffers.emplace_back(std::move(buffer));
+            game_object.uniform_buffers_memory.emplace_back(std::move(buffer_memory));
+
+            game_object.uniform_buffers_memory[i].mapMemory(0, buffer_size);
+        }
+    };
+}
+
+void VKTest::GPUResourceManager::CreateSyncObjects() {
+    m_ImageAvailableSemaphores.reserve(MAX_FRAMES_IN_FLIGHT);
+    m_RenderFinishedSemaphores.reserve(MAX_FRAMES_IN_FLIGHT);
+    m_InFlightFences.reserve(MAX_FRAMES_IN_FLIGHT);
+
+    vk::SemaphoreCreateInfo semaphore_info{};
+
+    vk::FenceCreateInfo fence_info{
+        vk::FenceCreateFlagBits::eSignaled // Flags
+    };
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        auto& device = p_DeviceManager->getDevice();
+
+        m_ImageAvailableSemaphores.emplace_back(device.createSemaphore(semaphore_info));
+        m_RenderFinishedSemaphores.emplace_back(device.createSemaphore(semaphore_info));
+        m_InFlightFences.emplace_back(device.createFence(fence_info));
+    }
+}
+
+void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory) {
+    vk::BufferCreateInfo buffer_info{
+        vk::BufferCreateFlags{},    // Flags
+        size,                       // Size
+        usage,                      // Usage
+        vk::SharingMode::eExclusive // Sharing Mode
+    };
+
+    auto& device = p_DeviceManager->getDevice();
+
+    buffer = vk::raii::Buffer{ device, buffer_info };
+    vk::MemoryRequirements memory_requirements = buffer.getMemoryRequirements();
+    
+    vk::MemoryAllocateInfo alloc_info{
+        memory_requirements.size, // Allocation Size
+        p_DeviceManager->findMemoryType(memory_requirements.memoryTypeBits, properties)
+    };
+
+    buffer_memory = vk::raii::DeviceMemory{ device, alloc_info };
+
+    buffer.bindMemory(buffer_memory, 0);
+}

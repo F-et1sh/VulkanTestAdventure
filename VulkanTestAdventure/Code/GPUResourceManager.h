@@ -45,10 +45,15 @@ namespace VKTest {
 		void CreateDepthResources();
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
+		void CreateUniformBuffers();
+		void CreateSyncObjects();
 
 		inline vk::raii::DescriptorSetLayout& getDescriptorSetLayout()noexcept { return m_DescriptorSetLayout; }
 		inline Image& getColorImage()noexcept { return m_ColorImage; }
 		inline Image& getDepthImage()noexcept { return m_DepthImage; }
+
+	private:
+		void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory);
 
 	private:
 		DeviceManager*						 p_DeviceManager = nullptr;
@@ -67,6 +72,10 @@ namespace VKTest {
 		vk::raii::Sampler					 m_TextureSampler = VK_NULL_HANDLE;
 
 		// array of game objects to render
-		std::array<GameObject, MAX_OBJECTS>  m_GameObjects;
+		std::array<GameObject, MAX_FRAMES_IN_FLIGHT>  m_GameObjects;
+
+		std::vector<vk::raii::Semaphore> m_ImageAvailableSemaphores;
+		std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores;
+		std::vector<vk::raii::Fence> m_InFlightFences;
 	};
 }

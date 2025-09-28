@@ -47,6 +47,7 @@ namespace VKTest {
 	public:
 		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const;
 		vk::Format findDepthFormat()const;
+		uint32_t findMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties)const;
 		
 	private:
 		void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept;

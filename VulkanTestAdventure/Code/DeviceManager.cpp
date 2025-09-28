@@ -238,6 +238,16 @@ vk::Format VKTest::DeviceManager::findDepthFormat()const {
     );
 }
 
+uint32_t VKTest::DeviceManager::findMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties) const {
+    vk::PhysicalDeviceMemoryProperties memory_properties = m_PhysicalDevice.getMemoryProperties();
+
+    for (uint32_t i = 0; i < memory_properties.memoryTypeCount; i++)
+        if ((type_filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties)
+            return i;
+
+    RUNTIME_ERROR("ERROR : Failed to find suitable memory type");
+}
+
 uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const {
     // find the index of the first queue family that supports graphics
     std::vector<vk::QueueFamilyProperties> queue_family_properties = device.getQueueFamilyProperties();

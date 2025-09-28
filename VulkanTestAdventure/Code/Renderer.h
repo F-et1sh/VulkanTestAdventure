@@ -1,5 +1,4 @@
 #pragma once
-#include "FrameData.h"
 #include "Window.h"
 #include "DeviceManager.h"
 #include "SwapchainManager.h"
@@ -46,20 +45,15 @@ namespace VKTest {
 			loadModel();
 			createVertexBuffer();
 			createIndexBuffer();
-			createUniformBuffers();
 			
 			*/
-			
+
+			m_GPUResourceManager.CreateUniformBuffers();
 			m_GPUResourceManager.CreateDescriptorPool();
 			m_GPUResourceManager.CreateDescriptorSets();
 
 			m_DeviceManager.CreateCommandBuffers();
-
-			/*
-			
-			createSyncObjects();
-
-			*/
+			m_GPUResourceManager.CreateSyncObjects();
 		}
 		~Renderer() = default;
 
@@ -77,8 +71,5 @@ namespace VKTest {
 		GPUResourceManager					 m_GPUResourceManager;
 		PipelineManager						 m_PipelineManager;
 		RenderPassManager					 m_RenderPassManager;
-											 
-		std::vector<vk::raii::Framebuffer>	 m_Framebuffers;
-		std::vector<FrameData>				 m_Frames;
 	};
 }
