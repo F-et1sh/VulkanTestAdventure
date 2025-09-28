@@ -23,7 +23,7 @@ namespace VKTest {
 			m_SwapchainManager.CreateImageViews();
 
 			this->CreateRenderPass();
-			//createDescriptorSetLayout();
+			this->CreateDescriptorSetLayout();
 			this->CreateGraphicsPipeline();
 
 			m_DeviceManager.CreateCommandPool();
@@ -60,6 +60,7 @@ namespace VKTest {
 		void CreateGraphicsPipeline();
 		void CreateColorResources();
 		void CreateDepthResources();
+		void CreateDescriptorSetLayout();
 
 	private:
 		static std::vector<char> readFile(const std::filesystem::path& path);

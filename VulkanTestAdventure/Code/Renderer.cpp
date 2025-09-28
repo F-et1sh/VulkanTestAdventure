@@ -221,6 +221,34 @@ void VKTest::Renderer::CreateDepthResources() {
     m_DepthImageView   = std::move(image_view);
 }
 
+void VKTest::Renderer::CreateDescriptorSetLayout() {
+    vk::DescriptorSetLayoutBinding ubo_layout_binding{
+        0,                                          // Binding
+        vk::DescriptorType::eUniformBuffer,         // Descriptor Type
+        1,                                          // Descriptor Count
+        vk::ShaderStageFlagBits::eVertex,           // Stage Flags
+        nullptr                                     // Immutable Samplers
+    };
+
+    vk::DescriptorSetLayoutBinding sampler_layout_binding{
+        1,                                          // Binding
+        vk::DescriptorType::eCombinedImageSampler,  // Descriptor Type
+        1,                                          // Descriptor Count
+        vk::ShaderStageFlagBits::eFragment,         // Stage Flags
+        nullptr                                     // Immutable Samplers
+    };
+
+    std::array<vk::DescriptorSetLayoutBinding, 2> bindings = { ubo_layout_binding, sampler_layout_binding };
+    vk::DescriptorSetLayoutCreateInfo layout_info{
+        vk::DescriptorSetLayoutCreateFlags{},   // Flags
+        static_cast<uint32_t>(bindings.size()), // Binding Count
+        bindings.data()                         // Bindings
+    };
+
+    auto& device = m_DeviceManager.getDevice();
+    m_DescriptorSetLayout = device.createDescriptorSetLayout(layout_info);
+}
+
 std::vector<char> VKTest::Renderer::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
     if (!file.good()) RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());
