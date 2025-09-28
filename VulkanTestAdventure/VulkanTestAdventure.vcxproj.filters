@@ -79,6 +79,12 @@
     <Filter Include="Code\Main\Vertices">
       <UniqueIdentifier>{fb9b6eaf-9dfd-4183-9b1e-12713803a861}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\PipelineManager">
+      <UniqueIdentifier>{d42366bb-f880-40da-be60-95ddd40d81b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\Image">
+      <UniqueIdentifier>{d09a197c-1f44-4082-a5af-b19574fa07a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -116,6 +122,12 @@
     </ClCompile>
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PipelineManager.cpp">
+      <Filter>Code\Main\Backend\PipelineManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Image.cpp">
+      <Filter>Code\Main\Backend\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +186,12 @@
     </ClInclude>
     <ClInclude Include="Code\Vertices.h">
       <Filter>Code\Main\Vertices</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PipelineManager.h">
+      <Filter>Code\Main\Backend\PipelineManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Image.h">
+      <Filter>Code\Main\Backend\Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

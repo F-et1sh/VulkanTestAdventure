@@ -228,60 +228,6 @@ vk::Format VKTest::DeviceManager::findDepthFormat()const {
     );
 }
 
-void VKTest::DeviceManager::createImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::SampleCountFlagBits num_samples, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const {
-    vk::ImageCreateInfo image_info{
-        vk::ImageCreateFlags{},      // Flags
-        vk::ImageType::e2D,          // Image Type
-        format,                      // Image Format
-        {                            // Image Extent
-            width,  // Width
-            height, // Height
-            1       // Depth
-        },
-        mip_levels,                  // Mip Levels
-        1,                           // Array Layers
-        num_samples,                 // Number of Samples
-        tiling,                      // Image Tiling
-        usage,                       // Image Usage
-        vk::SharingMode::eExclusive, // Sharing Mode
-        {},                          // Queue Family Index Count
-        {},                          // Queue Family Indices
-        vk::ImageLayout::eUndefined  // Initial Image Layout
-    };
-
-    image = vk::raii::Image{ m_Device, image_info };
-
-    vk::MemoryRequirements mem_requirements = image.getMemoryRequirements();
-
-    vk::MemoryAllocateInfo alloc_info{
-        mem_requirements.size,          // Allocation Size
-        mem_requirements.memoryTypeBits // Memory Type Index
-    };
-
-    image_memory = vk::raii::DeviceMemory{ m_Device, alloc_info };
-
-    image.bindMemory(image_memory, 0);
-}
-
-vk::raii::ImageView VKTest::DeviceManager::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels) const {
-    vk::ImageViewCreateInfo create_info{
-                vk::ImageViewCreateFlags{}, // Flags
-                image,						// Image
-                vk::ImageViewType::e2D,		// Image View Type
-                format,						// Format
-                {},							// Components
-                vk::ImageSubresourceRange{
-                    aspect_flags,			// Aspect Mask
-                    0,						// Base Mip Level
-                    mip_levels,				// Level Count
-                    0,						// Base Array Layer
-                    1,						// Layer Count
-                }
-    };
-
-    return vk::raii::ImageView{ m_Device, create_info };
-}
-
 uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const {
     // find the index of the first queue family that supports graphics
     std::vector<vk::QueueFamilyProperties> queue_family_properties = device.getQueueFamilyProperties();

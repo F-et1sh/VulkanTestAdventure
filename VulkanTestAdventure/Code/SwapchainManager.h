@@ -15,7 +15,7 @@ namespace VKTest {
 
 	class SwapchainManager {
 	public:
-		SwapchainManager(DeviceManager* p_device_manager, Window* p_window);
+		SwapchainManager(DeviceManager* device_manager, Window* window);
 		~SwapchainManager() = default;
 
 		void CreateSurface();

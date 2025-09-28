@@ -172,7 +172,9 @@
     <ClCompile Include="Code\DeviceManager.cpp" />
     <ClCompile Include="Code\FrameData.cpp" />
     <ClCompile Include="Code\GPUResourceManager.cpp" />
+    <ClCompile Include="Code\Image.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
+    <ClCompile Include="Code\PipelineManager.cpp" />
     <ClCompile Include="Code\QueueFamilyIndices.cpp" />
     <ClCompile Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\SwapchainManager.cpp" />
@@ -217,6 +219,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Image.h" />
+    <ClInclude Include="Code\PipelineManager.h" />
     <ClInclude Include="Code\DeviceManager.h" />
     <ClInclude Include="Code\FrameData.h" />
     <ClInclude Include="Code\GPUResourceManager.h" />

@@ -3,9 +3,7 @@
 
 #include "Renderer.h"
 
-VKTest::SwapchainManager::SwapchainManager(DeviceManager* p_device_manager, Window* p_window) : p_DeviceManager{ p_device_manager }, p_Window{ p_window } {
-    
-}
+VKTest::SwapchainManager::SwapchainManager(DeviceManager* device_manager, Window* window) : p_DeviceManager{ device_manager }, p_Window{ window } {}
 
 void VKTest::SwapchainManager::CreateSurface() {
     VkSurfaceKHR surface = VK_NULL_HANDLE; // GLFW uses old C-Style Vulkan
