@@ -1,10 +1,11 @@
 #pragma once
 #include "DeviceManager.h"
-#include "SwapchainManager.h"
 #include "RenderPassManager.h"
 #include "Image.h"
 
 namespace VKTest {
+	class SwapchainManager; // forward declaration
+
 	constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 	constexpr int MAX_OBJECTS = 3;
 
@@ -48,8 +49,9 @@ namespace VKTest {
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
 
-	public:
 		inline vk::raii::DescriptorSetLayout& getDescriptorSetLayout()noexcept { return m_DescriptorSetLayout; }
+		inline Image& getColorImage()noexcept { return m_ColorImage; }
+		inline Image& getDepthImage()noexcept { return m_DepthImage; }
 
 	private:
 		DeviceManager*						 p_DeviceManager = nullptr;

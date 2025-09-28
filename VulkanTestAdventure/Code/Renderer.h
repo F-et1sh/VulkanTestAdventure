@@ -5,7 +5,6 @@
 #include "SwapchainManager.h"
 #include "GPUResourceManager.h"
 #include "PipelineManager.h"
-#include "RenderPassManager.h"
 
 namespace VKTest {
 	class Renderer {
@@ -13,7 +12,7 @@ namespace VKTest {
 		Renderer(Window* window) : 
 			p_Window{ window }, 
 			m_DeviceManager{ &m_SwapchainManager }, 
-			m_SwapchainManager{ &m_DeviceManager, window }, 
+			m_SwapchainManager{ &m_DeviceManager, window, &m_GPUResourceManager, &m_RenderPassManager }, 
 			m_GPUResourceManager{ &m_DeviceManager, &m_SwapchainManager, &m_RenderPassManager },
 			m_PipelineManager{ &m_DeviceManager, &m_RenderPassManager, &m_GPUResourceManager },
 			m_RenderPassManager{ &m_DeviceManager, &m_SwapchainManager } {
@@ -37,9 +36,10 @@ namespace VKTest {
 			m_GPUResourceManager.CreateColorResources();
 			m_GPUResourceManager.CreateDepthResources();
 
+			m_SwapchainManager.CreateFramebuffers();
+
 			/*
 			
-			createFramebuffers();
 			createTextureImage();
 			createTextureImageView();
 			createTextureSampler();

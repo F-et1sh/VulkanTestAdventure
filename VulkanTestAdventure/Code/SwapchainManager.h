@@ -4,6 +4,9 @@
 #include "QueueFamilyIndices.h"
 
 namespace VKTest {
+	class GPUResourceManager; // forward declaration
+	class RenderPassManager; // forward declaration
+
 	struct SwapChainSupportDetails {
 		vk::SurfaceCapabilitiesKHR capabilities;
 		std::vector<vk::SurfaceFormatKHR> formats;
@@ -15,12 +18,13 @@ namespace VKTest {
 
 	class SwapchainManager {
 	public:
-		SwapchainManager(DeviceManager* device_manager, Window* window);
+		SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager);
 		~SwapchainManager() = default;
 
 		void CreateSurface();
 		void CreateSwapchain();
 		void CreateImageViews();
+		void CreateFramebuffers();
 
 		inline vk::raii::SurfaceKHR& getSurface()noexcept { return m_Surface; }
 		inline vk::Format getFormat()const noexcept { return m_SwapchainImageFormat; }
@@ -35,6 +39,8 @@ namespace VKTest {
 	private:
 		DeviceManager* p_DeviceManager = nullptr;
 		Window* p_Window = nullptr;
+		GPUResourceManager* p_GPUResourceManager = nullptr;
+		RenderPassManager* p_RenderPassManager = nullptr;
 		
 		vk::raii::SurfaceKHR m_Surface = VK_NULL_HANDLE;
 

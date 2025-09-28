@@ -3,7 +3,8 @@
 
 #include "Renderer.h"
 
-VKTest::SwapchainManager::SwapchainManager(DeviceManager* device_manager, Window* window) : p_DeviceManager{ device_manager }, p_Window{ window } {}
+VKTest::SwapchainManager::SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager) :
+    p_DeviceManager{ device_manager }, p_Window{ window }, p_GPUResourceManager{ gpu_resource_manager }, p_RenderPassManager{ render_pass_manager } {}
 
 void VKTest::SwapchainManager::CreateSurface() {
     VkSurfaceKHR surface = VK_NULL_HANDLE; // GLFW uses old C-Style Vulkan
@@ -75,6 +76,31 @@ void VKTest::SwapchainManager::CreateImageViews() {
         auto& device = p_DeviceManager->getDevice();
         auto e = Image::createImageView(m_SwapchainImages[i], m_SwapchainImageFormat, vk::ImageAspectFlagBits::eColor, 1, device);
         m_SwapchainImageViews.emplace_back(std::move(e));
+    }
+}
+
+void VKTest::SwapchainManager::CreateFramebuffers() {
+    m_SwapchainFramebuffers.resize(m_SwapchainImageViews.size());
+
+    for (size_t i = 0; i < m_SwapchainImageViews.size(); i++) {
+        std::array<vk::ImageView, 3> attachments = {
+            p_GPUResourceManager->getColorImage().getImageView(),
+            p_GPUResourceManager->getDepthImage().getImageView(),
+            m_SwapchainImageViews[i]
+        };
+
+        vk::FramebufferCreateInfo framebuffer_info{
+            vk::FramebufferCreateFlags{},              // Flags
+            p_RenderPassManager->getRenderPass(),      // RenderPass
+            static_cast<uint32_t>(attachments.size()), // Attachments Count
+            attachments.data(),                        // Attachments
+            m_SwapchainExtent.width,                   // Width
+            m_SwapchainExtent.height,                  // Height
+            1                                          // Layers
+        };
+
+        auto& device = p_DeviceManager->getDevice();
+        m_SwapchainFramebuffers[i] = device.createFramebuffer(framebuffer_info);
     }
 }
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GPUResourceManager.h"
 
+#include "SwapchainManager.h"
+
 VKTest::GPUResourceManager::GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager) :
     p_DeviceManager{ device_manager }, p_SwapchainManager{ swapchain_manager }, p_RenderPassManager{ render_pass_manager } {}
 
