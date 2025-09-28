@@ -27,7 +27,7 @@ namespace VKTest {
 			vk::MemoryPropertyFlags properties,
 			vk::raii::Device& device);
 
-	private:
+	public:
 		static vk::raii::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels, vk::raii::Device& device);
 		static void createImage(
 			uint32_t width, 

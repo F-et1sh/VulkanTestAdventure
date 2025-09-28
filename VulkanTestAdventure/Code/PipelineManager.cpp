@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "PipelineManager.h"
 
-VKTest::PipelineManager::PipelineManager(DeviceManager* device_manager) : p_DeviceManager{ device_manager } {}
+VKTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager) :
+    p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager } {}
 
 void VKTest::PipelineManager::CreateGraphicsPipeline() {
 	auto vert_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
@@ -67,7 +68,7 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
 
     vk::PipelineMultisampleStateCreateInfo multisampling{
         vk::PipelineMultisampleStateCreateFlags{}, // Flags
-        m_MSAA_Samples,                            // Rasterization samples
+        p_RenderPassManager->getMSAASamples(),     // Rasterization samples
         vk::False,                                 // Sample shading enable
         1.0f,                                      // Min sample shading
         nullptr,                                   // pSampleMask
@@ -116,11 +117,11 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
     };
 
     vk::PipelineLayoutCreateInfo pipeline_layout_info{
-        vk::PipelineLayoutCreateFlags{}, // Flags
-        1,                               // Set layout count
-        &*m_DescriptorSetLayout,         // pSetLayouts
-        0,                               // Push constant range count
-        nullptr                          // pPushConstantRanges
+        vk::PipelineLayoutCreateFlags{},                  // Flags
+        1,                                                // Set layout count
+        &*p_GPUResourceManager->getDescriptorSetLayout(), // pSetLayouts
+        0,                                                // Push constant range count
+        nullptr                                           // pPushConstantRanges
     };
 
     auto& device = p_DeviceManager->getDevice();
@@ -140,7 +141,7 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
         &color_blending,                             // pColorBlendState
         &dynamic_state,                              // pDynamicState
         *m_PipelineLayout,                           // Layout
-        *m_RenderPass,                               // Render pass
+        *p_RenderPassManager->getRenderPass(),       // Render pass
         0,                                           // Subpass
         nullptr,                                     // Base pipeline handle
         -1                                           // Base pipeline index

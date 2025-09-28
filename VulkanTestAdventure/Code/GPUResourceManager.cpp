@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "GPUResourceManager.h"
 
-VKTest::GPUResourceManager::GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager) : p_DeviceManager{ device_manager }, p_SwapchainManager{ swapchain_manager } {}
+VKTest::GPUResourceManager::GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager) :
+    p_DeviceManager{ device_manager }, p_SwapchainManager{ swapchain_manager }, p_RenderPassManager{ render_pass_manager } {}
 
 void VKTest::GPUResourceManager::CreateDescriptorSetLayout() {
     vk::DescriptorSetLayoutBinding ubo_layout_binding{
@@ -37,16 +38,14 @@ void VKTest::GPUResourceManager::CreateColorResources() {
     constexpr static uint32_t mip_levels = 1;
 
     auto& device = p_DeviceManager->getDevice();
-    m_ColorImage.Initialize(extent.width, extent.height, mip_levels, m_MSAA_Samples, color_format, vk::ImageAspectFlagBits::eColor, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransientAttachment | vk::ImageUsageFlagBits::eColorAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
+    m_ColorImage.Initialize(extent.width, extent.height, mip_levels, p_RenderPassManager->getMSAASamples(), color_format, vk::ImageAspectFlagBits::eColor, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransientAttachment | vk::ImageUsageFlagBits::eColorAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
 }
 
 void VKTest::GPUResourceManager::CreateDepthResources() {
-    vk::Format depth_format = m_DeviceManager.findDepthFormat();
-    vk::Extent2D extent = this->m_SwapchainManager.getExtent();
+    vk::Format depth_format = this->p_DeviceManager->findDepthFormat();
+    vk::Extent2D extent = this->p_SwapchainManager->getExtent();
     constexpr static uint32_t mip_levels = 1;
 
-    m_DeviceManager.createImage(extent.width, extent.height, mip_levels, m_MSAA_Samples, depth_format, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, m_DepthImage, m_DepthImageMemory);
-    auto image_view = m_DeviceManager.createImageView(m_DepthImage, depth_format, vk::ImageAspectFlagBits::eDepth, mip_levels);
-
-    m_DepthImageView = std::move(image_view);
+    auto& device = p_DeviceManager->getDevice();
+    m_DepthImage.Initialize(extent.width, extent.height, mip_levels, p_RenderPassManager->getMSAASamples(), depth_format, vk::ImageAspectFlagBits::eDepth, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
 }

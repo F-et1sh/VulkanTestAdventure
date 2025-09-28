@@ -5,11 +5,18 @@
 #include "SwapchainManager.h"
 #include "GPUResourceManager.h"
 #include "PipelineManager.h"
+#include "RenderPassManager.h"
 
 namespace VKTest {
 	class Renderer {
 	public:
-		Renderer(Window* window) : p_Window{ window }, m_DeviceManager{ &m_SwapchainManager }, m_SwapchainManager{ &m_DeviceManager, window }, m_GPUResourceManager{ &m_DeviceManager }, m_PipelineManager{ &m_DeviceManager } {
+		Renderer(Window* window) : 
+			p_Window{ window }, 
+			m_DeviceManager{ &m_SwapchainManager }, 
+			m_SwapchainManager{ &m_DeviceManager, window }, 
+			m_GPUResourceManager{ &m_DeviceManager, &m_SwapchainManager, &m_RenderPassManager },
+			m_PipelineManager{ &m_DeviceManager, &m_RenderPassManager, &m_GPUResourceManager },
+			m_RenderPassManager{ &m_DeviceManager, &m_SwapchainManager } {
 			
 			m_DeviceManager.CreateInstance();
 			m_DeviceManager.SetupDebugMessenger();
@@ -22,13 +29,13 @@ namespace VKTest {
 			m_SwapchainManager.CreateSwapchain();
 			m_SwapchainManager.CreateImageViews();
 
-			this->CreateRenderPass();
+			m_RenderPassManager.CreateRenderPass();
 			m_GPUResourceManager.CreateDescriptorSetLayout();
 			m_PipelineManager.CreateGraphicsPipeline();
 
 			m_DeviceManager.CreateCommandPool();
-			this->CreateColorResources();
-			this->CreateDepthResources();
+			m_GPUResourceManager.CreateColorResources();
+			m_GPUResourceManager.CreateDepthResources();
 
 			/*
 			
@@ -56,21 +63,13 @@ namespace VKTest {
 		inline GPUResourceManager& getGPUResourceManager()noexcept { return m_GPUResourceManager; }
 
 	private:
-		void CreateRenderPass();
-		void CreateColorResources();
-		void CreateDepthResources();
-
-	private:
 		Window*								 p_Window = nullptr;
 											 
 		DeviceManager						 m_DeviceManager;
 		SwapchainManager					 m_SwapchainManager;
 		GPUResourceManager					 m_GPUResourceManager;
 		PipelineManager						 m_PipelineManager;
-											 
-		vk::raii::RenderPass				 m_RenderPass = VK_NULL_HANDLE;
-
-		vk::SampleCountFlagBits				 m_MSAA_Samples = vk::SampleCountFlagBits::e1; // TODO : configure sampling
+		RenderPassManager					 m_RenderPassManager;
 											 
 		std::vector<vk::raii::Framebuffer>	 m_Framebuffers;
 		std::vector<FrameData>				 m_Frames;

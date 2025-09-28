@@ -72,7 +72,8 @@ void VKTest::SwapchainManager::CreateImageViews() {
 
     for (uint32_t i = 0; i < m_SwapchainImages.size(); i++) {
 
-        auto e = p_DeviceManager->createImageView(m_SwapchainImages[i], m_SwapchainImageFormat, vk::ImageAspectFlagBits::eColor, 1);
+        auto& device = p_DeviceManager->getDevice();
+        auto e = Image::createImageView(m_SwapchainImages[i], m_SwapchainImageFormat, vk::ImageAspectFlagBits::eColor, 1, device);
         m_SwapchainImageViews.emplace_back(std::move(e));
     }
 }

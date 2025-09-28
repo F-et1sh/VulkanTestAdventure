@@ -85,6 +85,9 @@
     <Filter Include="Code\Main\Backend\Image">
       <UniqueIdentifier>{d09a197c-1f44-4082-a5af-b19574fa07a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\RenderPassManager">
+      <UniqueIdentifier>{7ade2b9b-cb15-4478-b2df-9d79534bad10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -128,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Code\Image.cpp">
       <Filter>Code\Main\Backend\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RenderPassManager.cpp">
+      <Filter>Code\Main\Backend\RenderPassManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +198,9 @@
     </ClInclude>
     <ClInclude Include="Code\Image.h">
       <Filter>Code\Main\Backend\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RenderPassManager.h">
+      <Filter>Code\Main\Backend\RenderPassManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
