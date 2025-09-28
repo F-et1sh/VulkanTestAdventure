@@ -47,8 +47,14 @@ namespace VKTest {
 			createVertexBuffer();
 			createIndexBuffer();
 			createUniformBuffers();
-			createDescriptorPool();
-			createDescriptorSets();
+			
+			*/
+			
+			m_GPUResourceManager.CreateDescriptorPool();
+			m_GPUResourceManager.CreateDescriptorSets();
+
+			/*
+			* 
 			createCommandBuffers();
 			createSyncObjects();
 

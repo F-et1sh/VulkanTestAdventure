@@ -28,6 +28,11 @@ namespace VKTest {
 			vk::raii::Device& device);
 
 	public:
+		inline vk::raii::Image& getImage()noexcept { return m_Image; }
+		inline vk::raii::DeviceMemory& getImageMemory()noexcept { return m_ImageMemory; }
+		inline vk::raii::ImageView& getImageView()noexcept { return m_ImageView; }
+
+	public:
 		static vk::raii::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels, vk::raii::Device& device);
 		static void createImage(
 			uint32_t width, 

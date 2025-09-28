@@ -49,3 +49,74 @@ void VKTest::GPUResourceManager::CreateDepthResources() {
     auto& device = p_DeviceManager->getDevice();
     m_DepthImage.Initialize(extent.width, extent.height, mip_levels, p_RenderPassManager->getMSAASamples(), depth_format, vk::ImageAspectFlagBits::eDepth, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
 }
+
+void VKTest::GPUResourceManager::CreateDescriptorPool() {
+    // we need MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT descriptor sets
+    std::array pool_size{
+        vk::DescriptorPoolSize(vk::DescriptorType::eUniformBuffer, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT),
+        vk::DescriptorPoolSize(vk::DescriptorType::eCombinedImageSampler, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT)
+    };
+    vk::DescriptorPoolCreateInfo pool_info{
+        vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, // Flags
+        MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT,                   // Max Sets
+        static_cast<uint32_t>(pool_size.size()),              // Pool Size Count
+        pool_size.data()                                      // Pool Sizes
+    };
+
+    auto& device = p_DeviceManager->getDevice();
+    m_DescriptorPool = device.createDescriptorPool(pool_info);
+}
+
+void VKTest::GPUResourceManager::CreateDescriptorSets() {
+    // for each game object
+    for (auto& game_object : m_GameObjects) {
+        // create descriptor sets for each frame in flight
+        std::vector<vk::DescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_DescriptorSetLayout);
+
+        vk::DescriptorSetAllocateInfo alloc_info{
+            m_DescriptorPool,                      // Descriptor Pool
+            static_cast<uint32_t>(layouts.size()), // Set Layout Count
+            layouts.data(),                        // Set Layouts
+        };
+
+        auto& device = p_DeviceManager->getDevice();
+        game_object.descriptor_sets = device.allocateDescriptorSets(alloc_info);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vk::DescriptorBufferInfo buffer_info{
+                game_object.uniform_buffers[i],  // Buffer
+                0,                              // Offset
+                sizeof(UniformBufferObject)     // Range
+            };
+
+            vk::DescriptorImageInfo image_info{
+                m_TextureSampler,                       // Sampler
+                m_TextureImage.getImageView(),          // Image View
+                vk::ImageLayout::eShaderReadOnlyOptimal // Image Layout
+            };
+
+            std::array descriptor_writes{
+                vk::WriteDescriptorSet{
+                    game_object.descriptor_sets[i],     // dst Set
+                    0,                                  // dst Binding
+                    0,                                  // dst Array Element
+                    1,                                  // Descriptor Count
+                    vk::DescriptorType::eUniformBuffer, // Descriptor Type
+                    {},                                 // Image Info
+                    &buffer_info                        // Buffer Info
+                },
+                vk::WriteDescriptorSet{
+                    game_object.descriptor_sets[i],     // dst Set
+                    1,                                  // dst Binding
+                    0,                                  // dst Array Element
+                    1,                                  // Descriptor Count
+                    vk::DescriptorType::eSampledImage,  // Descriptor Type
+                    &image_info,                        // Image Info
+                    {},                                 // Buffer Info
+                }
+            };
+
+            device.updateDescriptorSets(descriptor_writes, {});
+        }
+    }
+}

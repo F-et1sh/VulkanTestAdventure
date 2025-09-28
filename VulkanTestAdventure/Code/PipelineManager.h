@@ -11,6 +11,7 @@ namespace VKTest {
 		~PipelineManager() = default;
 
 		void CreateGraphicsPipeline();
+		void CreateDescriptorPool();
 
 	private:
 		static std::vector<char> readFile(const std::filesystem::path& path);
