@@ -44,12 +44,15 @@ namespace VKTest {
 		QueueFamilyIndices			getQueueFamilyIndices	()noexcept { return m_QueueFamilyIndices; }
 
 	public:
-		vk::raii::ImageView CreateImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
+		vk::raii::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels)const;
 		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const;
+		void createImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::SampleCountFlagBits num_samples, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const;
+		vk::Format findDepthFormat()const;
 		
 	private:
 		void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept;
 		std::vector<const char*> getRequiredExtensions()const;
+		vk::Format findSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
 
 	private:
 		// uses C-Style Vulkan API

@@ -24,6 +24,7 @@ namespace VKTest {
 
 		inline vk::raii::SurfaceKHR& getSurface()noexcept { return m_Surface; }
 		inline vk::Format getFormat()const noexcept { return m_SwapchainImageFormat; }
+		inline vk::Extent2D getExtent()const noexcept { return m_SwapchainExtent; }
 
 	private:
 		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;

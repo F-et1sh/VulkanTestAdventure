@@ -27,11 +27,11 @@ namespace VKTest {
 			this->CreateGraphicsPipeline();
 
 			m_DeviceManager.CreateCommandPool();
+			this->CreateColorResources();
+			this->CreateDepthResources();
 
 			/*
 			
-			createColorResources();
-			createDepthResources();
 			createFramebuffers();
 			createTextureImage();
 			createTextureImageView();
@@ -58,6 +58,8 @@ namespace VKTest {
 	private:
 		void CreateRenderPass();
 		void CreateGraphicsPipeline();
+		void CreateColorResources();
+		void CreateDepthResources();
 
 	private:
 		static std::vector<char> readFile(const std::filesystem::path& path);
@@ -79,6 +81,14 @@ namespace VKTest {
 		std::vector<vk::raii::DescriptorSet> m_DescriptorSets;						 // TODO : Transfer this to the GPUResourceManager
 
 		vk::SampleCountFlagBits				 m_MSAA_Samples = vk::SampleCountFlagBits::e1; // TODO : configure sampling
+
+		vk::raii::Image						 m_ColorImage = VK_NULL_HANDLE;			// TODO : Transfer this
+		vk::raii::DeviceMemory				 m_ColorImageMemory = VK_NULL_HANDLE;	// TODO : Transfer this
+		vk::raii::ImageView					 m_ColorImageView = VK_NULL_HANDLE;		// TODO : Transfer this
+
+		vk::raii::Image						 m_DepthImage = VK_NULL_HANDLE;			// TODO : Transfer this
+		vk::raii::DeviceMemory				 m_DepthImageMemory = VK_NULL_HANDLE;	// TODO : Transfer this
+		vk::raii::ImageView					 m_DepthImageView = VK_NULL_HANDLE;		// TODO : Transfer this
 											 
 		std::vector<vk::raii::Framebuffer>	 m_Framebuffers;
 		std::vector<FrameData>				 m_Frames;

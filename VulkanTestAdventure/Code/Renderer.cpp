@@ -199,6 +199,28 @@ void VKTest::Renderer::CreateGraphicsPipeline() {
     m_GraphicsPipeline = vk::raii::Pipeline{ device, nullptr, pipeline_info };
 }
 
+void VKTest::Renderer::CreateColorResources() {
+    vk::Format color_format = this->m_SwapchainManager.getFormat();
+    vk::Extent2D extent = this->m_SwapchainManager.getExtent();
+    constexpr static uint32_t mip_levels = 1;
+
+    m_DeviceManager.createImage(extent.width, extent.height, mip_levels, m_MSAA_Samples, color_format, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransientAttachment | vk::ImageUsageFlagBits::eColorAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, m_ColorImage, m_ColorImageMemory);
+    auto image_view = m_DeviceManager.createImageView(m_ColorImage, color_format, vk::ImageAspectFlagBits::eColor, mip_levels);
+
+    m_ColorImageView   = std::move(image_view);
+}
+
+void VKTest::Renderer::CreateDepthResources() {
+    vk::Format depth_format = m_DeviceManager.findDepthFormat();
+    vk::Extent2D extent = this->m_SwapchainManager.getExtent();
+    constexpr static uint32_t mip_levels = 1;
+
+    m_DeviceManager.createImage(extent.width, extent.height, mip_levels, m_MSAA_Samples, depth_format, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, m_DepthImage, m_DepthImageMemory);
+    auto image_view = m_DeviceManager.createImageView(m_DepthImage, depth_format, vk::ImageAspectFlagBits::eDepth, mip_levels);
+
+    m_DepthImageView   = std::move(image_view);
+}
+
 std::vector<char> VKTest::Renderer::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
     if (!file.good()) RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());

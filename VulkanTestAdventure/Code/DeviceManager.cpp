@@ -209,7 +209,61 @@ std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions()const {
     return extensions;
 }
 
-vk::raii::ImageView VKTest::DeviceManager::CreateImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels) const {
+vk::Format VKTest::DeviceManager::findSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const {
+    for (vk::Format format : candidates) {
+        vk::FormatProperties properties = m_PhysicalDevice.getFormatProperties(format);
+
+        if (tiling == vk::ImageTiling::eLinear && (properties.linearTilingFeatures & features) == features) return format;
+        else if (tiling == vk::ImageTiling::eOptimal && (properties.optimalTilingFeatures & features) == features) return format;
+    }
+
+    RUNTIME_ERROR("ERROR : Failed to find supported format");
+}
+
+vk::Format VKTest::DeviceManager::findDepthFormat()const {
+    return findSupportedFormat(
+        { vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint },
+        vk::ImageTiling::eOptimal,
+        vk::FormatFeatureFlagBits::eDepthStencilAttachment
+    );
+}
+
+void VKTest::DeviceManager::createImage(uint32_t width, uint32_t height, uint32_t mip_levels, vk::SampleCountFlagBits num_samples, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& image_memory)const {
+    vk::ImageCreateInfo image_info{
+        vk::ImageCreateFlags{},      // Flags
+        vk::ImageType::e2D,          // Image Type
+        format,                      // Image Format
+        {                            // Image Extent
+            width,  // Width
+            height, // Height
+            1       // Depth
+        },
+        mip_levels,                  // Mip Levels
+        1,                           // Array Layers
+        num_samples,                 // Number of Samples
+        tiling,                      // Image Tiling
+        usage,                       // Image Usage
+        vk::SharingMode::eExclusive, // Sharing Mode
+        {},                          // Queue Family Index Count
+        {},                          // Queue Family Indices
+        vk::ImageLayout::eUndefined  // Initial Image Layout
+    };
+
+    image = vk::raii::Image{ m_Device, image_info };
+
+    vk::MemoryRequirements mem_requirements = image.getMemoryRequirements();
+
+    vk::MemoryAllocateInfo alloc_info{
+        mem_requirements.size,          // Allocation Size
+        mem_requirements.memoryTypeBits // Memory Type Index
+    };
+
+    image_memory = vk::raii::DeviceMemory{ m_Device, alloc_info };
+
+    image.bindMemory(image_memory, 0);
+}
+
+vk::raii::ImageView VKTest::DeviceManager::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels) const {
     vk::ImageViewCreateInfo create_info{
                 vk::ImageViewCreateFlags{}, // Flags
                 image,						// Image
