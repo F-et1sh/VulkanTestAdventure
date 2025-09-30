@@ -13,7 +13,7 @@ namespace VKTest {
 			m_DeviceManager{ &m_SwapchainManager }, 
 			m_SwapchainManager{ &m_DeviceManager, window, &m_GPUResourceManager, &m_RenderPassManager }, 
 			m_GPUResourceManager{ &m_DeviceManager, &m_SwapchainManager, &m_RenderPassManager },
-			m_PipelineManager{ &m_DeviceManager, &m_RenderPassManager, &m_GPUResourceManager },
+			m_PipelineManager{ &m_DeviceManager, &m_RenderPassManager, &m_GPUResourceManager, &m_SwapchainManager },
 			m_RenderPassManager{ &m_DeviceManager, &m_SwapchainManager } {
 			
 			m_DeviceManager.CreateInstance();
