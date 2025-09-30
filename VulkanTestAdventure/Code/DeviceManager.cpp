@@ -197,7 +197,7 @@ void VKTest::DeviceManager::CreateCommandBuffers() {
     vk::CommandBufferAllocateInfo alloc_info{
         m_CommandPool,                                 // Command Pool
         vk::CommandBufferLevel::ePrimary,              // Level
-        static_cast<uint32_t>(m_CommandBuffers.size()) // Command Buffer Count
+        static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT)    // Command Buffer Count
     };
 
     m_CommandBuffers = m_Device.allocateCommandBuffers(alloc_info);
