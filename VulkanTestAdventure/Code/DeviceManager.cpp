@@ -248,6 +248,35 @@ uint32_t VKTest::DeviceManager::findMemoryType(uint32_t type_filter, vk::MemoryP
     RUNTIME_ERROR("ERROR : Failed to find suitable memory type");
 }
 
+vk::raii::CommandBuffer VKTest::DeviceManager::beginSingleTimeCommands() const {
+    vk::CommandBufferAllocateInfo alloc_info{
+        m_CommandPool,                    // Command Pool
+        vk::CommandBufferLevel::ePrimary, // Level
+        1,                                // Command Buffer Count
+    };
+
+    vk::raii::CommandBuffer command_buffer{ std::move(m_Device.allocateCommandBuffers(alloc_info)[0]) };
+
+    vk::CommandBufferBeginInfo begin_info{
+        vk::CommandBufferUsageFlagBits::eOneTimeSubmit // Flags
+    };
+
+    command_buffer.begin(begin_info);
+
+    return command_buffer;
+}
+
+void VKTest::DeviceManager::endSingleTimeCommands(vk::raii::CommandBuffer& command_buffer)const {
+    command_buffer.end();
+
+    vk::SubmitInfo submit_info{};
+    submit_info.setCommandBufferCount(1);
+    submit_info.setPCommandBuffers(&*command_buffer);
+
+    m_GraphicsQueue.submit(submit_info);
+    m_GraphicsQueue.waitIdle();
+}
+
 uint32_t VKTest::DeviceManager::findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const {
     // find the index of the first queue family that supports graphics
     std::vector<vk::QueueFamilyProperties> queue_family_properties = device.getQueueFamilyProperties();

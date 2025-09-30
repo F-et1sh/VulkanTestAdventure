@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "PipelineManager.h"
 
-VKTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager) :
-    p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager } {}
+VKTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager) :
+    p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager }, p_SwapchainManager{ swapchain_manager } {}
 
 void VKTest::PipelineManager::CreateGraphicsPipeline() {
 	auto vert_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
@@ -148,6 +148,73 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
     };
 
     m_GraphicsPipeline = vk::raii::Pipeline{ device, nullptr, pipeline_info };
+}
+
+void VKTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
+    vk::CommandBufferBeginInfo begin_info{};
+
+    command_buffer.begin(begin_info);
+
+    static constexpr std::array<vk::ClearValue, 2> clear_values{
+        vk::ClearValue{ vk::ClearColorValue{ 0.1f, 0.1f, 0.1f, 1.0f } }, // Color
+        vk::ClearValue{ vk::ClearDepthStencilValue{ 1.0f, 0.0f } }       // Depth and Stencil
+    };
+
+    auto& framebuffer = p_SwapchainManager->getFramebuffers()[image_index];
+
+    vk::RenderPassBeginInfo render_pass_info{
+        p_RenderPassManager->getRenderPass(),               // Render Pass
+        framebuffer,                                        // Framebuffer
+        vk::Rect2D{                                         // Render Area
+            vk::Offset2D{ 0, 0 },                           // Offset
+            vk::Extent2D{ p_SwapchainManager->getExtent() } // Extent
+        },
+        clear_values
+    };
+
+    command_buffer.beginRenderPass(render_pass_info, vk::SubpassContents::eInline);
+
+    command_buffer.bindPipeline(vk::PipelineBindPoint::eGraphics, m_GraphicsPipeline);
+
+    vk::Viewport viewport{
+        0.0f,                                                       // x
+        0.0f,                                                       // y
+        static_cast<float>(p_SwapchainManager->getExtent().width),  // width
+        static_cast<float>(p_SwapchainManager->getExtent().height), // height
+        0.0f,                                                       // Min Depth
+        1.0f                                                        // Max Depth
+    };
+
+    command_buffer.setViewport(0, viewport);
+
+    vk::Rect2D scissor{
+        vk::Offset2D{ 0, 0 },                           // Offset
+        vk::Extent2D{ p_SwapchainManager->getExtent() } // Extent
+    };
+
+    command_buffer.setScissor(0, scissor);
+
+    VkBuffer vertexBuffers[] = { vertexBuffer };
+    VkDeviceSize offsets[] = { 0 };
+    vkCmdBindVertexBuffers(command_buffer, 0, 1, vertexBuffers, offsets);
+    vkCmdBindIndexBuffer(command_buffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+    vk::Buffer vertex_buffer[] = { VERTICES.data() };
+
+    // Draw each object with its own descriptor set
+    for (const auto& gameObject : gameObjects) {
+        // Bind the descriptor set for this object
+        vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, gameObject.descriptorSets.size(), &gameObject.descriptorSets[currentFrame], 0, nullptr);
+
+        // Draw the object
+        vkCmdDrawIndexed(command_buffer, indices.size(), 1, 0, 0, 0);
+    }
+
+    vkCmdEndRenderPass(command_buffer);
+
+    if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to record command buffer!");
+    }
 }
 
 std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path& path) {

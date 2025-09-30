@@ -73,9 +73,6 @@
     <Filter Include="Code\Main\Backend\QueueFamilyIndices">
       <UniqueIdentifier>{eef72dc6-5400-4d5a-9640-4459bc1affcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\FrameData">
-      <UniqueIdentifier>{9e2e7472-21a7-44e8-8b09-46973aa9533c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Main\Vertices">
       <UniqueIdentifier>{fb9b6eaf-9dfd-4183-9b1e-12713803a861}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="Code\Main\Backend\RenderPassManager">
       <UniqueIdentifier>{7ade2b9b-cb15-4478-b2df-9d79534bad10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\FrameData %28 doesn%27t used %29">
+      <UniqueIdentifier>{9e2e7472-21a7-44e8-8b09-46973aa9533c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,7 +121,7 @@
       <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
     </ClCompile>
     <ClCompile Include="Code\FrameData.cpp">
-      <Filter>Code\Main\Backend\FrameData</Filter>
+      <Filter>Code\Main\Backend\FrameData %28 doesn%27t used %29</Filter>
     </ClCompile>
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
@@ -188,7 +188,7 @@
       <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
     </ClInclude>
     <ClInclude Include="Code\FrameData.h">
-      <Filter>Code\Main\Backend\FrameData</Filter>
+      <Filter>Code\Main\Backend\FrameData %28 doesn%27t used %29</Filter>
     </ClInclude>
     <ClInclude Include="Code\Vertices.h">
       <Filter>Code\Main\Vertices</Filter>

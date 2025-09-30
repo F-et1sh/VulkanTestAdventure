@@ -43,10 +43,11 @@ namespace VKTest {
 			createTextureImageView();
 			createTextureSampler();
 			loadModel();
-			createVertexBuffer();
-			createIndexBuffer();
 			
 			*/
+
+			m_GPUResourceManager.CreateVertexBuffer();
+			m_GPUResourceManager.CreateIndexBuffer();
 
 			m_GPUResourceManager.CreateUniformBuffers();
 			m_GPUResourceManager.CreateDescriptorPool();

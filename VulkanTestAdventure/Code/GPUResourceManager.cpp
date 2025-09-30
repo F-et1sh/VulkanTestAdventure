@@ -123,6 +123,42 @@ void VKTest::GPUResourceManager::CreateDescriptorSets() {
     }
 }
 
+void VKTest::GPUResourceManager::CreateVertexBuffer() {
+    vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
+
+    vk::raii::Buffer staging_buffer = VK_NULL_HANDLE;
+    vk::raii::DeviceMemory staging_buffer_memory = VK_NULL_HANDLE;
+    this->createBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
+
+    auto& device = p_DeviceManager->getDevice();
+
+    void* data = staging_buffer_memory.mapMemory(0, buffer_size);
+    memcpy(data, VERTICES.data(), (size_t)buffer_size);
+    staging_buffer_memory.unmapMemory();
+
+    createBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_Vertices, m_VerticesMemory);
+
+    copyBuffer(staging_buffer, m_Vertices, buffer_size);
+};
+
+void VKTest::GPUResourceManager::CreateIndexBuffer() {
+    vk::DeviceSize buffer_size = sizeof(INDICES[0]) * INDICES.size();
+
+    vk::raii::Buffer staging_buffer = VK_NULL_HANDLE;
+    vk::raii::DeviceMemory staging_buffer_memory = VK_NULL_HANDLE;
+    this->createBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, staging_buffer, staging_buffer_memory);
+
+    auto& device = p_DeviceManager->getDevice();
+
+    void* data = staging_buffer_memory.mapMemory(0, buffer_size);
+    memcpy(data, INDICES.data(), (size_t)buffer_size);
+    staging_buffer_memory.unmapMemory();
+
+    createBuffer(buffer_size, vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, m_Indices, m_IndicesMemory);
+
+    copyBuffer(staging_buffer, m_Indices, buffer_size);
+}
+
 void VKTest::GPUResourceManager::CreateUniformBuffers() {
     // For each game object
     for (auto& game_object : m_GameObjects) {
@@ -165,7 +201,7 @@ void VKTest::GPUResourceManager::CreateSyncObjects() {
     }
 }
 
-void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory) {
+void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
     vk::BufferCreateInfo buffer_info{
         vk::BufferCreateFlags{},    // Flags
         size,                       // Size
@@ -186,4 +222,17 @@ void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsa
     buffer_memory = vk::raii::DeviceMemory{ device, alloc_info };
 
     buffer.bindMemory(buffer_memory, 0);
+}
+
+void VKTest::GPUResourceManager::copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size)const {
+    vk::raii::CommandBuffer command_buffer = p_DeviceManager->beginSingleTimeCommands();
+
+    vk::BufferCopy copy_region{
+        0,   // Src Offset
+        0,   // Dst Offset
+        size // Size
+    };
+    command_buffer.copyBuffer(src_buffer, dst_buffer, copy_region);
+
+    p_DeviceManager->endSingleTimeCommands(command_buffer);
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "Vertices.h"
 #include "DeviceManager.h"
 #include "RenderPassManager.h"
 #include "Image.h"
@@ -45,6 +46,8 @@ namespace VKTest {
 		void CreateDepthResources();
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
+		void CreateVertexBuffer();
+		void CreateIndexBuffer();
 		void CreateUniformBuffers();
 		void CreateSyncObjects();
 
@@ -53,29 +56,36 @@ namespace VKTest {
 		inline Image& getDepthImage()noexcept { return m_DepthImage; }
 
 	private:
-		void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory);
+		void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const;
+		void copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size)const;
 
 	private:
-		DeviceManager*						 p_DeviceManager = nullptr;
-		SwapchainManager*					 p_SwapchainManager = nullptr;
-		RenderPassManager*					 p_RenderPassManager = nullptr;
+		DeviceManager*									p_DeviceManager = nullptr;
+		SwapchainManager*								p_SwapchainManager = nullptr;
+		RenderPassManager*								p_RenderPassManager = nullptr;
 
-		vk::raii::DescriptorSetLayout		 m_DescriptorSetLayout = VK_NULL_HANDLE;
-		vk::raii::DescriptorPool			 m_DescriptorPool = VK_NULL_HANDLE;
-		std::vector<vk::raii::DescriptorSet> m_DescriptorSets;
+		vk::raii::DescriptorSetLayout					m_DescriptorSetLayout = VK_NULL_HANDLE;
+		vk::raii::DescriptorPool						m_DescriptorPool = VK_NULL_HANDLE;
+		std::vector<vk::raii::DescriptorSet>			m_DescriptorSets;
 
-		Image								 m_ColorImage;
-		Image								 m_DepthImage;
+		Image											m_ColorImage;
+		Image											m_DepthImage;
 
-		uint32_t							 m_MipLevels = 0;
-		Image								 m_TextureImage;
-		vk::raii::Sampler					 m_TextureSampler = VK_NULL_HANDLE;
+		uint32_t										m_MipLevels = 0;
+		Image											m_TextureImage;
+		vk::raii::Sampler								m_TextureSampler = VK_NULL_HANDLE;
 
 		// array of game objects to render
-		std::array<GameObject, MAX_FRAMES_IN_FLIGHT>  m_GameObjects;
+		std::array<GameObject, MAX_FRAMES_IN_FLIGHT>	m_GameObjects;
 
-		std::vector<vk::raii::Semaphore> m_ImageAvailableSemaphores;
-		std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores;
-		std::vector<vk::raii::Fence> m_InFlightFences;
+		std::vector<vk::raii::Semaphore>				m_ImageAvailableSemaphores;
+		std::vector<vk::raii::Semaphore>				m_RenderFinishedSemaphores;
+		std::vector<vk::raii::Fence>					m_InFlightFences;
+
+		vk::raii::Buffer								m_Vertices;
+		vk::raii::DeviceMemory							m_VerticesMemory;
+
+		vk::raii::Buffer								m_Indices;
+		vk::raii::DeviceMemory							m_IndicesMemory;
 	};
 }
