@@ -157,7 +157,7 @@ void VKTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& comma
 
     static constexpr std::array<vk::ClearValue, 2> clear_values{
         vk::ClearValue{ vk::ClearColorValue{ 0.1f, 0.1f, 0.1f, 1.0f } }, // Color
-        vk::ClearValue{ vk::ClearDepthStencilValue{ 1.0f, 0.0f } }       // Depth and Stencil
+        vk::ClearValue{ vk::ClearDepthStencilValue{ 1.0f, 0 } }          // Depth and Stencil
     };
 
     auto& framebuffer = p_SwapchainManager->getFramebuffers()[image_index];
@@ -194,27 +194,18 @@ void VKTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& comma
 
     command_buffer.setScissor(0, scissor);
 
-    VkBuffer vertexBuffers[] = { vertexBuffer };
+    vk::Buffer vertex_buffers[] = { p_GPUResourceManager->getVertices() };
     VkDeviceSize offsets[] = { 0 };
-    vkCmdBindVertexBuffers(command_buffer, 0, 1, vertexBuffers, offsets);
-    vkCmdBindIndexBuffer(command_buffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-    vk::Buffer vertex_buffer[] = { VERTICES.data() };
+    command_buffer.bindVertexBuffers(0, vertex_buffers, offsets);
+    command_buffer.bindIndexBuffer(p_GPUResourceManager->getIndices(), 0, vk::IndexType::eUint16);
 
-    // Draw each object with its own descriptor set
-    for (const auto& gameObject : gameObjects) {
-        // Bind the descriptor set for this object
-        vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, gameObject.descriptorSets.size(), &gameObject.descriptorSets[currentFrame], 0, nullptr);
+    command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_PipelineLayout, 0, {}, {});
+    command_buffer.drawIndexed(INDICES.size(), 1, 0, 0, 0);
 
-        // Draw the object
-        vkCmdDrawIndexed(command_buffer, indices.size(), 1, 0, 0, 0);
-    }
+    command_buffer.endRenderPass();
 
-    vkCmdEndRenderPass(command_buffer);
-
-    if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
-        throw std::runtime_error("failed to record command buffer!");
-    }
+    command_buffer.end();
 }
 
 std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path& path) {

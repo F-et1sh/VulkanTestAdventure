@@ -34,15 +34,16 @@ namespace VKTest {
 		void CreateCommandPool();
 		void CreateCommandBuffers();
 
-		const vk::raii::Device&		getDevice				()const noexcept { return m_Device; }
+		const vk::raii::Device&					getDevice				()const noexcept { return m_Device; }
 		
-		vk::raii::Device&			getDevice				()noexcept { return m_Device; }
-		vk::raii::Instance&			getInstance				()noexcept { return m_Instance; }
-		vk::raii::CommandPool&		getCommandPool			()noexcept { return m_CommandPool; }
-		vk::raii::Queue&			getPresentQueue			()noexcept { return m_PresentQueue; }
-		vk::raii::Queue&			getGraphicsQueue		()noexcept { return m_GraphicsQueue; }
-		vk::raii::PhysicalDevice&	getPhysicalDevice		()noexcept { return m_PhysicalDevice; }
-		QueueFamilyIndices			getQueueFamilyIndices	()noexcept { return m_QueueFamilyIndices; }
+		vk::raii::Device&						getDevice				()noexcept { return m_Device; }
+		vk::raii::Instance&						getInstance				()noexcept { return m_Instance; }
+		vk::raii::CommandPool&					getCommandPool			()noexcept { return m_CommandPool; }
+		vk::raii::Queue&						getPresentQueue			()noexcept { return m_PresentQueue; }
+		vk::raii::Queue&						getGraphicsQueue		()noexcept { return m_GraphicsQueue; }
+		vk::raii::PhysicalDevice&				getPhysicalDevice		()noexcept { return m_PhysicalDevice; }
+		QueueFamilyIndices						getQueueFamilyIndices	()noexcept { return m_QueueFamilyIndices; }
+		std::vector<vk::raii::CommandBuffer>&	getCommandBuffers		()noexcept { return m_CommandBuffers; }
 
 	public:
 		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const;

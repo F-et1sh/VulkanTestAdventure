@@ -30,6 +30,7 @@ namespace VKTest {
 		inline vk::Format getFormat()const noexcept { return m_SwapchainImageFormat; }
 		inline vk::Extent2D getExtent()const noexcept { return m_SwapchainExtent; }
 		inline std::vector<vk::raii::Framebuffer>& getFramebuffers()noexcept { return m_SwapchainFramebuffers; }
+		inline vk::raii::SwapchainKHR& getSwapchain()noexcept { return m_Swapchain; }
 
 	private:
 		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;

@@ -58,6 +58,8 @@ namespace VKTest {
 		}
 		~Renderer() = default;
 
+		void DrawFrame();
+
 		inline Window* getWindow()noexcept { return p_Window; }
 
 		inline DeviceManager& getDeviceManager()noexcept { return m_DeviceManager; }
@@ -72,5 +74,7 @@ namespace VKTest {
 		GPUResourceManager					 m_GPUResourceManager;
 		PipelineManager						 m_PipelineManager;
 		RenderPassManager					 m_RenderPassManager;
+
+		uint32_t							 m_CurrentFrame = 0;
 	};
 }

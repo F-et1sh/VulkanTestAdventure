@@ -54,6 +54,11 @@ namespace VKTest {
 		inline vk::raii::DescriptorSetLayout& getDescriptorSetLayout()noexcept { return m_DescriptorSetLayout; }
 		inline Image& getColorImage()noexcept { return m_ColorImage; }
 		inline Image& getDepthImage()noexcept { return m_DepthImage; }
+		inline std::vector<vk::raii::Semaphore>& getImageAvailableSemaphores()noexcept { return m_ImageAvailableSemaphores; }
+		inline std::vector<vk::raii::Semaphore>& getRenderFinishedSemaphores()noexcept { return m_RenderFinishedSemaphores; }
+		inline std::vector<vk::raii::Fence>& getInFlightFences()noexcept { return m_InFlightFences; }
+		inline vk::raii::Buffer& getVertices()noexcept { return m_Vertices; }
+		inline vk::raii::Buffer& getIndices()noexcept { return m_Indices; }
 
 	private:
 		void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const;
@@ -82,10 +87,10 @@ namespace VKTest {
 		std::vector<vk::raii::Semaphore>				m_RenderFinishedSemaphores;
 		std::vector<vk::raii::Fence>					m_InFlightFences;
 
-		vk::raii::Buffer								m_Vertices;
-		vk::raii::DeviceMemory							m_VerticesMemory;
+		vk::raii::Buffer								m_Vertices = VK_NULL_HANDLE;
+		vk::raii::DeviceMemory							m_VerticesMemory = VK_NULL_HANDLE;
 
-		vk::raii::Buffer								m_Indices;
-		vk::raii::DeviceMemory							m_IndicesMemory;
+		vk::raii::Buffer								m_Indices = VK_NULL_HANDLE;
+		vk::raii::DeviceMemory							m_IndicesMemory = VK_NULL_HANDLE;
 	};
 }
