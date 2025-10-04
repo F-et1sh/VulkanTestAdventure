@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKHppTest {
+namespace VKTest {
 	class Window {
 	public:
 		Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);

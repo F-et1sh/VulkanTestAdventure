@@ -7,7 +7,7 @@
 
 #define NODISCARD [[nodiscard]]
 
-namespace VKHppTest {
+namespace VKTest {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         if (!std::filesystem::exists(to)) {
             std::filesystem::create_directories(to);

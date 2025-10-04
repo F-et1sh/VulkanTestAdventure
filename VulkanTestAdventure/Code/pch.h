@@ -38,7 +38,7 @@
 // Path Manager
 #include "PathManager.h"
 
-using namespace VKHppTest;
+using namespace VKTest;
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 constexpr int MAX_OBJECTS = 3;

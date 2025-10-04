@@ -180,6 +180,8 @@
     <None Include="Code\VkHpp_Renderer.cpp" />
     <None Include="Code\VkHpp_RenderPassManager.cpp" />
     <None Include="Code\VkHpp_SwapchainManager.cpp" />
+    <ClCompile Include="Code\QueueFamilyIndices.cpp" />
+    <ClCompile Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -232,6 +234,8 @@
     <None Include="Code\VkHpp_Renderer.h" />
     <None Include="Code\VkHpp_RenderPassManager.h" />
     <None Include="Code\VkHpp_SwapchainManager.h" />
+    <ClInclude Include="Code\QueueFamilyIndices.h" />
+    <ClInclude Include="Code\Renderer.h" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.h" />

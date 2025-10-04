@@ -97,6 +97,12 @@
     <Filter Include="Code\Main\Backend\C-Style %28 Active %29\DeivceManager">
       <UniqueIdentifier>{575ca845-b375-4daa-8711-8ccbb6b7dbbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\C-Style %28 Active %29\Renderer">
+      <UniqueIdentifier>{6ba5a9e4-fe60-463e-ac69-3d1d21a03c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\C-Style %28 Active %29\QueueFamilyIndices">
+      <UniqueIdentifier>{f7d48b91-e1c1-4bcf-bde3-5f021e4a82ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -119,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="Code\DeviceManager.cpp">
       <Filter>Code\Main\Backend\C-Style %28 Active %29\DeivceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer.cpp">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\QueueFamilyIndices.cpp">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\QueueFamilyIndices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +174,12 @@
     </ClInclude>
     <ClInclude Include="Code\DeviceManager.h">
       <Filter>Code\Main\Backend\C-Style %28 Active %29\DeivceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Renderer.h">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\QueueFamilyIndices.h">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\QueueFamilyIndices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

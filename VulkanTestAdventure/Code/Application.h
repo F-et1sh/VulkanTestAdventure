@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Renderer.h"
 
-namespace VKHppTest {
+namespace VKTest {
 	class Application {
 	public:
 		Application(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) :
