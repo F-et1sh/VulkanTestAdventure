@@ -1,10 +1,10 @@
 #pragma once
 #include "Vertices.h"
-#include "DeviceManager.h"
-#include "RenderPassManager.h"
-#include "Image.h"
+#include "VkHpp_DeviceManager.h"
+#include "VkHpp_RenderPassManager.h"
+#include "VkHpp_Image.h"
 
-namespace VKTest {
+namespace VKHppTest {
 	class SwapchainManager; // forward declaration
 
 	// define a structure to hold per-object data

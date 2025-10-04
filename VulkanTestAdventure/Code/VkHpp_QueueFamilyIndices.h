@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace VKHppTest {
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphics_family;
         std::optional<uint32_t> present_family;

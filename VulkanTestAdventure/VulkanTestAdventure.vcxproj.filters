@@ -58,35 +58,44 @@
     <Filter Include="Code\Main\Backend">
       <UniqueIdentifier>{777b3468-ec79-4dbc-8778-7749d1e79179}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\Renderer">
-      <UniqueIdentifier>{1f27b419-8897-4fa3-b42f-4ce79fda260d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Backend\DeviceManager">
-      <UniqueIdentifier>{af1bc74a-246e-4225-a02b-ead718999293}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Backend\SwapchainManager">
-      <UniqueIdentifier>{b9268c87-dd8c-4c4b-9f1b-bfff276cecf6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Backend\GPUResourceManager">
-      <UniqueIdentifier>{0133c47b-3640-4739-9115-d6c592dc1c41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Backend\QueueFamilyIndices">
-      <UniqueIdentifier>{eef72dc6-5400-4d5a-9640-4459bc1affcb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Main\Vertices">
       <UniqueIdentifier>{fb9b6eaf-9dfd-4183-9b1e-12713803a861}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\PipelineManager">
-      <UniqueIdentifier>{d42366bb-f880-40da-be60-95ddd40d81b9}</UniqueIdentifier>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29">
+      <UniqueIdentifier>{2f28b22e-a8e4-4e99-9143-5bcbb8cf7fe9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\Image">
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Image">
       <UniqueIdentifier>{d09a197c-1f44-4082-a5af-b19574fa07a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\RenderPassManager">
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\DeviceManager">
+      <UniqueIdentifier>{af1bc74a-246e-4225-a02b-ead718999293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\FrameData %28 doesn%27t used %29">
+      <UniqueIdentifier>{9e2e7472-21a7-44e8-8b09-46973aa9533c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\GPUResourceManager">
+      <UniqueIdentifier>{0133c47b-3640-4739-9115-d6c592dc1c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\PipelineManager">
+      <UniqueIdentifier>{d42366bb-f880-40da-be60-95ddd40d81b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\QueueFamilyIndices">
+      <UniqueIdentifier>{eef72dc6-5400-4d5a-9640-4459bc1affcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Renderer">
+      <UniqueIdentifier>{1f27b419-8897-4fa3-b42f-4ce79fda260d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\RenderPassManager">
       <UniqueIdentifier>{7ade2b9b-cb15-4478-b2df-9d79534bad10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Backend\FrameData %28 doesn%27t used %29">
-      <UniqueIdentifier>{9e2e7472-21a7-44e8-8b09-46973aa9533c}</UniqueIdentifier>
+    <Filter Include="Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\SwapchainManager">
+      <UniqueIdentifier>{b9268c87-dd8c-4c4b-9f1b-bfff276cecf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\C-Style %28 Active %29">
+      <UniqueIdentifier>{772677d8-573f-489c-b4c4-145233aa71d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\C-Style %28 Active %29\DeivceManager">
+      <UniqueIdentifier>{575ca845-b375-4daa-8711-8ccbb6b7dbbe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -105,35 +114,11 @@
     <ClCompile Include="Code\PathManager.cpp">
       <Filter>Code\Main\PathManager</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Renderer.cpp">
-      <Filter>Code\Main\Backend\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\DeviceManager.cpp">
-      <Filter>Code\Main\Backend\DeviceManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\SwapchainManager.cpp">
-      <Filter>Code\Main\Backend\SwapchainManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\GPUResourceManager.cpp">
-      <Filter>Code\Main\Backend\GPUResourceManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\QueueFamilyIndices.cpp">
-      <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\FrameData.cpp">
-      <Filter>Code\Main\Backend\FrameData %28 doesn%27t used %29</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
     </ClCompile>
-    <ClCompile Include="Code\PipelineManager.cpp">
-      <Filter>Code\Main\Backend\PipelineManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Image.cpp">
-      <Filter>Code\Main\Backend\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\RenderPassManager.cpp">
-      <Filter>Code\Main\Backend\RenderPassManager</Filter>
+    <ClCompile Include="Code\DeviceManager.cpp">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\DeivceManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,35 +157,11 @@
     <ClInclude Include="Code\traits.hpp">
       <Filter>Code\Main\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Renderer.h">
-      <Filter>Code\Main\Backend\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\DeviceManager.h">
-      <Filter>Code\Main\Backend\DeviceManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\SwapchainManager.h">
-      <Filter>Code\Main\Backend\SwapchainManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\GPUResourceManager.h">
-      <Filter>Code\Main\Backend\GPUResourceManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\QueueFamilyIndices.h">
-      <Filter>Code\Main\Backend\QueueFamilyIndices</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\FrameData.h">
-      <Filter>Code\Main\Backend\FrameData %28 doesn%27t used %29</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Vertices.h">
       <Filter>Code\Main\Vertices</Filter>
     </ClInclude>
-    <ClInclude Include="Code\PipelineManager.h">
-      <Filter>Code\Main\Backend\PipelineManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Image.h">
-      <Filter>Code\Main\Backend\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\RenderPassManager.h">
-      <Filter>Code\Main\Backend\RenderPassManager</Filter>
+    <ClInclude Include="Code\DeviceManager.h">
+      <Filter>Code\Main\Backend\C-Style %28 Active %29\DeivceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +202,60 @@
     </None>
     <None Include="Code\vulkan_tutorial_main.cpp">
       <Filter>Code\Frozen\VulkanTutorial %28 C-Style %29</Filter>
+    </None>
+    <None Include="Code\VkHpp_SwapchainManager.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\SwapchainManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_SwapchainManager.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\SwapchainManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_RenderPassManager.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\RenderPassManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_RenderPassManager.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\RenderPassManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_Renderer.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Renderer</Filter>
+    </None>
+    <None Include="Code\VkHpp_Renderer.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Renderer</Filter>
+    </None>
+    <None Include="Code\VkHpp_QueueFamilyIndices.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\QueueFamilyIndices</Filter>
+    </None>
+    <None Include="Code\VkHpp_QueueFamilyIndices.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\QueueFamilyIndices</Filter>
+    </None>
+    <None Include="Code\VkHpp_PipelineManager.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\PipelineManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_PipelineManager.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\PipelineManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_Image.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Image</Filter>
+    </None>
+    <None Include="Code\VkHpp_Image.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\Image</Filter>
+    </None>
+    <None Include="Code\VkHpp_GPUResourceManager.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\GPUResourceManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_GPUResourceManager.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\GPUResourceManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_FrameData.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\FrameData %28 doesn%27t used %29</Filter>
+    </None>
+    <None Include="Code\VkHpp_FrameData.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\FrameData %28 doesn%27t used %29</Filter>
+    </None>
+    <None Include="Code\VkHpp_DeviceManager.h">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\DeviceManager</Filter>
+    </None>
+    <None Include="Code\VkHpp_DeviceManager.cpp">
+      <Filter>Code\Main\Backend\VulkanHpp %28 Frozen, doesn%27t work %29\DeviceManager</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "PathManager.h"
 
-void VKTest::PathManager::init(const char* argv0, bool is_editor) {
+void VKHppTest::PathManager::init(const char* argv0, bool is_editor) {
 	if (!argv0)
 		RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
 

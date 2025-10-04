@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace VKHppTest {
 	class Image {
 	public:
 		Image(uint32_t width,

@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "Application.h"
 
-VKTest::Application::~Application() {
+VKHppTest::Application::~Application() {
 
 }
 
-void VKTest::Application::Loop() {
+void VKHppTest::Application::Loop() {
 	while (m_Window.isRunning()) {
 
 		m_Renderer.DrawFrame();

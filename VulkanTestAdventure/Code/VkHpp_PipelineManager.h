@@ -1,10 +1,10 @@
 #pragma once
 #include "Vertices.h"
-#include "GPUResourceManager.h"
-#include "DeviceManager.h"
-#include "RenderPassManager.h"
+#include "VkHpp_GPUResourceManager.h"
+#include "VkHpp_DeviceManager.h"
+#include "VkHpp_RenderPassManager.h"
 
-namespace VKTest {
+namespace VKHppTest {
 	class PipelineManager {
 	public:
 		PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace VKHppTest {
     struct Vertex {
         glm::vec3 position = glm::vec3();
         glm::vec3 color = glm::vec3();

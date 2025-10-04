@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "Image.h"
+#include "VkHpp_Image.h"
 
-VKTest::Image::Image(
+VKHppTest::Image::Image(
     uint32_t width,
     uint32_t height, 
     uint32_t mip_levels, 
@@ -17,7 +17,7 @@ VKTest::Image::Image(
     m_ImageView = this->createImageView(m_Image, format, aspect_flags, mip_levels, device);
 }
 
-void VKTest::Image::createImage(
+void VKHppTest::Image::createImage(
     uint32_t width, 
     uint32_t height, 
     uint32_t mip_levels, 
@@ -64,7 +64,7 @@ void VKTest::Image::createImage(
     image.bindMemory(image_memory, 0);
 }
 
-void VKTest::Image::Initialize(
+void VKHppTest::Image::Initialize(
     uint32_t width,
     uint32_t height,
     uint32_t mip_levels,
@@ -80,7 +80,7 @@ void VKTest::Image::Initialize(
     m_ImageView = this->createImageView(m_Image, format, aspect_flags, mip_levels, device);
 }
 
-vk::raii::ImageView VKTest::Image::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels, vk::raii::Device& device) {
+vk::raii::ImageView VKHppTest::Image::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspect_flags, uint32_t mip_levels, vk::raii::Device& device) {
     vk::ImageViewCreateInfo create_info{
                 vk::ImageViewCreateFlags{}, // Flags
                 image,						// Image

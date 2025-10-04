@@ -169,16 +169,17 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Code\VkHpp_DeviceManager.cpp" />
+    <None Include="Code\VkHpp_FrameData.cpp" />
+    <None Include="Code\VkHpp_GPUResourceManager.cpp" />
+    <None Include="Code\VkHpp_Image.cpp" />
     <ClCompile Include="Code\DeviceManager.cpp" />
-    <ClCompile Include="Code\FrameData.cpp" />
-    <ClCompile Include="Code\GPUResourceManager.cpp" />
-    <ClCompile Include="Code\Image.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
-    <ClCompile Include="Code\PipelineManager.cpp" />
-    <ClCompile Include="Code\QueueFamilyIndices.cpp" />
-    <ClCompile Include="Code\Renderer.cpp" />
-    <ClCompile Include="Code\RenderPassManager.cpp" />
-    <ClCompile Include="Code\SwapchainManager.cpp" />
+    <None Include="Code\VkHpp_PipelineManager.cpp" />
+    <None Include="Code\VkHpp_QueueFamilyIndices.cpp" />
+    <None Include="Code\VkHpp_Renderer.cpp" />
+    <None Include="Code\VkHpp_RenderPassManager.cpp" />
+    <None Include="Code\VkHpp_SwapchainManager.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -220,16 +221,17 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Image.h" />
-    <ClInclude Include="Code\PipelineManager.h" />
+    <None Include="Code\VkHpp_Image.h" />
+    <None Include="Code\VkHpp_PipelineManager.h" />
+    <None Include="Code\VkHpp_DeviceManager.h" />
+    <None Include="Code\VkHpp_FrameData.h" />
+    <None Include="Code\VkHpp_GPUResourceManager.h" />
     <ClInclude Include="Code\DeviceManager.h" />
-    <ClInclude Include="Code\FrameData.h" />
-    <ClInclude Include="Code\GPUResourceManager.h" />
     <ClInclude Include="Code\PathManager.h" />
-    <ClInclude Include="Code\QueueFamilyIndices.h" />
-    <ClInclude Include="Code\Renderer.h" />
-    <ClInclude Include="Code\RenderPassManager.h" />
-    <ClInclude Include="Code\SwapchainManager.h" />
+    <None Include="Code\VkHpp_QueueFamilyIndices.h" />
+    <None Include="Code\VkHpp_Renderer.h" />
+    <None Include="Code\VkHpp_RenderPassManager.h" />
+    <None Include="Code\VkHpp_SwapchainManager.h" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.h" />

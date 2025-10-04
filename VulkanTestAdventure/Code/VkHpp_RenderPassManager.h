@@ -1,7 +1,7 @@
 #pragma once
-#include "SwapchainManager.h"
+#include "VkHpp_SwapchainManager.h"
 
-namespace VKTest {
+namespace VKHppTest {
 	class RenderPassManager {
 	public:
 		RenderPassManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager);

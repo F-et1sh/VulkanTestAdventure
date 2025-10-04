@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "SwapchainManager.h"
+#include "VkHpp_SwapchainManager.h"
 
-#include "Renderer.h"
+#include "VkHpp_Renderer.h"
 
-VKTest::SwapchainManager::SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager) :
+VKHppTest::SwapchainManager::SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager) :
     p_DeviceManager{ device_manager }, p_Window{ window }, p_GPUResourceManager{ gpu_resource_manager }, p_RenderPassManager{ render_pass_manager } {}
 
-void VKTest::SwapchainManager::CreateSurface() {
+void VKHppTest::SwapchainManager::CreateSurface() {
     VkSurfaceKHR surface = VK_NULL_HANDLE; // GLFW uses old C-Style Vulkan
     
     if (glfwCreateWindowSurface(*p_DeviceManager->getInstance(), p_Window->getGLFWWindow(), nullptr, &surface))
@@ -15,7 +15,7 @@ void VKTest::SwapchainManager::CreateSurface() {
     m_Surface = vk::raii::SurfaceKHR{ p_DeviceManager->getInstance(), surface };
 }
 
-void VKTest::SwapchainManager::CreateSwapchain() {
+void VKHppTest::SwapchainManager::CreateSwapchain() {
     auto& physical_device = p_DeviceManager->getPhysicalDevice();
 
     SwapChainSupportDetails swapchain_support = querySwapchainSupport(physical_device);
@@ -68,7 +68,7 @@ void VKTest::SwapchainManager::CreateSwapchain() {
     m_SwapchainExtent = extent;
 }
 
-void VKTest::SwapchainManager::CreateImageViews() {
+void VKHppTest::SwapchainManager::CreateImageViews() {
     m_SwapchainImageViews.reserve(m_SwapchainImages.size());
 
     for (uint32_t i = 0; i < m_SwapchainImages.size(); i++) {
@@ -79,7 +79,7 @@ void VKTest::SwapchainManager::CreateImageViews() {
     }
 }
 
-void VKTest::SwapchainManager::CreateFramebuffers() {
+void VKHppTest::SwapchainManager::CreateFramebuffers() {
     m_SwapchainFramebuffers.reserve(m_SwapchainImageViews.size());
 
     for (size_t i = 0; i < m_SwapchainImageViews.size(); i++) {
@@ -104,7 +104,7 @@ void VKTest::SwapchainManager::CreateFramebuffers() {
     }
 }
 
-SwapChainSupportDetails VKTest::SwapchainManager::querySwapchainSupport(vk::PhysicalDevice device) const {
+SwapChainSupportDetails VKHppTest::SwapchainManager::querySwapchainSupport(vk::PhysicalDevice device) const {
     SwapChainSupportDetails details;
 
     details.capabilities = device.getSurfaceCapabilitiesKHR(m_Surface);
@@ -114,7 +114,7 @@ SwapChainSupportDetails VKTest::SwapchainManager::querySwapchainSupport(vk::Phys
     return details;
 }
 
-vk::SurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats) const {
+vk::SurfaceFormatKHR VKHppTest::SwapchainManager::chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats) const {
     for (const auto& available_format : available_formats) {
 
         if (available_format.format == vk::Format::eB8G8R8A8Srgb &&
@@ -127,14 +127,14 @@ vk::SurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std
     return available_formats[0];
 }
 
-vk::PresentModeKHR VKTest::SwapchainManager::chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes) const {
+vk::PresentModeKHR VKHppTest::SwapchainManager::chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes) const {
     for (const auto& available_present_mode : available_present_modes)
         if (available_present_mode == vk::PresentModeKHR::eMailbox)
             return available_present_mode;
     return vk::PresentModeKHR::eFifo;
 }
 
-VkExtent2D VKTest::SwapchainManager::chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const {
+VkExtent2D VKHppTest::SwapchainManager::chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return capabilities.currentExtent;
     else {

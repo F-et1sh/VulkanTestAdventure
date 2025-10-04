@@ -1,11 +1,11 @@
 #pragma once
 #include "Window.h"
-#include "DeviceManager.h"
-#include "SwapchainManager.h"
-#include "GPUResourceManager.h"
-#include "PipelineManager.h"
+#include "VkHpp_DeviceManager.h"
+#include "VkHpp_SwapchainManager.h"
+#include "VkHpp_GPUResourceManager.h"
+#include "VkHpp_PipelineManager.h"
 
-namespace VKTest {
+namespace VKHppTest {
 	class Renderer {
 	public:
 		Renderer(Window* window) : 

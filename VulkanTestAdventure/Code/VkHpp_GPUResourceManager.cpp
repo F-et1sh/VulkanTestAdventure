@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "GPUResourceManager.h"
+#include "VkHpp_GPUResourceManager.h"
 
-#include "SwapchainManager.h"
+#include "VkHpp_SwapchainManager.h"
 
-VKTest::GPUResourceManager::GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager) :
+VKHppTest::GPUResourceManager::GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager) :
     p_DeviceManager{ device_manager }, p_SwapchainManager{ swapchain_manager }, p_RenderPassManager{ render_pass_manager } {}
 
-void VKTest::GPUResourceManager::CreateDescriptorSetLayout() {
+void VKHppTest::GPUResourceManager::CreateDescriptorSetLayout() {
     vk::DescriptorSetLayoutBinding ubo_layout_binding{
         0,                                          // Binding
         vk::DescriptorType::eUniformBuffer,         // Descriptor Type
@@ -34,7 +34,7 @@ void VKTest::GPUResourceManager::CreateDescriptorSetLayout() {
     m_DescriptorSetLayout = device.createDescriptorSetLayout(layout_info);
 }
 
-void VKTest::GPUResourceManager::CreateColorResources() {
+void VKHppTest::GPUResourceManager::CreateColorResources() {
     vk::Format color_format = this->p_SwapchainManager->getFormat();
     vk::Extent2D extent = this->p_SwapchainManager->getExtent();
     constexpr static uint32_t mip_levels = 1;
@@ -43,7 +43,7 @@ void VKTest::GPUResourceManager::CreateColorResources() {
     m_ColorImage.Initialize(extent.width, extent.height, mip_levels, p_RenderPassManager->getMSAASamples(), color_format, vk::ImageAspectFlagBits::eColor, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransientAttachment | vk::ImageUsageFlagBits::eColorAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
 }
 
-void VKTest::GPUResourceManager::CreateDepthResources() {
+void VKHppTest::GPUResourceManager::CreateDepthResources() {
     vk::Format depth_format = this->p_DeviceManager->findDepthFormat();
     vk::Extent2D extent = this->p_SwapchainManager->getExtent();
     constexpr static uint32_t mip_levels = 1;
@@ -52,7 +52,7 @@ void VKTest::GPUResourceManager::CreateDepthResources() {
     m_DepthImage.Initialize(extent.width, extent.height, mip_levels, p_RenderPassManager->getMSAASamples(), depth_format, vk::ImageAspectFlagBits::eDepth, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, device);
 }
 
-void VKTest::GPUResourceManager::CreateDescriptorPool() {
+void VKHppTest::GPUResourceManager::CreateDescriptorPool() {
     // we need MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT descriptor sets
     std::array pool_size{
         vk::DescriptorPoolSize(vk::DescriptorType::eUniformBuffer, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT),
@@ -69,7 +69,7 @@ void VKTest::GPUResourceManager::CreateDescriptorPool() {
     m_DescriptorPool = device.createDescriptorPool(pool_info);
 }
 
-void VKTest::GPUResourceManager::CreateDescriptorSets() {
+void VKHppTest::GPUResourceManager::CreateDescriptorSets() {
     // for each game object
     for (auto& game_object : m_GameObjects) {
         // create descriptor sets for each frame in flight
@@ -92,8 +92,8 @@ void VKTest::GPUResourceManager::CreateDescriptorSets() {
             };
 
             vk::DescriptorImageInfo image_info{
-                m_TextureSampler,                       // Sampler
-                m_TextureImage.getImageView(),          // Image View
+                *m_TextureSampler,                       // Sampler
+                *m_TextureImage.getImageView(),          // Image View
                 vk::ImageLayout::eShaderReadOnlyOptimal // Image Layout
             };
 
@@ -123,7 +123,7 @@ void VKTest::GPUResourceManager::CreateDescriptorSets() {
     }
 }
 
-void VKTest::GPUResourceManager::CreateVertexBuffer() {
+void VKHppTest::GPUResourceManager::CreateVertexBuffer() {
     vk::DeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
 
     vk::raii::Buffer staging_buffer = VK_NULL_HANDLE;
@@ -141,7 +141,7 @@ void VKTest::GPUResourceManager::CreateVertexBuffer() {
     copyBuffer(staging_buffer, m_Vertices, buffer_size);
 };
 
-void VKTest::GPUResourceManager::CreateIndexBuffer() {
+void VKHppTest::GPUResourceManager::CreateIndexBuffer() {
     vk::DeviceSize buffer_size = sizeof(INDICES[0]) * INDICES.size();
 
     vk::raii::Buffer staging_buffer = VK_NULL_HANDLE;
@@ -159,7 +159,7 @@ void VKTest::GPUResourceManager::CreateIndexBuffer() {
     copyBuffer(staging_buffer, m_Indices, buffer_size);
 }
 
-void VKTest::GPUResourceManager::CreateUniformBuffers() {
+void VKHppTest::GPUResourceManager::CreateUniformBuffers() {
     // For each game object
     for (auto& game_object : m_GameObjects) {
         vk::DeviceSize buffer_size = sizeof(UniformBufferObject);
@@ -181,7 +181,7 @@ void VKTest::GPUResourceManager::CreateUniformBuffers() {
     };
 }
 
-void VKTest::GPUResourceManager::CreateSyncObjects() {
+void VKHppTest::GPUResourceManager::CreateSyncObjects() {
     m_ImageAvailableSemaphores.reserve(MAX_FRAMES_IN_FLIGHT);
     m_RenderFinishedSemaphores.reserve(MAX_FRAMES_IN_FLIGHT);
     m_InFlightFences.reserve(MAX_FRAMES_IN_FLIGHT);
@@ -201,7 +201,7 @@ void VKTest::GPUResourceManager::CreateSyncObjects() {
     }
 }
 
-void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
+void VKHppTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const {
     vk::BufferCreateInfo buffer_info{
         vk::BufferCreateFlags{},    // Flags
         size,                       // Size
@@ -224,7 +224,7 @@ void VKTest::GPUResourceManager::createBuffer(vk::DeviceSize size, vk::BufferUsa
     buffer.bindMemory(buffer_memory, 0);
 }
 
-void VKTest::GPUResourceManager::copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size)const {
+void VKHppTest::GPUResourceManager::copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size)const {
     vk::raii::CommandBuffer command_buffer = p_DeviceManager->beginSingleTimeCommands();
 
     vk::BufferCopy copy_region{

@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "PipelineManager.h"
+#include "VkHpp_PipelineManager.h"
 
-VKTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager) :
+VKHppTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager) :
     p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager }, p_SwapchainManager{ swapchain_manager } {}
 
-void VKTest::PipelineManager::CreateGraphicsPipeline() {
+void VKHppTest::PipelineManager::CreateGraphicsPipeline() {
 	auto vert_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
     auto frag_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
@@ -150,7 +150,7 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
     m_GraphicsPipeline = vk::raii::Pipeline{ device, nullptr, pipeline_info };
 }
 
-void VKTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
+void VKHppTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& command_buffer, uint32_t image_index) {
     vk::CommandBufferBeginInfo begin_info{};
 
     command_buffer.begin(begin_info);
@@ -208,7 +208,7 @@ void VKTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& comma
     command_buffer.end();
 }
 
-std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path& path) {
+std::vector<char> VKHppTest::PipelineManager::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
     if (!file.good()) RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());
 
@@ -219,7 +219,7 @@ std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path&
     return buffer;
 }
 
-vk::raii::ShaderModule VKTest::PipelineManager::createShaderModule(const std::vector<char>& code) const {
+vk::raii::ShaderModule VKHppTest::PipelineManager::createShaderModule(const std::vector<char>& code) const {
     vk::ShaderModuleCreateInfo create_info{
         vk::ShaderModuleCreateFlags{},                  // Flags
         code.size(),                                    // Code Size

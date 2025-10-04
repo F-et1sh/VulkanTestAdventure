@@ -3,7 +3,7 @@
 #include "DeviceManager.h"
 #include "QueueFamilyIndices.h"
 
-namespace VKTest {
+namespace VKHppTest {
 	class GPUResourceManager; // forward declaration
 	class RenderPassManager; // forward declaration
 

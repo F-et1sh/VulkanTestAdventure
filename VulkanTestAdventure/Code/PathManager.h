@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace VKHppTest {
 	class PathManager {
 	public:
 		CLASS_NONCOPYABLE(PathManager)

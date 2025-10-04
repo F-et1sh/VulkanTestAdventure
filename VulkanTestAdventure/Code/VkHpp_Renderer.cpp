@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "Renderer.h"
+#include "VkHpp_Renderer.h"
 
-void VKTest::Renderer::DrawFrame() {
+void VKHppTest::Renderer::DrawFrame() {
     auto& device = m_DeviceManager.getDevice();
     auto& fences = m_GPUResourceManager.getInFlightFences();
     auto& image_available_semaphores = m_GPUResourceManager.getImageAvailableSemaphores();

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace VKHppTest {
     struct FrameData {
         vk::raii::CommandBuffer command_buffer = VK_NULL_HANDLE;
 
