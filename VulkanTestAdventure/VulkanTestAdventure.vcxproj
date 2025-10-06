@@ -113,6 +113,7 @@
       <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +147,7 @@
       <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

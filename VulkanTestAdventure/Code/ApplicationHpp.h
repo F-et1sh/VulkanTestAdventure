@@ -44,8 +44,8 @@ namespace VK_HPP {
 
     constexpr static auto REQUIRED_QUEUE_FAMILY_FLAGS = vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eTransfer;
 
-    const static std::string MODEL_PATH = "C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/2eaeee605051fb13a4b0c452f2cc87d7.obj";
-    const static std::string TEXTURE_PATH = "C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/texture_pbr_v128.png";
+    const static std::string MODEL_PATH = "C:/Users/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/2eaeee605051fb13a4b0c452f2cc87d7.obj";
+    const static std::string TEXTURE_PATH = "C:/Users/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/Desktop/VulkanTestAdventure/Files/Models/se_toy_robotic_girl/texture_pbr_v128.png";
 
     class Application {
     public:

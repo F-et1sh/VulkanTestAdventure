@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "VkHpp_DeviceManager.h"
 
+// включение класса из forward declaration
 #include "VkHpp_SwapchainManager.h"
 
 void VKHppTest::DeviceManager::CreateInstance() {
-    constexpr static vk::ApplicationInfo app_info{
-        "VKHppTest",                   // Application Name
+    constexpr static vk::ApplicationInfo app_info{ // переменные внутри функций пишутс€ в snake_case
+        "VKHppTest",                // Application Name // об€зательно писать что за переменна€ инициализируетс€
         vk::makeVersion(1, 0, 0),   // Application Version
         nullptr,                    // Engine Name
         vk::makeVersion(1, 0, 0),   // Engine Version
@@ -47,7 +48,7 @@ void VKHppTest::DeviceManager::CreateInstance() {
         required_extensions.data()                          // Enabled Extension Names
     };
 
-    m_Instance = vk::raii::Instance{ m_Context, create_info };
+    m_Instance = vk::raii::Instance{ m_Context, create_info }; // конструктор только через {}
 }
 
 void VKHppTest::DeviceManager::SetupDebugMessenger() {

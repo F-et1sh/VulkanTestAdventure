@@ -39,7 +39,7 @@ void VKTest::Window::ClearColor(float r, float g, float b, float a) const noexce
 }
 
 void VKTest::Window::ClearScreen(unsigned int buffer_bit) const noexcept {
-
+    
 }
 
 void VKTest::Window::SwapBuffers() const noexcept {

@@ -1,13 +1,17 @@
 #pragma once
 #include "VkHpp_QueueFamilyIndices.h"
 
+// все комментарии на русском нужны для описания формата. Файл уже не актуальный, но хорошо описывает что куда и как пихать
+
+// namespace тут
 namespace VKHppTest {
+	// писать тут и обязательно подписать '// forward declaration' или '/* forward declarations *\'
 	class SwapchainManager; // forward declaration
 
 	class DeviceManager {
-	private:
+	private: // обязательно написать public или private. Чаще всего public и сразу после него конструктор и деконструктор, но тут нужно было включить глобальные переменные, поэтому тут стоит public
 #ifdef _DEBUG
-		constexpr static bool ENABLE_VALIDATION_LAYERS = true;
+		constexpr static bool ENABLE_VALIDATION_LAYERS = true; // глобальные переменные написаны капсом
 #else
 		constexpr static bool ENABLE_VALIDATION_LAYERS = false;
 #endif // _DEBUG
@@ -24,9 +28,10 @@ namespace VKHppTest {
 		};
 
 	public:
-		DeviceManager(SwapchainManager* swapchain_manager) : p_SwapchainManager{swapchain_manager} {}
-		~DeviceManager() = default;
+		DeviceManager(SwapchainManager* swapchain_manager) : p_SwapchainManager{swapchain_manager} {} // конструктор всегда рядом с деструктором
+		~DeviceManager() = default; // деструктор пишется после конструктора
 
+		// тут блок для методов инициализации, которые нужно вызывать в строгом порядке. Пишутся с заглавной буквы
 		void CreateInstance();
 		void SetupDebugMessenger();
 		void PickPhysicalDevice();
@@ -34,8 +39,8 @@ namespace VKHppTest {
 		void CreateCommandPool();
 		void CreateCommandBuffers();
 
+		// тут блок для геттеров, формат : get + MemberName
 		const vk::raii::Device&					getDevice				()const noexcept { return m_Device; }
-		
 		vk::raii::Device&						getDevice				()noexcept { return m_Device; }
 		vk::raii::Instance&						getInstance				()noexcept { return m_Instance; }
 		vk::raii::CommandPool&					getCommandPool			()noexcept { return m_CommandPool; }
@@ -45,19 +50,19 @@ namespace VKHppTest {
 		QueueFamilyIndices						getQueueFamilyIndices	()noexcept { return m_QueueFamilyIndices; }
 		std::vector<vk::raii::CommandBuffer>&	getCommandBuffers		()noexcept { return m_CommandBuffers; }
 
-	public:
+	public: // тут уже следующий блок для всяких утилит, пишутся с маленькой буквы, должы быть const
 		uint32_t findQueueFamilies(vk::PhysicalDevice device, vk::QueueFlagBits flags)const;
 		vk::Format findDepthFormat()const;
 		uint32_t findMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties)const;
 		vk::raii::CommandBuffer beginSingleTimeCommands()const;
 		void endSingleTimeCommands(vk::raii::CommandBuffer& command_buffer)const;
 		
-	private:
+	private: // тут утилиты только для класса
 		void configureDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& create_info)const noexcept;
 		std::vector<const char*> getRequiredExtensions()const;
 		vk::Format findSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features)const;
 
-	private:
+	private: // тут callback-и
 		// uses C-Style Vulkan API
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
 			// if not warning or error -> return
@@ -69,7 +74,7 @@ namespace VKHppTest {
 			return VK_FALSE;
 		}
 
-	private:
+	private: // тут все переменные. m_MemberName - просто member, p_PtrName - указатель
 		SwapchainManager* p_SwapchainManager = nullptr;
 
 		vk::raii::Context m_Context{};

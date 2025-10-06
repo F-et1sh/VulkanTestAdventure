@@ -238,8 +238,8 @@ void VK_HPP::Application::CreateDescriptorSetLayout() {
 }
 
 void VK_HPP::Application::CreateGraphicsPipeline() {
-    auto code_vert = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-    auto code_frag = LoadShader(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+    auto code_vert = LoadShader(L"C:/Users/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+    auto code_frag = LoadShader(L"C:/Users/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
     vk::raii::ShaderModule shader_module_vert = this->CreateShaderModule(code_vert);
     vk::raii::ShaderModule shader_module_frag = this->CreateShaderModule(code_frag);
