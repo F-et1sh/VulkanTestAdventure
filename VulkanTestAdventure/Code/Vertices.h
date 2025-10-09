@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace vk_test {
     struct Vertex {
         glm::vec3 position      = glm::vec3();
         glm::vec3 color         = glm::vec3();
@@ -50,4 +50,4 @@ namespace VKTest {
     const std::vector<uint16_t> INDICES = {
         0, 1, 2, 2, 3, 0
     };
-} // namespace VKTest
+} // namespace vk_test

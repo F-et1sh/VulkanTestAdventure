@@ -7,7 +7,8 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
   -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-avoid-non-const-global-variables
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -misc-include-cleaner
 
 CheckOptions:
   # ------------------------------
@@ -78,5 +79,7 @@ CheckOptions:
   - { key: readability-identifier-naming.ParameterCase,          value: lower_case }
 
 WarningsAsErrors: ''
+HeaderFileExtensions:         ['h','hpp']
+ImplementationFileExtensions: ['c','cpp']
 HeaderFilterRegex: '.*VulkanTestAdventure/Code/.*'
 FormatStyle: none

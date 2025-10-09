@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "DeviceManager.h"
 
-namespace VKTest {
+namespace vk_test {
     class Renderer {
     public:
         Renderer(Window* window) : p_Window{ window } {}
@@ -17,4 +17,4 @@ namespace VKTest {
 
         DeviceManager m_DeviceManager;
     };
-} // namespace VKTest
+} // namespace vk_test
