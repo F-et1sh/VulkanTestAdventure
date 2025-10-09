@@ -3,8 +3,7 @@
 namespace vk_test {
     class PathManager {
     public:
-        PathManager(const PathManager&)            = delete;
-        PathManager& operator=(const PathManager&) = delete;
+        VKTEST_CLASS_NONCOPYABLE(PathManager)
 
         void Init(const char* argv0, bool is_editor);
 
@@ -21,7 +20,7 @@ namespace vk_test {
             return m_AssetsPath;
         }
 
-        [[nodiscard]] const std::filesystem::path& GetApplicationPath() const {
+        [[nodiscard]] const std::filesystem::path GetApplicationPath() const {
             return this->GetAssetsPath() / L"Application";
         }
 
