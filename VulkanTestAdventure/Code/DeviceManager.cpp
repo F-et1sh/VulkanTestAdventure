@@ -72,7 +72,7 @@ void VKTest::DeviceManager::PickPhysicalDevice() {
         }
     }
 
-    if (physicalDevice == VK_NULL_HANDLE) {
+    if (m_PhysicalDevice == VK_NULL_HANDLE) {
         throw std::runtime_error("failed to find a suitable GPU!");
     }
 }
@@ -140,30 +140,18 @@ VkSampleCountFlagBits VKTest::DeviceManager::getMaxUsableSampleCount() {
     vkGetPhysicalDeviceProperties(m_PhysicalDevice, &physical_device_properties);
 
     VkSampleCountFlags counts = physical_device_properties.limits.framebufferColorSampleCounts & physical_device_properties.limits.framebufferDepthSampleCounts;
-    if ((counts & VK_SAMPLE_COUNT_64_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_64_BIT;
-    }
-    if ((counts & VK_SAMPLE_COUNT_32_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_32_BIT;
-    }
-    if ((counts & VK_SAMPLE_COUNT_16_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_16_BIT;
-    }
-    if ((counts & VK_SAMPLE_COUNT_8_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_8_BIT;
-    }
-    if ((counts & VK_SAMPLE_COUNT_4_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_4_BIT;
-    }
-    if ((counts & VK_SAMPLE_COUNT_2_BIT) != 0U) {
-        return VK_SAMPLE_COUNT_2_BIT;
-    }
+    if ((counts & VK_SAMPLE_COUNT_64_BIT) != 0U) return VK_SAMPLE_COUNT_64_BIT;
+    if ((counts & VK_SAMPLE_COUNT_32_BIT) != 0U) return VK_SAMPLE_COUNT_32_BIT;
+    if ((counts & VK_SAMPLE_COUNT_16_BIT) != 0U) return VK_SAMPLE_COUNT_16_BIT;
+    if ((counts & VK_SAMPLE_COUNT_8_BIT) != 0U) return VK_SAMPLE_COUNT_8_BIT;
+    if ((counts & VK_SAMPLE_COUNT_4_BIT) != 0U) return VK_SAMPLE_COUNT_4_BIT;
+    if ((counts & VK_SAMPLE_COUNT_2_BIT) != 0U) return VK_SAMPLE_COUNT_2_BIT;
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
 
 bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
-    QueueFamilyIndices indices = findQueueFamilies(device);
+    /*QueueFamilyIndices indices = findQueueFamilies(device);
 
     bool extensions_supported = checkDeviceExtensionSupport(device);
 
@@ -176,11 +164,13 @@ bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceFeatures supported_features;
     vkGetPhysicalDeviceFeatures(device, &supported_features);
 
-    return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);
+    return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);*/
+
+    return false;
 }
 
 QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkPhysicalDevice device) {
-    QueueFamilyIndices indices;
+    /*QueueFamilyIndices indices;
 
     uint32_t queue_family_count = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
@@ -208,7 +198,9 @@ QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkPhysicalDevice dev
         i++;
     }
 
-    return indices;
+    return indices;*/
+
+    return {};
 }
 
 VkResult VKTest::DeviceManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* p_create_info, const VkAllocationCallbacks* p_allocator, VkDebugUtilsMessengerEXT* p_debug_messenger) {

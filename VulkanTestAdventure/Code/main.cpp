@@ -10,7 +10,7 @@ constexpr inline static int FAILED_EXIT     = -1;
 
 int main(int argc, char* argv[]) {
     try {
-        VKTest::PATH.Init(argv[0], true); // instance of the PathManager
+        VKTest::PATH.init(argv[0], true); // instance of the PathManager
 
         std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
         app->Loop();

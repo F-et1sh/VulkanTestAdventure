@@ -32,7 +32,7 @@ void VKTest::PathManager::init(const char* argv0, bool is_editor) {
         if (std::filesystem::exists(editor_assets_folder_path)) {
 
             std::filesystem::remove_all(application_assets_folder_path);
-            CopyIfNew(editor_assets_folder_path, application_assets_folder_path);
+            copy_if_new(editor_assets_folder_path, application_assets_folder_path);
         }
     }
     catch (const std::exception& e) {
