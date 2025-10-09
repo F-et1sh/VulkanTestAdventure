@@ -25,14 +25,16 @@ namespace vk_test {
         void CreateCommandBuffers();
 
     private:
-        static auto get_required_extensions() -> std::vector<const char*>;
+        static std::vector<const char*> get_required_extensions();
         static void                     populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& create_info);
-        static auto                     check_validation_layer_support() -> bool;
+        static bool                     check_validation_layer_support();
 
-    
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data);
+        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {
+            VKTEST_SAY("Validation layer : " << p_callback_data->pMessage);
+            return VK_FALSE;
+        }
 
-    
+    private:
         VkInstance m_Instance;
 
         VkPhysicalDevice m_PhysicalDevice;
@@ -43,4 +45,4 @@ namespace vk_test {
 
         VkDebugUtilsMessengerEXT m_DebugMessenger;
     };
-} // namespace VKTest
+} // namespace vk_test

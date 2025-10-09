@@ -3,35 +3,34 @@
 namespace vk_test {
     class PathManager {
     public:
-        VKTEST_CLASS_NONCOPYABLE(PathManager)
+        PathManager(const PathManager&)            = delete;
+        PathManager& operator=(const PathManager&) = delete;
 
         void Init(const char* argv0, bool is_editor);
 
-        static auto Instance() -> PathManager& {
+        static PathManager& Instance() {
             static PathManager PATH_MANAGER;
             return PATH_MANAGER;
         }
 
-    
-        [[nodiscard]] auto GetExecutablePath() const noexcept -> const std::filesystem::path& {
+        [[nodiscard]] const std::filesystem::path& GetExecutablePath() const noexcept {
             return m_ExecutablePath;
         }
 
-        [[nodiscard]] auto GetAssetsPath() const noexcept -> const std::filesystem::path& {
+        [[nodiscard]] const std::filesystem::path& GetAssetsPath() const noexcept {
             return m_AssetsPath;
         }
 
-        [[nodiscard]] auto GetApplicationPath() const -> std::filesystem::path {
+        [[nodiscard]] const std::filesystem::path& GetApplicationPath() const {
             return this->GetAssetsPath() / L"Application";
         }
 
     private:
         VKTEST_CLASS_DEFAULT(PathManager)
 
-    
         std::filesystem::path m_ExecutablePath;
         std::filesystem::path m_AssetsPath;
     };
 
     inline static PathManager& PATH = PathManager::Instance();
-} // namespace VKTest
+} // namespace vk_test

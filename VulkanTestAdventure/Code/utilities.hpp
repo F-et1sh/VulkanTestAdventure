@@ -1,7 +1,10 @@
 #pragma once
 
-#define VKTEST_SAY(message) std::wcerr << std::endl \
-                                << (message) << std::endl
+// NOLINTBEGIN(bugprone-macro-parentheses)
+#define VKTEST_SAY(message) \
+    std::wcerr << std::endl \
+               << message << std::endl
+// NOLINTEND(bugprone-macro-parentheses)
 #define VKTEST_SAY_WITHOUT_BREAK(message) std::wcerr << message
 
 #define VKTEST_RUNTIME_ERROR(message) throw std::runtime_error(message)
@@ -51,4 +54,4 @@ namespace vk_test {
 
         return path;
     }
-} // namespace VKTest
+} // namespace vk_test

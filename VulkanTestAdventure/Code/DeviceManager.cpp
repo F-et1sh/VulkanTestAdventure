@@ -55,7 +55,7 @@ void vk_test::DeviceManager::CreateCommandPool() {
 void vk_test::DeviceManager::CreateCommandBuffers() {
 }
 
-auto vk_test::DeviceManager::get_required_extensions() -> std::vector<const char*> {
+std::vector<const char*> vk_test::DeviceManager::get_required_extensions() {
     uint32_t     glfw_extension_count = 0;
     const char** glfw_extensions      = nullptr;
     glfw_extensions                   = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
@@ -79,7 +79,7 @@ void vk_test::DeviceManager::populate_debug_messenger_create_info(VkDebugUtilsMe
     create_info.pfnUserCallback = debug_callback;
 }
 
-auto vk_test::DeviceManager::check_validation_layer_support() -> bool {
+bool vk_test::DeviceManager::check_validation_layer_support() {
     uint32_t layer_count = 0;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
@@ -102,9 +102,4 @@ auto vk_test::DeviceManager::check_validation_layer_support() -> bool {
     }
 
     return true;
-}
-
-VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {
-    VKTEST_SAY("Validation layer : " << p_callback_data->pMessage);
-    return VK_FALSE;
 }

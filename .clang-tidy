@@ -1,15 +1,13 @@
 Checks: >
-  modernize-*,
   readability-*,
   cppcoreguidelines-*,
   bugprone-*,
   performance-*,
-  misc-forwarding-reference-overload,
-  -readability-magic-numbers, # Ваши исключения
+  misc-*,
   -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
   -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-avoid-non-const-global-variables,
-  -misc-include-cleaner
+  -cppcoreguidelines-avoid-non-const-global-variables
 
 CheckOptions:
   # ------------------------------

@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "PathManager.h"
 
-void VKTest::PathManager::init(const char* argv0, bool is_editor) {
+void vk_test::PathManager::Init(const char* argv0, bool is_editor) {
     if (!argv0)
-        RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
+        VKTEST_RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
 
     try {
         m_ExecutablePath = std::filesystem::canonical(argv0).parent_path();
@@ -31,10 +31,10 @@ void VKTest::PathManager::init(const char* argv0, bool is_editor) {
         if (std::filesystem::exists(editor_assets_folder_path)) {
 
             std::filesystem::remove_all(application_assets_folder_path);
-            copy_if_new(editor_assets_folder_path, application_assets_folder_path);
+            CopyIfNew(editor_assets_folder_path, application_assets_folder_path);
         }
     }
     catch (const std::exception& e) {
-        RUNTIME_ERROR("Failed to Initialize PathManager\n" + std::string(e.what()));
+        VKTEST_RUNTIME_ERROR("Failed to Initialize PathManager\n" + std::string(e.what()));
     }
 }

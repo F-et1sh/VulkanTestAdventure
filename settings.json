@@ -33,7 +33,7 @@
     "DetectClangTidyFile": true,
     "FormatAfterTidy": false,
     "TidyOnSave": false,
-    "ApplyTidyFix": true
+    "ApplyTidyFix": false
   },
   {
     "Version": "2025.8.0"
