@@ -1,6 +1,5 @@
 #pragma once
 
-// NOLINTBEGIN(bugprone-macro-parentheses)
 #define VKTEST_CLASS_DEFAULT(T) \
     T()  = default;             \
     ~T() = default;
@@ -31,5 +30,3 @@
     T& operator=(const T&) = delete; \
     T(T&&)                 = delete; \
     T& operator=(T&&)      = delete;
-
-// NOLINTEND(bugprone-macro-parentheses)

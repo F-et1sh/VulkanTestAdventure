@@ -1,12 +1,12 @@
 #pragma once
 
-namespace vk_test {
+namespace VKTest {
     struct Vertex {
         glm::vec3 position      = glm::vec3();
         glm::vec3 color         = glm::vec3();
         glm::vec2 texture_coord = glm::vec2();
 
-        static constexpr inline vk::VertexInputBindingDescription getBindingDescription() noexcept {
+        static constexpr vk::VertexInputBindingDescription getBindingDescription() noexcept {
             return {
                 0,                           // Binding
                 sizeof(Vertex),              // Stride
@@ -14,7 +14,7 @@ namespace vk_test {
             };
         }
 
-        static constexpr inline std::array<vk::VertexInputAttributeDescription, 3> getAttributeDescriptions() {
+        static constexpr std::array<vk::VertexInputAttributeDescription, 3> getAttributeDescriptions() {
             return {
                 vk::VertexInputAttributeDescription{
                     0,                                                // Location
@@ -41,13 +41,13 @@ namespace vk_test {
     };
 
     const std::vector<Vertex> VERTICES = {
-        { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-        { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-        { { 0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
-        { { -0.5f, 0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f } }
+        { { -0.5f, -0.5f, 0.0F }, { 1.0f, 0.0f, 0.0F } },
+        { { 0.5f, -0.5f, 0.0F }, { 0.0f, 1.0f, 0.0F } },
+        { { 0.5f, 0.5f, 0.0F }, { 0.0f, 0.0f, 1.0F } },
+        { { -0.5f, 0.5f, 0.0F }, { 1.0f, 1.0f, 1.0F } }
     };
 
     const std::vector<uint16_t> INDICES = {
         0, 1, 2, 2, 3, 0
     };
-} // namespace vk_test
+} // namespace VKTest

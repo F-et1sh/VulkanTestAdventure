@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "DeviceManager.h"
 
-void vk_test::DeviceManager::CreateInstance() {
-    if (ENABLE_VALIDATION_LAYERS && !check_validation_layer_support()) {
+void VKTest::DeviceManager::CreateInstance() {
+    if (ENABLE_VALIDATION_LAYERS && !checkValidationLayerSupport()) {
         VKTEST_RUNTIME_ERROR("ERROR : Validation layers requested, but not available");
     }
 
@@ -18,7 +18,7 @@ void vk_test::DeviceManager::CreateInstance() {
     create_info.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     create_info.pApplicationInfo = &app_info;
 
-    auto extensions                     = get_required_extensions();
+    auto extensions                     = getRequiredExtensions();
     create_info.enabledExtensionCount   = static_cast<uint32_t>(extensions.size());
     create_info.ppEnabledExtensionNames = extensions.data();
 
@@ -27,7 +27,7 @@ void vk_test::DeviceManager::CreateInstance() {
         create_info.enabledLayerCount   = static_cast<uint32_t>(VALIDATION_LAYERS.size());
         create_info.ppEnabledLayerNames = VALIDATION_LAYERS.data();
 
-        populate_debug_messenger_create_info(debug_create_info);
+        populateDebugMessengerCreateInfo(debug_create_info);
         create_info.pNext = (&debug_create_info);
     }
     else {
@@ -40,27 +40,29 @@ void vk_test::DeviceManager::CreateInstance() {
     }
 }
 
-void vk_test::DeviceManager::SetupDebugMessenger() {
-    if (!ENABLE_VALIDATION_LAYERS) return;
+void VKTest::DeviceManager::SetupDebugMessenger() {
+    if (!ENABLE_VALIDATION_LAYERS) {
+        return;
+    }
 
-    VkDebugUtilsMessengerCreateInfoEXT createInfo;
-    populate_debug_messenger_create_info(createInfo);
+    VkDebugUtilsMessengerCreateInfoEXT create_info;
+    populateDebugMessengerCreateInfo(create_info);
 
-    if (this->CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS) {
+    if (VKTest::DeviceManager::CreateDebugUtilsMessengerEXT(m_Instance, &create_info, nullptr, &m_DebugMessenger) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug messenger!");
     }
 }
 
-void vk_test::DeviceManager::PickPhysicalDevice() {
-    uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+void VKTest::DeviceManager::PickPhysicalDevice() {
+    uint32_t device_count = 0;
+    vkEnumeratePhysicalDevices(m_Instance, &device_count, nullptr);
 
-    if (deviceCount == 0) {
+    if (device_count == 0) {
         VKTEST_RUNTIME_ERROR("ERROR : Failed to find GPUs with Vulkan support");
     }
 
-    std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+    std::vector<VkPhysicalDevice> devices(device_count);
+    vkEnumeratePhysicalDevices(m_Instance, &device_count, devices.data());
 
     for (const auto& device : devices) {
         if (isDeviceSuitable(device)) {
@@ -75,16 +77,16 @@ void vk_test::DeviceManager::PickPhysicalDevice() {
     }
 }
 
-void vk_test::DeviceManager::CreateLogicalDevice() {
+void VKTest::DeviceManager::CreateLogicalDevice() {
 }
 
-void vk_test::DeviceManager::CreateCommandPool() {
+void VKTest::DeviceManager::CreateCommandPool() {
 }
 
-void vk_test::DeviceManager::CreateCommandBuffers() {
+void VKTest::DeviceManager::CreateCommandBuffers() {
 }
 
-std::vector<const char*> vk_test::DeviceManager::get_required_extensions() {
+std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
     uint32_t     glfw_extension_count = 0;
     const char** glfw_extensions      = nullptr;
     glfw_extensions                   = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
@@ -100,7 +102,7 @@ std::vector<const char*> vk_test::DeviceManager::get_required_extensions() {
     return extensions;
 }
 
-void vk_test::DeviceManager::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& create_info) {
+void VKTest::DeviceManager::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info) {
     create_info                 = {};
     create_info.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -108,7 +110,7 @@ void vk_test::DeviceManager::populate_debug_messenger_create_info(VkDebugUtilsMe
     create_info.pfnUserCallback = debug_callback;
 }
 
-bool vk_test::DeviceManager::check_validation_layer_support() {
+bool VKTest::DeviceManager::checkValidationLayerSupport() {
     uint32_t layer_count = 0;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
@@ -133,61 +135,73 @@ bool vk_test::DeviceManager::check_validation_layer_support() {
     return true;
 }
 
-VkSampleCountFlagBits vk_test::DeviceManager::getMaxUsableSampleCount() {
-    VkPhysicalDeviceProperties physicalDeviceProperties;
-    vkGetPhysicalDeviceProperties(m_PhysicalDevice, &physicalDeviceProperties);
+VkSampleCountFlagBits VKTest::DeviceManager::getMaxUsableSampleCount() {
+    VkPhysicalDeviceProperties physical_device_properties;
+    vkGetPhysicalDeviceProperties(m_PhysicalDevice, &physical_device_properties);
 
-    VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
-    if (counts & VK_SAMPLE_COUNT_64_BIT) return VK_SAMPLE_COUNT_64_BIT;
-    if (counts & VK_SAMPLE_COUNT_32_BIT) return VK_SAMPLE_COUNT_32_BIT;
-    if (counts & VK_SAMPLE_COUNT_16_BIT) return VK_SAMPLE_COUNT_16_BIT;
-    if (counts & VK_SAMPLE_COUNT_8_BIT) return VK_SAMPLE_COUNT_8_BIT;
-    if (counts & VK_SAMPLE_COUNT_4_BIT) return VK_SAMPLE_COUNT_4_BIT;
-    if (counts & VK_SAMPLE_COUNT_2_BIT) return VK_SAMPLE_COUNT_2_BIT;
+    VkSampleCountFlags counts = physical_device_properties.limits.framebufferColorSampleCounts & physical_device_properties.limits.framebufferDepthSampleCounts;
+    if ((counts & VK_SAMPLE_COUNT_64_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_64_BIT;
+    }
+    if ((counts & VK_SAMPLE_COUNT_32_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_32_BIT;
+    }
+    if ((counts & VK_SAMPLE_COUNT_16_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_16_BIT;
+    }
+    if ((counts & VK_SAMPLE_COUNT_8_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_8_BIT;
+    }
+    if ((counts & VK_SAMPLE_COUNT_4_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_4_BIT;
+    }
+    if ((counts & VK_SAMPLE_COUNT_2_BIT) != 0U) {
+        return VK_SAMPLE_COUNT_2_BIT;
+    }
 
     return VK_SAMPLE_COUNT_1_BIT;
 }
 
-bool vk_test::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
+bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
     QueueFamilyIndices indices = findQueueFamilies(device);
 
-    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    bool extensions_supported = checkDeviceExtensionSupport(device);
 
-    bool swapChainAdequate = false;
-    if (extensionsSupported) {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-        swapChainAdequate                        = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    bool swap_chain_adequate = false;
+    if (extensions_supported) {
+        SwapChainSupportDetails swap_chain_support = querySwapChainSupport(device);
+        swap_chain_adequate                        = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    VkPhysicalDeviceFeatures supportedFeatures;
-    vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+    VkPhysicalDeviceFeatures supported_features;
+    vkGetPhysicalDeviceFeatures(device, &supported_features);
 
-    return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+    return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);
 }
 
-QueueFamilyIndices vk_test::DeviceManager::findQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkPhysicalDevice device) {
     QueueFamilyIndices indices;
 
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    uint32_t queue_family_count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
 
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+    std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.data());
 
     int i = 0;
-    for (const auto& queueFamily : queueFamilies) {
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    for (const auto& queue_family : queue_families) {
+        if ((queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0U) {
             indices.graphics_family = i;
         }
 
-        VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        VkBool32 present_support = 0U;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &present_support);
 
-        if (presentSupport) {
-            indices.presentFamily = i;
+        if (present_support != 0U) {
+            indices.present_family = i;
         }
 
-        if (indices.isComplete()) {
+        if (indices.is_complete()) {
             break;
         }
 
@@ -197,19 +211,18 @@ QueueFamilyIndices vk_test::DeviceManager::findQueueFamilies(VkPhysicalDevice de
     return indices;
 }
 
-VkResult vk_test::DeviceManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+VkResult VKTest::DeviceManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* p_create_info, const VkAllocationCallbacks* p_allocator, VkDebugUtilsMessengerEXT* p_debug_messenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+        return func(instance, p_create_info, p_allocator, p_debug_messenger);
     }
-    else {
-        return VK_ERROR_EXTENSION_NOT_PRESENT;
-    }
+
+    return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-void vk_test::DeviceManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+void VKTest::DeviceManager::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* p_allocator) {
     auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (func != nullptr) {
-        func(instance, debugMessenger, pAllocator);
+        func(instance, debug_messenger, p_allocator);
     }
 }

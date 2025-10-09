@@ -1,13 +1,7 @@
 #pragma once
+#include "QueueFamilyIndices.h"
 
-namespace vk_test {
-    struct QueueFamilyIndices {
-        std::optional<uint32_t> graphics_family;
-        std::optional<uint32_t> present_family;
-
-        inline bool is_complete() const noexcept { return graphics_family.has_value() && present_family.has_value(); }
-    };
-
+namespace VKTest {
 #ifdef NDEBUG
     constexpr inline static bool ENABLE_VALIDATION_LAYERS = false;
 #else
@@ -32,32 +26,32 @@ namespace vk_test {
         void CreateCommandBuffers();
 
     private:
-        std::vector<const char*> get_required_extensions();
-        void                     populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& create_info);
-        bool                     check_validation_layer_support();
-        VkSampleCountFlagBits    getMaxUsableSampleCount();
-        bool                     isDeviceSuitable(VkPhysicalDevice device);
-        QueueFamilyIndices       findQueueFamilies(VkPhysicalDevice device);
+        static std::vector<const char*> getRequiredExtensions();
+        static void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
+        static bool                     checkValidationLayerSupport();
+        VkSampleCountFlagBits           getMaxUsableSampleCount();
+        static bool                     isDeviceSuitable(VkPhysicalDevice device);
+        static QueueFamilyIndices       findQueueFamilies(VkPhysicalDevice device);
 
-        static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-        static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+        static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
+        static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
 
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* p_callback_data, void* p_user_data) {
-            VKTEST_SAY("Validation layer : " << p_callback_data->pMessage);
+        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
+            VKTEST_SAY("Validation layer : " << callback_data->pMessage);
             return VK_FALSE;
         }
 
     private:
-        VkInstance instance;
+        VkInstance m_Instance{};
 
-        VkDevice         m_Device;
-        VkPhysicalDevice m_PhysicalDevice;
+        VkDevice         m_Device{};
+        VkPhysicalDevice m_PhysicalDevice{};
 
         VkSampleCountFlagBits m_MSAA_Samples = VK_SAMPLE_COUNT_1_BIT;
 
-        VkQueue m_GraphicsQueue;
-        VkQueue m_PresentQueue;
+        VkQueue m_GraphicsQueue{};
+        VkQueue m_PresentQueue{};
 
-        VkDebugUtilsMessengerEXT m_DebugMessenger;
+        VkDebugUtilsMessengerEXT m_DebugMessenger{};
     };
-} // namespace vk_test
+} // namespace VKTest

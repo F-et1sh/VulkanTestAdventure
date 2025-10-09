@@ -1,6 +1,6 @@
 #pragma once
 
-namespace vk_test {
+namespace VKTest {
     class Window {
     public:
         Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
@@ -15,21 +15,20 @@ namespace vk_test {
 
         void SwapBuffers() const noexcept;
 
-        void PollEvents() const noexcept;
+        void PollEvents() noexcept;
 
-        inline constexpr bool        isRunning() const noexcept { return m_IsRunning; }
-        inline constexpr GLFWwindow* getGLFWWindow() const noexcept { return p_GLFWWindow; }
+        constexpr bool        isRunning() const noexcept { return m_IsRunning; }
+        constexpr GLFWwindow* getGLFWWindow() const noexcept { return p_GLFWWindow; }
 
     private:
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-            auto app                  = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+            auto* app                 = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
             app->m_FramebufferResized = true;
         }
 
-    private:
         GLFWwindow* p_GLFWWindow         = nullptr;
         bool        m_FramebufferResized = false;
 
         bool m_IsRunning = false;
     };
-} // namespace vk_test
+} // namespace VKTest

@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "PathManager.h"
 
-void vk_test::PathManager::Init(const char* argv0, bool is_editor) {
-    if (!argv0)
+void VKTest::PathManager::init(const char* argv0, bool is_editor) {
+    if (argv0 == nullptr) {
         VKTEST_RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
+    }
 
     try {
         m_ExecutablePath = std::filesystem::canonical(argv0).parent_path();

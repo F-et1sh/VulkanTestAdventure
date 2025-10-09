@@ -1,18 +1,15 @@
 #pragma once
 
-// NOLINTBEGIN(bugprone-macro-parentheses)
-#define VKTEST_SAY(message) \
-    std::wcerr << std::endl \
-               << message << std::endl
-// NOLINTEND(bugprone-macro-parentheses)
+#define VKTEST_SAY(message) std::wcerr << std::endl \
+                                       << message << std::endl
 #define VKTEST_SAY_WITHOUT_BREAK(message) std::wcerr << message
 
 #define VKTEST_RUNTIME_ERROR(message) throw std::runtime_error(message)
 
 #define VKTEST_NODISCARD [[nodiscard]]
 
-namespace vk_test {
-    inline static void CopyFile(const std::filesystem::path& from, const std::filesystem::path& to) {
+namespace VKTest {
+    inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         if (!std::filesystem::exists(to)) {
             std::filesystem::create_directories(to);
         }
@@ -26,7 +23,8 @@ namespace vk_test {
             }
         }
     }
-    inline static void CopyIfNew(const std::filesystem::path& from, const std::filesystem::path& to) {
+
+    inline static void copy_if_new(const std::filesystem::path& from, const std::filesystem::path& to) {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(from)) {
             auto relative_path = std::filesystem::relative(entry.path(), from);
             auto target_path   = to / relative_path;
@@ -41,7 +39,7 @@ namespace vk_test {
         }
     }
 
-    inline static auto GenerateUniqueFilename(const std::filesystem::path& file_path) -> std::filesystem::path {
+    inline static auto generate_unique_filename(const std::filesystem::path& file_path) -> std::filesystem::path {
         std::filesystem::path path      = file_path;
         std::filesystem::path stem      = path.stem();
         std::filesystem::path extension = path.extension();
@@ -54,4 +52,4 @@ namespace vk_test {
 
         return path;
     }
-} // namespace vk_test
+} // namespace VKTest
