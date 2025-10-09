@@ -1,34 +1,34 @@
 #pragma once
 
-namespace VKTest {
+namespace vk_test {
     class PathManager {
     public:
-        CLASS_NONCOPYABLE(PathManager)
+        VKTEST_CLASS_NONCOPYABLE(PathManager)
 
-        void init(const char* argv0, bool is_editor);
+        void Init(const char* argv0, bool is_editor);
 
-        static PathManager& Instance() {
-            static PathManager path_manager;
-            return path_manager;
+        static auto Instance() -> PathManager& {
+            static PathManager PATH_MANAGER;
+            return PATH_MANAGER;
         }
 
-    public:
-        inline const std::filesystem::path& get_executable_path() const noexcept {
+    
+        [[nodiscard]] auto GetExecutablePath() const noexcept -> const std::filesystem::path& {
             return m_ExecutablePath;
         }
 
-        inline const std::filesystem::path& get_assets_path() const noexcept {
+        [[nodiscard]] auto GetAssetsPath() const noexcept -> const std::filesystem::path& {
             return m_AssetsPath;
         }
 
-        inline std::filesystem::path get_application_path() const {
-            return this->get_assets_path() / L"Application";
+        [[nodiscard]] auto GetApplicationPath() const -> std::filesystem::path {
+            return this->GetAssetsPath() / L"Application";
         }
 
     private:
-        CLASS_DEFAULT(PathManager)
+        VKTEST_CLASS_DEFAULT(PathManager)
 
-    private:
+    
         std::filesystem::path m_ExecutablePath;
         std::filesystem::path m_AssetsPath;
     };

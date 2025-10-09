@@ -8,20 +8,20 @@
     "ContinueOnError": false,
     "ClangAfterMSVC": true,
     "VerbosityLevel": "0",
-    "Powershell7": false,
+    "Powershell7": true,
     "ShowErrorList": true,
     "ShowOutputWindow": true,
     "ShowSquiggles": true,
     "CpuLimit": 100
   },
   {
-    "FileExtensions": ".c;.cpp;.cxx;.cc;.cs;.tli;.tlh;.h;.hh;.hpp;.hxx;.inl;.ixx",
-    "FilesToIgnore": "resource.h",
+    "FileExtensions": ".c;.cpp;.h;.hpp",
+    "FilesToIgnore": "",
     "AssumeFilename": "",
     "CustomExecutable": "",
     "Style": "file",
     "FallbackStyle": "none",
-    "FormatOnSave": false
+    "FormatOnSave": true
   },
   {
     "HeaderFilter": ".*",
@@ -33,7 +33,7 @@
     "DetectClangTidyFile": true,
     "FormatAfterTidy": false,
     "TidyOnSave": false,
-    "ApplyTidyFix": false
+    "ApplyTidyFix": true
   },
   {
     "Version": "2025.8.0"

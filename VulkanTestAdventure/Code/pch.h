@@ -20,6 +20,7 @@
 #include <span>
 
 // GLFW
+// NOLINTNEXTLINE(readability-identifier-naming)
 #define GLFW_INCLUDE_VULKAN
 #include <glfw3.h>
 
@@ -27,6 +28,7 @@
 #include <vulkan/vulkan_raii.hpp>
 
 // GLM
+// NOLINTNEXTLINE(readability-identifier-naming)
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,7 +40,7 @@
 // Path Manager
 #include "PathManager.h"
 
-using namespace VKTest;
+using namespace vk_test;
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 constexpr int MAX_OBJECTS          = 3;

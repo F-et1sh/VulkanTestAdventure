@@ -1,12 +1,15 @@
 Checks: >
-  *,
-  -fuchsia-*,
-  -llvm-header-guard,
-  -llvmlibc-*,
-  -readability-magic-numbers,
+  modernize-*,
+  readability-*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  performance-*,
+  misc-forwarding-reference-overload,
+  -readability-magic-numbers, # Ваши исключения
   -modernize-use-trailing-return-type,
   -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-avoid-non-const-global-variables
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -misc-include-cleaner
 
 CheckOptions:
   # ------------------------------
