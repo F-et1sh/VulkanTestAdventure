@@ -5,92 +5,92 @@
 #include "VkHpp_Image.h"
 
 namespace VKHppTest {
-	class SwapchainManager; // forward declaration
+    class SwapchainManager; // forward declaration
 
-	// define a structure to hold per-object data
-	struct GameObject {
-		glm::vec3 position = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
+    // define a structure to hold per-object data
+    struct GameObject {
+        glm::vec3 position = { 0.0f, 0.0f, 0.0f };
+        glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
+        glm::vec3 scale    = { 1.0f, 1.0f, 1.0f };
 
-		std::vector<vk::raii::Buffer> uniform_buffers;
-		std::vector<vk::raii::DeviceMemory> uniform_buffers_memory;
-		std::vector<void*> uniform_buffers_mapped;
+        std::vector<vk::raii::Buffer>       uniform_buffers;
+        std::vector<vk::raii::DeviceMemory> uniform_buffers_memory;
+        std::vector<void*>                  uniform_buffers_mapped;
 
-		std::vector<vk::raii::DescriptorSet> descriptor_sets;
+        std::vector<vk::raii::DescriptorSet> descriptor_sets;
 
-		glm::mat4 getModelMatrix()const noexcept {
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, position);
-			model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::scale(model, scale);
-			return model;
-		}
-	};
+        glm::mat4 getModelMatrix() const noexcept {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::translate(model, position);
+            model           = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+            model           = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+            model           = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+            model           = glm::scale(model, scale);
+            return model;
+        }
+    };
 
-	struct UniformBufferObject {
-		alignas(16) glm::mat4 model;
-		alignas(16) glm::mat4 view;
-		alignas(16) glm::mat4 proj;
-	};
+    struct UniformBufferObject {
+        alignas(16) glm::mat4 model;
+        alignas(16) glm::mat4 view;
+        alignas(16) glm::mat4 proj;
+    };
 
-	class GPUResourceManager {
-	public:
-		GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager);
-		~GPUResourceManager() = default;
+    class GPUResourceManager {
+    public:
+        GPUResourceManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager, RenderPassManager* render_pass_manager);
+        ~GPUResourceManager() = default;
 
-		void CreateDescriptorSetLayout();
-		void CreateColorResources();
-		void CreateDepthResources();
-		void CreateDescriptorPool();
-		void CreateDescriptorSets();
-		void CreateVertexBuffer();
-		void CreateIndexBuffer();
-		void CreateUniformBuffers();
-		void CreateSyncObjects();
+        void CreateDescriptorSetLayout();
+        void CreateColorResources();
+        void CreateDepthResources();
+        void CreateDescriptorPool();
+        void CreateDescriptorSets();
+        void CreateVertexBuffer();
+        void CreateIndexBuffer();
+        void CreateUniformBuffers();
+        void CreateSyncObjects();
 
-		inline vk::raii::DescriptorSetLayout& getDescriptorSetLayout()noexcept { return m_DescriptorSetLayout; }
-		inline Image& getColorImage()noexcept { return m_ColorImage; }
-		inline Image& getDepthImage()noexcept { return m_DepthImage; }
-		inline std::vector<vk::raii::Semaphore>& getImageAvailableSemaphores()noexcept { return m_ImageAvailableSemaphores; }
-		inline std::vector<vk::raii::Semaphore>& getRenderFinishedSemaphores()noexcept { return m_RenderFinishedSemaphores; }
-		inline std::vector<vk::raii::Fence>& getInFlightFences()noexcept { return m_InFlightFences; }
-		inline vk::raii::Buffer& getVertices()noexcept { return m_Vertices; }
-		inline vk::raii::Buffer& getIndices()noexcept { return m_Indices; }
+        inline vk::raii::DescriptorSetLayout&    getDescriptorSetLayout() noexcept { return m_DescriptorSetLayout; }
+        inline Image&                            getColorImage() noexcept { return m_ColorImage; }
+        inline Image&                            getDepthImage() noexcept { return m_DepthImage; }
+        inline std::vector<vk::raii::Semaphore>& getImageAvailableSemaphores() noexcept { return m_ImageAvailableSemaphores; }
+        inline std::vector<vk::raii::Semaphore>& getRenderFinishedSemaphores() noexcept { return m_RenderFinishedSemaphores; }
+        inline std::vector<vk::raii::Fence>&     getInFlightFences() noexcept { return m_InFlightFences; }
+        inline vk::raii::Buffer&                 getVertices() noexcept { return m_Vertices; }
+        inline vk::raii::Buffer&                 getIndices() noexcept { return m_Indices; }
 
-	private:
-		void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory)const;
-		void copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size)const;
+    private:
+        void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& buffer_memory) const;
+        void copyBuffer(vk::raii::Buffer& src_buffer, vk::raii::Buffer& dst_buffer, vk::DeviceSize size) const;
 
-	private:
-		DeviceManager*									p_DeviceManager = nullptr;
-		SwapchainManager*								p_SwapchainManager = nullptr;
-		RenderPassManager*								p_RenderPassManager = nullptr;
+    private:
+        DeviceManager*     p_DeviceManager     = nullptr;
+        SwapchainManager*  p_SwapchainManager  = nullptr;
+        RenderPassManager* p_RenderPassManager = nullptr;
 
-		vk::raii::DescriptorSetLayout					m_DescriptorSetLayout = VK_NULL_HANDLE;
-		vk::raii::DescriptorPool						m_DescriptorPool = VK_NULL_HANDLE;
-		std::vector<vk::raii::DescriptorSet>			m_DescriptorSets;
+        vk::raii::DescriptorSetLayout        m_DescriptorSetLayout = VK_NULL_HANDLE;
+        vk::raii::DescriptorPool             m_DescriptorPool      = VK_NULL_HANDLE;
+        std::vector<vk::raii::DescriptorSet> m_DescriptorSets;
 
-		Image											m_ColorImage;
-		Image											m_DepthImage;
+        Image m_ColorImage;
+        Image m_DepthImage;
 
-		uint32_t										m_MipLevels = 0;
-		Image											m_TextureImage;
-		vk::raii::Sampler								m_TextureSampler = VK_NULL_HANDLE;
+        uint32_t          m_MipLevels = 0;
+        Image             m_TextureImage;
+        vk::raii::Sampler m_TextureSampler = VK_NULL_HANDLE;
 
-		// array of game objects to render
-		std::array<GameObject, MAX_FRAMES_IN_FLIGHT>	m_GameObjects;
+        // array of game objects to render
+        std::array<GameObject, MAX_FRAMES_IN_FLIGHT> m_GameObjects;
 
-		std::vector<vk::raii::Semaphore>				m_ImageAvailableSemaphores;
-		std::vector<vk::raii::Semaphore>				m_RenderFinishedSemaphores;
-		std::vector<vk::raii::Fence>					m_InFlightFences;
+        std::vector<vk::raii::Semaphore> m_ImageAvailableSemaphores;
+        std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores;
+        std::vector<vk::raii::Fence>     m_InFlightFences;
 
-		vk::raii::Buffer								m_Vertices = VK_NULL_HANDLE;
-		vk::raii::DeviceMemory							m_VerticesMemory = VK_NULL_HANDLE;
+        vk::raii::Buffer       m_Vertices       = VK_NULL_HANDLE;
+        vk::raii::DeviceMemory m_VerticesMemory = VK_NULL_HANDLE;
 
-		vk::raii::Buffer								m_Indices = VK_NULL_HANDLE;
-		vk::raii::DeviceMemory							m_IndicesMemory = VK_NULL_HANDLE;
-	};
-}
+        vk::raii::Buffer       m_Indices       = VK_NULL_HANDLE;
+        vk::raii::DeviceMemory m_IndicesMemory = VK_NULL_HANDLE;
+    };
+} // namespace VKHppTest

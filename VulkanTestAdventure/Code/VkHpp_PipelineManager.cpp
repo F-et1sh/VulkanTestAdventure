@@ -1,28 +1,28 @@
 #include "pch.h"
 #include "VkHpp_PipelineManager.h"
 
-VKHppTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager) :
-    p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager }, p_SwapchainManager{ swapchain_manager } {}
+VKHppTest::PipelineManager::PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, GPUResourceManager* gpu_resource_manager, SwapchainManager* swapchain_manager) : p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_GPUResourceManager{ gpu_resource_manager }, p_SwapchainManager{ swapchain_manager } {}
 
 void VKHppTest::PipelineManager::CreateGraphicsPipeline() {
-	auto vert_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-    auto frag_shader_code = this->readFile(L"C:/Users/Пользователь/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+    // Russian name replaces by User
+    auto vert_shader_code = this->readFile(L"C:/Users/User/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+    auto frag_shader_code = this->readFile(L"C:/Users/User/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
     vk::raii::ShaderModule vert_shader_module{ this->createShaderModule(vert_shader_code) };
     vk::raii::ShaderModule frag_shader_module{ this->createShaderModule(frag_shader_code) };
 
     vk::PipelineShaderStageCreateInfo vert_shader_stage_info{
-        vk::PipelineShaderStageCreateFlags{},   // Flags
-        vk::ShaderStageFlagBits::eVertex,       // Stage
-        *vert_shader_module,                    // Module
-        "main"                                  // Name ( name of entry point )
+        vk::PipelineShaderStageCreateFlags{}, // Flags
+        vk::ShaderStageFlagBits::eVertex,     // Stage
+        *vert_shader_module,                  // Module
+        "main"                                // Name ( name of entry point )
     };
 
     vk::PipelineShaderStageCreateInfo frag_shader_stage_info{
-        vk::PipelineShaderStageCreateFlags{},   // Flags
-        vk::ShaderStageFlagBits::eFragment,     // Stage
-        *frag_shader_module,                    // Module
-        "main"                                  // Name ( name of entry point )
+        vk::PipelineShaderStageCreateFlags{}, // Flags
+        vk::ShaderStageFlagBits::eFragment,   // Stage
+        *frag_shader_module,                  // Module
+        "main"                                // Name ( name of entry point )
     };
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> shader_stages{ vert_shader_stage_info, frag_shader_stage_info };
@@ -91,8 +91,12 @@ void VKHppTest::PipelineManager::CreateGraphicsPipeline() {
 
     vk::PipelineColorBlendAttachmentState color_blend_attachment{
         vk::True, // Blend enable
-        vk::BlendFactor::eOne, vk::BlendFactor::eZero, vk::BlendOp::eAdd,
-        vk::BlendFactor::eOne, vk::BlendFactor::eZero, vk::BlendOp::eAdd,
+        vk::BlendFactor::eOne,
+        vk::BlendFactor::eZero,
+        vk::BlendOp::eAdd,
+        vk::BlendFactor::eOne,
+        vk::BlendFactor::eZero,
+        vk::BlendOp::eAdd,
         vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA
     };
 
@@ -124,7 +128,7 @@ void VKHppTest::PipelineManager::CreateGraphicsPipeline() {
         nullptr                                           // pPushConstantRanges
     };
 
-    auto& device = p_DeviceManager->getDevice();
+    auto& device     = p_DeviceManager->getDevice();
     m_PipelineLayout = vk::raii::PipelineLayout{ device, pipeline_layout_info };
 
     vk::GraphicsPipelineCreateInfo pipeline_info{
@@ -163,9 +167,10 @@ void VKHppTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& co
     auto& framebuffer = p_SwapchainManager->getFramebuffers()[image_index];
 
     vk::RenderPassBeginInfo render_pass_info{
-        p_RenderPassManager->getRenderPass(),               // Render Pass
-        framebuffer,                                        // Framebuffer
-        vk::Rect2D{                                         // Render Area
+        p_RenderPassManager->getRenderPass(), // Render Pass
+        framebuffer,                          // Framebuffer
+        vk::Rect2D{
+            // Render Area
             vk::Offset2D{ 0, 0 },                           // Offset
             vk::Extent2D{ p_SwapchainManager->getExtent() } // Extent
         },
@@ -194,8 +199,8 @@ void VKHppTest::PipelineManager::recordCommandBuffer(vk::raii::CommandBuffer& co
 
     command_buffer.setScissor(0, scissor);
 
-    vk::Buffer vertex_buffers[] = { p_GPUResourceManager->getVertices() };
-    VkDeviceSize offsets[] = { 0 };
+    vk::Buffer   vertex_buffers[] = { p_GPUResourceManager->getVertices() };
+    VkDeviceSize offsets[]        = { 0 };
 
     command_buffer.bindVertexBuffers(0, vertex_buffers, offsets);
     command_buffer.bindIndexBuffer(p_GPUResourceManager->getIndices(), 0, vk::IndexType::eUint16);

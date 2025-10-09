@@ -2,5 +2,4 @@
 #include "Renderer.h"
 
 void VKTest::Renderer::DrawFrame() {
-    
 }

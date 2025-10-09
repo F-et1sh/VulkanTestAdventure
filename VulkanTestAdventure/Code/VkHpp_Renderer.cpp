@@ -18,7 +18,8 @@ void VKHppTest::Renderer::DrawFrame() {
     if (result == vk::Result::eErrorOutOfDateKHR) {
         // TODO : this->RecreateSwapchain();
         return;
-    } else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
+    }
+    else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
         RUNTIME_ERROR("Failed to acquire swap chain image");
     }
 
@@ -51,7 +52,8 @@ void VKHppTest::Renderer::DrawFrame() {
     if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR /* TODO : || m_FramebufferResized*/) {
         // TODO : m_FramebufferResized = false;
         // TODO : RecreateSwapchain();
-    } else if (result != vk::Result::eSuccess)
+    }
+    else if (result != vk::Result::eSuccess)
         RUNTIME_ERROR("Failed to present swap chain image");
 
     m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;

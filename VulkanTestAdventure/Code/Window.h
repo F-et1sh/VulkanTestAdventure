@@ -1,35 +1,35 @@
 #pragma once
 
 namespace VKTest {
-	class Window {
-	public:
-		Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
-		~Window();
+    class Window {
+    public:
+        Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
+        ~Window();
 
-		void CreateWindow(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
+        void CreateWindow(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
 
-		void ClearColor(glm::vec4 color)const noexcept;
-		void ClearColor(float r, float g, float b, float a)const noexcept;
-		
-		void ClearScreen(unsigned int buffer_bit)const noexcept;
-		
-		void SwapBuffers()const noexcept;
+        void ClearColor(glm::vec4 color) const noexcept;
+        void ClearColor(float r, float g, float b, float a) const noexcept;
 
-		void PollEvents()const noexcept;
+        void ClearScreen(unsigned int buffer_bit) const noexcept;
 
-		inline constexpr bool isRunning()const noexcept { return m_IsRunning; }
-		inline constexpr GLFWwindow* getGLFWWindow()const noexcept { return p_GLFWWindow; }
+        void SwapBuffers() const noexcept;
 
-	private:
-		static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
-			auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-			app->m_FramebufferResized = true;
-		}
+        void PollEvents() const noexcept;
 
-	private:
-		GLFWwindow* p_GLFWWindow = nullptr;
-		bool m_FramebufferResized = false;
+        inline constexpr bool        isRunning() const noexcept { return m_IsRunning; }
+        inline constexpr GLFWwindow* getGLFWWindow() const noexcept { return p_GLFWWindow; }
 
-		bool m_IsRunning = false;
-	};
-}
+    private:
+        static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+            auto app                  = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+            app->m_FramebufferResized = true;
+        }
+
+    private:
+        GLFWwindow* p_GLFWWindow         = nullptr;
+        bool        m_FramebufferResized = false;
+
+        bool m_IsRunning = false;
+    };
+} // namespace VKTest

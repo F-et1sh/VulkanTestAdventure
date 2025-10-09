@@ -4,55 +4,55 @@
 #include "QueueFamilyIndices.h"
 
 namespace VKHppTest {
-	class GPUResourceManager; // forward declaration
-	class RenderPassManager; // forward declaration
+    class GPUResourceManager; // forward declaration
+    class RenderPassManager;  // forward declaration
 
-	struct SwapChainSupportDetails {
-		vk::SurfaceCapabilitiesKHR capabilities;
-		std::vector<vk::SurfaceFormatKHR> formats;
-		std::vector<vk::PresentModeKHR> present_modes;
+    struct SwapChainSupportDetails {
+        vk::SurfaceCapabilitiesKHR        capabilities;
+        std::vector<vk::SurfaceFormatKHR> formats;
+        std::vector<vk::PresentModeKHR>   present_modes;
 
-		SwapChainSupportDetails() = default;
-		~SwapChainSupportDetails() = default;
-	};
+        SwapChainSupportDetails()  = default;
+        ~SwapChainSupportDetails() = default;
+    };
 
-	class SwapchainManager {
-	public:
-		SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager);
-		~SwapchainManager() = default;
+    class SwapchainManager {
+    public:
+        SwapchainManager(DeviceManager* device_manager, Window* window, GPUResourceManager* gpu_resource_manager, RenderPassManager* render_pass_manager);
+        ~SwapchainManager() = default;
 
-		void CreateSurface();
-		void CreateSwapchain();
-		void CreateImageViews();
-		void CreateFramebuffers();
+        void CreateSurface();
+        void CreateSwapchain();
+        void CreateImageViews();
+        void CreateFramebuffers();
 
-		inline vk::raii::SurfaceKHR& getSurface()noexcept { return m_Surface; }
-		inline vk::Format getFormat()const noexcept { return m_SwapchainImageFormat; }
-		inline vk::Extent2D getExtent()const noexcept { return m_SwapchainExtent; }
-		inline std::vector<vk::raii::Framebuffer>& getFramebuffers()noexcept { return m_SwapchainFramebuffers; }
-		inline vk::raii::SwapchainKHR& getSwapchain()noexcept { return m_Swapchain; }
+        inline vk::raii::SurfaceKHR&               getSurface() noexcept { return m_Surface; }
+        inline vk::Format                          getFormat() const noexcept { return m_SwapchainImageFormat; }
+        inline vk::Extent2D                        getExtent() const noexcept { return m_SwapchainExtent; }
+        inline std::vector<vk::raii::Framebuffer>& getFramebuffers() noexcept { return m_SwapchainFramebuffers; }
+        inline vk::raii::SwapchainKHR&             getSwapchain() noexcept { return m_Swapchain; }
 
-	private:
-		SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device)const;
-		vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats)const;
-		vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes)const;
-		VkExtent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)const;
+    private:
+        SwapChainSupportDetails querySwapchainSupport(vk::PhysicalDevice device) const;
+        vk::SurfaceFormatKHR    chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& available_formats) const;
+        vk::PresentModeKHR      chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& available_present_modes) const;
+        VkExtent2D              chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
 
-	private:
-		DeviceManager* p_DeviceManager = nullptr;
-		Window* p_Window = nullptr;
-		GPUResourceManager* p_GPUResourceManager = nullptr;
-		RenderPassManager* p_RenderPassManager = nullptr;
-		
-		vk::raii::SurfaceKHR m_Surface = VK_NULL_HANDLE;
+    private:
+        DeviceManager*      p_DeviceManager      = nullptr;
+        Window*             p_Window             = nullptr;
+        GPUResourceManager* p_GPUResourceManager = nullptr;
+        RenderPassManager*  p_RenderPassManager  = nullptr;
 
-		vk::raii::SwapchainKHR m_Swapchain = VK_NULL_HANDLE;
+        vk::raii::SurfaceKHR m_Surface = VK_NULL_HANDLE;
 
-		vk::Format m_SwapchainImageFormat{};
-		vk::Extent2D m_SwapchainExtent{};
+        vk::raii::SwapchainKHR m_Swapchain = VK_NULL_HANDLE;
 
-		std::vector<vk::Image> m_SwapchainImages;
-		std::vector<vk::raii::ImageView> m_SwapchainImageViews;
-		std::vector<vk::raii::Framebuffer> m_SwapchainFramebuffers;
-	};
-}
+        vk::Format   m_SwapchainImageFormat{};
+        vk::Extent2D m_SwapchainExtent{};
+
+        std::vector<vk::Image>             m_SwapchainImages;
+        std::vector<vk::raii::ImageView>   m_SwapchainImageViews;
+        std::vector<vk::raii::Framebuffer> m_SwapchainFramebuffers;
+    };
+} // namespace VKHppTest

@@ -2,7 +2,6 @@
 #include "DeviceManager.h"
 
 void VKTest::DeviceManager::CreateInstance() {
-    
 }
 
 bool VKTest::DeviceManager::checkValidationLayerSupport() {

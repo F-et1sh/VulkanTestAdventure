@@ -32,8 +32,9 @@
 const uint32_t WIDTH  = 800;
 const uint32_t HEIGHT = 600;
 
-const std::string MODEL_PATH   = "C:/Users/������������/Desktop/VulkanTestAdventure/Files/Models/viking_room.obj";
-const std::string TEXTURE_PATH = "C:/Users/������������/Desktop/VulkanTestAdventure/Files/Textures/viking_room.png";
+// Russian name replaces by User
+const std::string MODEL_PATH   = "C:/Users/User/Desktop/VulkanTestAdventure/Files/Models/viking_room.obj";
+const std::string TEXTURE_PATH = "C:/Users/User/Desktop/VulkanTestAdventure/Files/Textures/viking_room.png";
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -727,8 +728,9 @@ private:
     }
 
     void createGraphicsPipeline() {
-        auto vertShaderCode = readFile("C:/Users/������������/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-        auto fragShaderCode = readFile("C:/Users/������������/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+        // Russian name replaces by User
+        auto vertShaderCode = readFile("C:/Users/User/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
+        auto fragShaderCode = readFile("C:/Users/User/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
 
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);

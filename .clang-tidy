@@ -9,34 +9,72 @@ Checks: >
   -cppcoreguidelines-avoid-non-const-global-variables
 
 CheckOptions:
-  - key: readability-identifier-naming.VariableCase
-    value: lower_case
-  - key: readability-identifier-naming.MemberCase
-    value: lower_case
-  - key: readability-identifier-naming.MemberPrefix
-    value: m_
-  - key: readability-identifier-naming.ParameterCase
-    value: lower_case
-  - key: readability-identifier-naming.ParameterPrefix
-    value: p_
-  - key: readability-identifier-naming.PrivateMemberCase
-    value: lower_case
-  - key: readability-identifier-naming.PrivateMemberPrefix
-    value: m_
-  - key: readability-identifier-naming.StructCase
-    value: CamelCase
-  - key: readability-identifier-naming.ClassCase
-    value: CamelCase
-  - key: readability-identifier-naming.NamespaceCase
-    value: CamelCase
-  - key: readability-identifier-naming.FunctionCase
-    value: camelBack
-  - key: readability-identifier-naming.EnumCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.MacroDefinitionCase
-    value: UPPER_CASE
+  # ------------------------------
+  # Defines
+  # ------------------------------
+  - { key: readability-identifier-naming.MacroDefinitionCase,    value: UPPER_CASE }
+  - { key: readability-identifier-naming.MacroDefinitionPrefix,  value: VKTEST_ }
+
+  # ------------------------------
+  # Global, static, constexpr variables
+  # ------------------------------
+  - { key: readability-identifier-naming.GlobalVariableCase,     value: UPPER_CASE }
+  - { key: readability-identifier-naming.ConstexprVariableCase,  value: UPPER_CASE }
+  - { key: readability-identifier-naming.StaticVariableCase,     value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantCase,     value: UPPER_CASE }
+
+  # ------------------------------
+  # Local variables
+  # ------------------------------
+  - { key: readability-identifier-naming.VariableCase,           value: lower_case }
+  - { key: readability-identifier-naming.LocalVariableCase,      value: lower_case }
+  - { key: readability-identifier-naming.LocalVariablePrefix,    value: "" }
+
+  # ------------------------------
+  # Struct/Class members
+  # ------------------------------
+  - { key: readability-identifier-naming.MemberCase,             value: CamelCase }
+  - { key: readability-identifier-naming.MemberIgnoredRegexp,    value: '^(m_|p_)[A-Z][A-Za-z0-9]*$' }
+
+  # ------------------------------
+  # Methods
+  # ------------------------------
+  - { key: readability-identifier-naming.MethodCase,             value: CamelCase }
+  - { key: readability-identifier-naming.PublicMethodCase,       value: CamelCase }
+  - { key: readability-identifier-naming.PrivateMethodCase,      value: lower_case }
+  - { key: readability-identifier-naming.ProtectedMethodCase,    value: lower_case }
+
+  # get/set functions
+  - { key: readability-identifier-naming.MethodIgnoredRegexp,    value: '^(get|set)[A-Z].*$' }
+
+  # ------------------------------
+  # Out of class functions
+  # ------------------------------
+  - { key: readability-identifier-naming.FunctionCase,           value: CamelCase }
+
+  # ------------------------------
+  # Namespaces
+  # ------------------------------
+  - { key: readability-identifier-naming.NamespaceCase,          value: lower_case }
+
+  # ------------------------------
+  # Types
+  # ------------------------------
+  - { key: readability-identifier-naming.ClassCase,              value: CamelCase }
+  - { key: readability-identifier-naming.StructCase,             value: CamelCase }
+  - { key: readability-identifier-naming.EnumCase,               value: CamelCase }
+  - { key: readability-identifier-naming.EnumConstantCase,       value: CamelCase }
+  - { key: readability-identifier-naming.TypeAliasCase,          value: CamelCase }
+
+  # ------------------------------
+  # Templates
+  # ------------------------------
+  - { key: readability-identifier-naming.TemplateParameterIgnoredRegexp, value: '^(T|T[A-Z][A-Za-z0-9]*)$' }
+
+  # ------------------------------
+  # Function arguments
+  # ------------------------------
+  - { key: readability-identifier-naming.ParameterCase,          value: lower_case }
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*VulkanTestAdventure/Code/.*'
