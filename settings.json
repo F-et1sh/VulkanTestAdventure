@@ -5,7 +5,7 @@
     "ProjectsToIgnore": "",
     "AdditionalIncludes": "SystemIncludeDirectories",
     "WarningsAsErrors": false,
-    "ContinueOnError": false,
+    "ContinueOnError": true,
     "ClangAfterMSVC": true,
     "VerbosityLevel": "0",
     "Powershell7": true,
@@ -21,7 +21,7 @@
     "CustomExecutable": "",
     "Style": "file",
     "FallbackStyle": "none",
-    "FormatOnSave": true
+    "FormatOnSave": false
   },
   {
     "HeaderFilter": ".*",
@@ -33,7 +33,7 @@
     "DetectClangTidyFile": true,
     "FormatAfterTidy": false,
     "TidyOnSave": false,
-    "ApplyTidyFix": false
+    "ApplyTidyFix": true
   },
   {
     "Version": "2025.8.0"

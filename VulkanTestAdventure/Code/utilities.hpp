@@ -1,12 +1,12 @@
 #pragma once
 
-#define VKTEST_SAY(message) std::wcerr << std::endl \
-                                       << message << std::endl
-#define VKTEST_SAY_WITHOUT_BREAK(message) std::wcerr << message
+#define VK_TEST_SAY(message) std::wcerr << std::endl \
+                                        << message << std::endl
+#define VK_TEST_SAY_WITHOUT_BREAK(message) std::wcerr << message
 
-#define VKTEST_RUNTIME_ERROR(message) throw std::runtime_error(message)
+#define VK_TEST_RUNTIME_ERROR(message) throw std::runtime_error(message)
 
-#define VKTEST_NODISCARD [[nodiscard]]
+#define VK_TEST_NODISCARD [[nodiscard]]
 
 namespace VKTest {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {

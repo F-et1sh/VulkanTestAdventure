@@ -25,7 +25,7 @@ void VKTest::Window::CreateWindow(const glm::vec2& window_resolution, const std:
 
     p_GLFWWindow = glfwCreateWindow(window_resolution.x, window_resolution.y, window_title.data(), monitor, nullptr);
     if (p_GLFWWindow == nullptr) {
-        VKTEST_RUNTIME_ERROR("ERROR : Failed to create GLFW window");
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to create GLFW window");
     }
 
     glfwSetWindowUserPointer(p_GLFWWindow, this);

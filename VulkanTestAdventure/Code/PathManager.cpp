@@ -3,7 +3,7 @@
 
 void VKTest::PathManager::init(const char* argv0, bool is_editor) {
     if (argv0 == nullptr) {
-        VKTEST_RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
+        VK_TEST_RUNTIME_ERROR("Failed to Initialize PathManager\nargv0 was nullptr");
     }
 
     try {
@@ -36,6 +36,6 @@ void VKTest::PathManager::init(const char* argv0, bool is_editor) {
         }
     }
     catch (const std::exception& e) {
-        VKTEST_RUNTIME_ERROR("Failed to Initialize PathManager\n" + std::string(e.what()));
+        VK_TEST_RUNTIME_ERROR("Failed to Initialize PathManager\n" + std::string(e.what()));
     }
 }

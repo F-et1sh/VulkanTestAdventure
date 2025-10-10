@@ -3,7 +3,7 @@
 namespace VKTest {
     class PathManager {
     public:
-        VKTEST_CLASS_NONCOPYABLE(PathManager)
+        VK_TEST_CLASS_NONCOPYABLE(PathManager)
 
         void init(const char* argv0, bool is_editor);
 
@@ -25,7 +25,7 @@ namespace VKTest {
         }
 
     private:
-        VKTEST_CLASS_DEFAULT(PathManager)
+        VK_TEST_CLASS_DEFAULT(PathManager)
 
         std::filesystem::path m_ExecutablePath;
         std::filesystem::path m_AssetsPath;

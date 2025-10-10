@@ -8,9 +8,13 @@ namespace VKTest {
     constexpr inline static bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-    constexpr inline static std::array VALIDATION_LAYERS = {
+    constexpr inline static std::array VALIDATION_LAYERS{
         "VK_LAYER_KHRONOS_validation",
         "VK_EXT_debug_utils"
+    };
+
+    constexpr inline static std::array DEVICE_EXTENSIONS{
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
     class SwapchainManager; // forward declaration
@@ -29,21 +33,26 @@ namespace VKTest {
         void CreateCommandPool();
         void CreateCommandBuffers();
 
-        VkInstance getInstance()const noexcept { return m_Instance; }
+        VkInstance       getInstance() const noexcept { return m_Instance; }
+        VkDevice         getDevice() const noexcept { return m_Device; }
+        VkPhysicalDevice getPhysicalDevice() const noexcept { return m_PhysicalDevice; }
+
+    public:
+        static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
     private:
         static std::vector<const char*> getRequiredExtensions();
         static void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
         static bool                     checkValidationLayerSupport();
-        VkSampleCountFlagBits           getMaxUsableSampleCount();
-        static bool                     isDeviceSuitable(VkPhysicalDevice device);
-        static QueueFamilyIndices       findQueueFamilies(VkPhysicalDevice device);
+        VkSampleCountFlagBits    getMaxUsableSampleCount();
+        bool                     isDeviceSuitable(VkPhysicalDevice device);
+        static bool                     checkDeviceExtensionSupport(VkPhysicalDevice device);
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
-            VKTEST_SAY("Validation layer : " << callback_data->pMessage);
+            VK_TEST_SAY("Validation layer : " << callback_data->pMessage);
             return VK_FALSE;
         }
 
