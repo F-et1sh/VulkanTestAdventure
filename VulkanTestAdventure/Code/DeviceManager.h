@@ -13,10 +13,14 @@ namespace VKTest {
         "VK_EXT_debug_utils"
     };
 
+    class SwapchainManager; // forward declaration
+
     class DeviceManager {
     public:
-        DeviceManager()  = default;
-        ~DeviceManager() = default;
+        DeviceManager(SwapchainManager* swapchain_manager) : p_SwapchainManager{ swapchain_manager } {}
+        ~DeviceManager() { this->Release(); }
+
+        void Release();
 
         void CreateInstance();
         void SetupDebugMessenger();
@@ -24,6 +28,8 @@ namespace VKTest {
         void CreateLogicalDevice();
         void CreateCommandPool();
         void CreateCommandBuffers();
+
+        VkInstance getInstance()const noexcept { return m_Instance; }
 
     private:
         static std::vector<const char*> getRequiredExtensions();
@@ -36,12 +42,14 @@ namespace VKTest {
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
 
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
+        static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity, VkDebugUtilsMessageTypeFlagsEXT message_type, const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data) {
             VKTEST_SAY("Validation layer : " << callback_data->pMessage);
             return VK_FALSE;
         }
 
     private:
+        SwapchainManager* p_SwapchainManager = nullptr;
+
         VkInstance m_Instance{};
 
         VkDevice         m_Device{};

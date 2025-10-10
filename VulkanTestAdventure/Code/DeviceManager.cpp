@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "DeviceManager.h"
 
+void VKTest::DeviceManager::Release() {
+}
+
 void VKTest::DeviceManager::CreateInstance() {
     if (ENABLE_VALIDATION_LAYERS && !checkValidationLayerSupport()) {
         VKTEST_RUNTIME_ERROR("ERROR : Validation layers requested, but not available");
@@ -107,7 +110,7 @@ void VKTest::DeviceManager::populateDebugMessengerCreateInfo(VkDebugUtilsMesseng
     create_info.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
     create_info.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    create_info.pfnUserCallback = debug_callback;
+    create_info.pfnUserCallback = DebugCallback;
 }
 
 bool VKTest::DeviceManager::checkValidationLayerSupport() {
@@ -151,7 +154,7 @@ VkSampleCountFlagBits VKTest::DeviceManager::getMaxUsableSampleCount() {
 }
 
 bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
-    /*QueueFamilyIndices indices = findQueueFamilies(device);
+    QueueFamilyIndices indices = findQueueFamilies(device);
 
     bool extensions_supported = checkDeviceExtensionSupport(device);
 
@@ -164,7 +167,7 @@ bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceFeatures supported_features;
     vkGetPhysicalDeviceFeatures(device, &supported_features);
 
-    return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);*/
+    return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);
 
     return false;
 }

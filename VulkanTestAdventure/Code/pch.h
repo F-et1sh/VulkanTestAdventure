@@ -44,3 +44,7 @@ using namespace VKTest;
 
 constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
 constexpr inline static int MAX_OBJECTS          = 3;
+
+#include "Renderer.h"
+#include "DeviceManager.h"
+#include "SwapchainManager.h"

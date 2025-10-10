@@ -100,6 +100,9 @@
     <Filter Include="Code\Main\Backend\Renderer">
       <UniqueIdentifier>{6ba5a9e4-fe60-463e-ac69-3d1d21a03c99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\SwapchainManager">
+      <UniqueIdentifier>{cbd45094-ff55-489c-919c-f4be675bd665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -128,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Code\DeviceManager.cpp">
       <Filter>Code\Main\Backend\DeivceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\SwapchainManager.cpp">
+      <Filter>Code\Main\Backend\SwapchainManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="Code\DeviceManager.h">
       <Filter>Code\Main\Backend\DeivceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SwapchainManager.h">
+      <Filter>Code\Main\Backend\SwapchainManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
