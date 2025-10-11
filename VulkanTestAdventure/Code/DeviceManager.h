@@ -36,10 +36,12 @@ namespace VKTest {
         VkInstance       getInstance() const noexcept { return m_Instance; }
         VkDevice         getDevice() const noexcept { return m_Device; }
         VkPhysicalDevice getPhysicalDevice() const noexcept { return m_PhysicalDevice; }
+        VkSampleCountFlagBits getMSAASamples() const noexcept { return m_MSAA_Samples; }
 
     public:
         QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
         VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
+        VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
     private:
         std::vector<const char*> getRequiredExtensions();

@@ -192,6 +192,7 @@
     <None Include="Code\VkHpp_SwapchainManager.cpp" />
     <ClCompile Include="Code\QueueFamilyIndices.cpp" />
     <ClCompile Include="Code\Renderer.cpp" />
+    <ClCompile Include="Code\RenderPassManager.cpp" />
     <ClCompile Include="Code\SwapchainManager.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
@@ -247,6 +248,7 @@
     <None Include="Code\VkHpp_SwapchainManager.h" />
     <ClInclude Include="Code\QueueFamilyIndices.h" />
     <ClInclude Include="Code\Renderer.h" />
+    <ClInclude Include="Code\RenderPassManager.h" />
     <ClInclude Include="Code\SwapchainManager.h" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />

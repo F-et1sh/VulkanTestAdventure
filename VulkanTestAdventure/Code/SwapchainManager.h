@@ -27,6 +27,7 @@ namespace VKTest {
 
         VkSwapchainKHR getSwapchain() const noexcept { return m_Swapchain; }
         VkSurfaceKHR   getSurface() const noexcept { return m_Surface; }
+        VkFormat       getImageFormat() const noexcept { return m_SwapchainImageFormat; }
 
     public:
         static VkSurfaceFormatKHR      chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& available_formats);

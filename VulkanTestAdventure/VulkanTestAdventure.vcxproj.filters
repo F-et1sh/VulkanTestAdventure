@@ -103,6 +103,9 @@
     <Filter Include="Code\Main\Backend\SwapchainManager">
       <UniqueIdentifier>{cbd45094-ff55-489c-919c-f4be675bd665}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\RenderPassManager">
+      <UniqueIdentifier>{4efa2307-16ad-4432-8a59-157ffae7964d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="Code\SwapchainManager.cpp">
       <Filter>Code\Main\Backend\SwapchainManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RenderPassManager.cpp">
+      <Filter>Code\Main\Backend\RenderPassManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="Code\SwapchainManager.h">
       <Filter>Code\Main\Backend\SwapchainManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RenderPassManager.h">
+      <Filter>Code\Main\Backend\RenderPassManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
