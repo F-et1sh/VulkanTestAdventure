@@ -6,29 +6,29 @@ namespace VKTest {
         glm::vec3 color         = glm::vec3();
         glm::vec2 texture_coord = glm::vec2();
 
-        static constexpr vk::VertexInputBindingDescription getBindingDescription() noexcept {
+        static constexpr VkVertexInputBindingDescription getBindingDescription() noexcept {
             return {
-                0,                           // Binding
-                sizeof(Vertex),              // Stride
-                vk::VertexInputRate::eVertex // Input Rate
+                0,                         // Binding
+                sizeof(Vertex),            // Stride
+                VkVertexInputRate::eVertex // Input Rate
             };
         }
 
-        static constexpr std::array<vk::VertexInputAttributeDescription, 3> getAttributeDescriptions() {
+        static constexpr std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
             return {
-                vk::VertexInputAttributeDescription{
+                VkVertexInputAttributeDescription{
                     0,                                                // Location
                     0,                                                // Binding
                     vk::Format::eR32G32B32Sfloat,                     // Format
                     static_cast<uint32_t>(offsetof(Vertex, position)) // Offset
                 },
-                vk::VertexInputAttributeDescription{
+                VkVertexInputAttributeDescription{
                     1,                                             // Location
                     0,                                             // Binding
                     vk::Format::eR32G32B32Sfloat,                  // Format
                     static_cast<uint32_t>(offsetof(Vertex, color)) // Offset
                 },
-                vk::VertexInputAttributeDescription{
+                VkVertexInputAttributeDescription{
                     2,                                                     // Location
                     0,                                                     // Binding
                     vk::Format::eR32G32Sfloat,                             // Format

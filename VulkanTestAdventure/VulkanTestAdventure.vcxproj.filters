@@ -106,6 +106,9 @@
     <Filter Include="Code\Main\Backend\RenderPassManager">
       <UniqueIdentifier>{4efa2307-16ad-4432-8a59-157ffae7964d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\PipelineManager">
+      <UniqueIdentifier>{9f4f2b4f-26fe-4f13-8f30-11abc83c76b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="Code\RenderPassManager.cpp">
       <Filter>Code\Main\Backend\RenderPassManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\PipelineManager.cpp">
+      <Filter>Code\Main\Backend\PipelineManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +201,9 @@
     </ClInclude>
     <ClInclude Include="Code\RenderPassManager.h">
       <Filter>Code\Main\Backend\RenderPassManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PipelineManager.h">
+      <Filter>Code\Main\Backend\PipelineManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

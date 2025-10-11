@@ -99,7 +99,7 @@ VkExtent2D VKTest::SwapchainManager::chooseSwapExtent(const VkSurfaceCapabilitie
         return capabilities.currentExtent;
     }
 
-    int width = 0;
+    int width  = 0;
     int height = 0;
     glfwGetFramebufferSize(window, &width, &height);
 

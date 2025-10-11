@@ -33,9 +33,9 @@ namespace VKTest {
         void CreateCommandPool();
         void CreateCommandBuffers();
 
-        VkInstance       getInstance() const noexcept { return m_Instance; }
-        VkDevice         getDevice() const noexcept { return m_Device; }
-        VkPhysicalDevice getPhysicalDevice() const noexcept { return m_PhysicalDevice; }
+        VkInstance            getInstance() const noexcept { return m_Instance; }
+        VkDevice              getDevice() const noexcept { return m_Device; }
+        VkPhysicalDevice      getPhysicalDevice() const noexcept { return m_PhysicalDevice; }
         VkSampleCountFlagBits getMSAASamples() const noexcept { return m_MSAA_Samples; }
 
     public:
@@ -44,9 +44,9 @@ namespace VKTest {
         VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
     private:
-        std::vector<const char*> getRequiredExtensions();
-        void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
-        bool                     checkValidationLayerSupport();
+        static std::vector<const char*> getRequiredExtensions();
+        static void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
+        static bool                     checkValidationLayerSupport();
         VkSampleCountFlagBits    getMaxUsableSampleCount();
         bool                     isDeviceSuitable(VkPhysicalDevice device);
         bool                     checkDeviceExtensionSupport();

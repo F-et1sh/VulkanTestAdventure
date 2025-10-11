@@ -12,13 +12,15 @@ namespace VKTest {
 
         void CreateRenderPass();
 
+        VkRenderPass getRenderPass() const noexcept { return m_RenderPass; }
+
     private:
         VkFormat findDepthFormat();
-    
+
     private:
-        DeviceManager* p_DeviceManager = nullptr;
+        DeviceManager*    p_DeviceManager    = nullptr;
         SwapchainManager* p_SwapchainManager = nullptr;
 
-        VkRenderPass m_RenderPass;
+        VkRenderPass m_RenderPass{};
     };
-}
+} // namespace VKTest

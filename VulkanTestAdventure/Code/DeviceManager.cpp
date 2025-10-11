@@ -285,7 +285,7 @@ VkImageView VKTest::DeviceManager::createImageView(VkImage image, VkFormat forma
     view_info.subresourceRange.baseArrayLayer = 0;
     view_info.subresourceRange.layerCount     = 1;
 
-    VkImageView image_view;
+    VkImageView image_view = nullptr;
     if (vkCreateImageView(m_Device, &view_info, nullptr, &image_view) != VK_SUCCESS) {
         throw std::runtime_error("failed to create image view!");
     }
@@ -301,7 +301,7 @@ VkFormat VKTest::DeviceManager::findSupportedFormat(const std::vector<VkFormat>&
         if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
             return format;
         }
-        else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+        if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
             return format;
         }
     }
