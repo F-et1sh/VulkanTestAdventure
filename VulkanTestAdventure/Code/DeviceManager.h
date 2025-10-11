@@ -38,15 +38,16 @@ namespace VKTest {
         VkPhysicalDevice getPhysicalDevice() const noexcept { return m_PhysicalDevice; }
 
     public:
-        static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
+        QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
+        VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
 
     private:
-        static std::vector<const char*> getRequiredExtensions();
-        static void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
-        static bool                     checkValidationLayerSupport();
+        std::vector<const char*> getRequiredExtensions();
+        void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
+        bool                     checkValidationLayerSupport();
         VkSampleCountFlagBits    getMaxUsableSampleCount();
         bool                     isDeviceSuitable(VkPhysicalDevice device);
-        static bool                     checkDeviceExtensionSupport(VkPhysicalDevice device);
+        bool                     checkDeviceExtensionSupport();
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);

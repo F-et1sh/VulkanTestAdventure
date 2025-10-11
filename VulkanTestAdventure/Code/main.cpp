@@ -14,8 +14,6 @@ int main(int argc, char* argv[]) {
 
         std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
         app->Loop();
-
-        int SomeInteger = 4;
     }
     catch (const std::exception& e) {
         VK_TEST_SAY(e.what());

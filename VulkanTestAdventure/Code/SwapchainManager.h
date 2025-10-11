@@ -23,6 +23,7 @@ namespace VKTest {
 
         void CreateSurface();
         void CreateSwapchain();
+        void CreateImageViews();
 
         VkSwapchainKHR getSwapchain() const noexcept { return m_Swapchain; }
         VkSurfaceKHR   getSurface() const noexcept { return m_Surface; }

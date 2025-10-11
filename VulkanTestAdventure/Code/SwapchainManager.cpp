@@ -11,21 +11,21 @@ void VKTest::SwapchainManager::CreateSurface() {
 }
 
 void VKTest::SwapchainManager::CreateSwapchain() {
-    auto *physical_device = p_DeviceManager->getPhysicalDevice();
-    auto *device         = p_DeviceManager->getDevice();
-    auto *window         = p_Window->getGLFWWindow();
+    auto* physical_device = p_DeviceManager->getPhysicalDevice();
+    auto* device          = p_DeviceManager->getDevice();
+    auto* window          = p_Window->getGLFWWindow();
 
     SwapChainSupportDetails swap_chain_support = querySwapChainSupport(physical_device, m_Surface);
 
     VkSurfaceFormatKHR surface_format = chooseSwapSurfaceFormat(swap_chain_support.formats);
     VkPresentModeKHR   present_mode   = chooseSwapPresentMode(swap_chain_support.present_modes);
-    VkExtent2D         extent        = chooseSwapExtent(swap_chain_support.capabilities, window);
+    VkExtent2D         extent         = chooseSwapExtent(swap_chain_support.capabilities, window);
 
     uint32_t image_count = swap_chain_support.capabilities.minImageCount + 1;
     if (swap_chain_support.capabilities.maxImageCount > 0 && image_count > swap_chain_support.capabilities.maxImageCount) {
         image_count = swap_chain_support.capabilities.maxImageCount;
     }
-    
+
     VkSwapchainCreateInfoKHR create_info{};
     create_info.sType   = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     create_info.surface = m_Surface;
@@ -37,7 +37,7 @@ void VKTest::SwapchainManager::CreateSwapchain() {
     create_info.imageArrayLayers = 1;
     create_info.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices                = DeviceManager::findQueueFamilies(physical_device, m_Surface);
+    QueueFamilyIndices indices                = p_DeviceManager->findQueueFamilies(m_Surface);
     uint32_t           queue_family_indices[] = { indices.graphics_family.value(), indices.present_family.value() };
 
     if (indices.graphics_family != indices.present_family) {
@@ -66,6 +66,14 @@ void VKTest::SwapchainManager::CreateSwapchain() {
     m_SwapchainExtent      = extent;
 }
 
+void VKTest::SwapchainManager::CreateImageViews() {
+    m_SwapchainImageViews.resize(m_SwapchainImages.size());
+
+    for (uint32_t i = 0; i < m_SwapchainImages.size(); i++) {
+        m_SwapchainImageViews[i] = p_DeviceManager->createImageView(m_SwapchainImages[i], m_SwapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    }
+}
+
 VkSurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& available_formats) {
     for (const auto& available_format : available_formats) {
         if (available_format.format == VK_FORMAT_B8G8R8A8_SRGB && available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -91,8 +99,8 @@ VkExtent2D VKTest::SwapchainManager::chooseSwapExtent(const VkSurfaceCapabilitie
         return capabilities.currentExtent;
     }
 
-    int width;
-    int height;
+    int width = 0;
+    int height = 0;
     glfwGetFramebufferSize(window, &width, &height);
 
     VkExtent2D actual_extent = {

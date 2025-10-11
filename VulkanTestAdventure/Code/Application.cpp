@@ -9,6 +9,6 @@ void VKTest::Application::Loop() {
 
         m_Renderer.DrawFrame();
 
-        m_Window.PollEvents();
+        VKTest::Window::PollEvents();
     }
 }
