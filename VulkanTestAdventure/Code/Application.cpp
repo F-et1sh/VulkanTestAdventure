@@ -7,7 +7,7 @@ VKTest::Application::~Application() {
 void VKTest::Application::Loop() {
     m_Renderer.Initialize();
 
-    while (m_Window.isRunning()) {
+    while (!glfwWindowShouldClose(m_Window.getGLFWWindow())) {
 
         m_Renderer.DrawFrame();
 

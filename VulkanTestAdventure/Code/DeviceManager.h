@@ -79,6 +79,7 @@ namespace VKTest {
         static bool                     checkDeviceExtensionSupport(VkPhysicalDevice device);
         uint32_t                        findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
         void                            recordCommandBuffer(VkCommandBuffer command_buffer, uint32_t image_index);
+        void                            updateUniformBuffer(uint32_t current_image);
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);

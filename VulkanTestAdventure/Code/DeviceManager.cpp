@@ -189,7 +189,7 @@ void VKTest::DeviceManager::DrawFrame() {
         VK_TEST_RUNTIME_ERROR("ERROR : Failed to acquire swap chain image");
     }
 
-    //updateUniformBuffer(currentFrame);
+    updateUniformBuffer(m_CurrentFrame);
 
     vkResetFences(m_Device, 1, &m_InFlightFences[m_CurrentFrame]);
 
@@ -419,6 +419,40 @@ void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, 
 
     if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
         VK_TEST_RUNTIME_ERROR("ERROR : Failed to record command buffer");
+    }
+}
+
+void VKTest::DeviceManager::updateUniformBuffer(uint32_t current_image) {
+    static auto startTime   = std::chrono::high_resolution_clock::now();
+    auto        currentTime = std::chrono::high_resolution_clock::now();
+    float       time        = std::chrono::duration<float>(currentTime - startTime).count();
+
+    // Camera and projection matrices (shared by all objects)
+    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f),
+                                      static_cast<float>(p_SwapchainManager->getExtent().width) / static_cast<float>(p_SwapchainManager->getExtent().height),
+                                      0.1f,
+                                      20.0f);
+    proj[1][1] *= -1; // Flip Y for Vulkan
+
+    // Update uniform buffers for each object
+    for (auto& gameObject : p_RenderMesh->getGameObjects()) {
+        // Apply continuous rotation to the object
+        gameObject.rotation.y += 0.001f; // Slow rotation around Y axis
+
+        // Get the model matrix for this object
+        glm::mat4 initialRotation = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 model           = gameObject.getModelMatrix() * initialRotation;
+
+        // Create and update the UBO
+        UniformBufferObject ubo{
+            .model = model,
+            .view  = view,
+            .proj  = proj
+        };
+
+        // Copy the UBO data to the mapped memory
+        memcpy(gameObject.uniform_buffers_mapped[current_image], &ubo, sizeof(ubo));
     }
 }
 
