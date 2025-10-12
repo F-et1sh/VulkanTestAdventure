@@ -5,14 +5,14 @@ namespace VKTest {
 #ifdef NDEBUG
     constexpr inline static bool ENABLE_VALIDATION_LAYERS = false;
 #else
-    constexpr inline static bool ENABLE_VALIDATION_LAYERS = false;
+    constexpr inline static bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-    constexpr inline static std::array VALIDATION_LAYERS{
+    constexpr inline static std::array VALIDATION_LAYERS {
         "VK_LAYER_KHRONOS_validation"
     };
 
-    constexpr inline static std::array DEVICE_EXTENSIONS{
+    constexpr inline static std::array DEVICE_EXTENSIONS {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 

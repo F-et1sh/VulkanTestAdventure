@@ -118,7 +118,7 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
 
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipeline_layout_info.setLayoutCount = 2;
+    pipeline_layout_info.setLayoutCount = 1;                                                // idk why there was 2, i put here 1
     pipeline_layout_info.pSetLayouts    = &m_DescriptorSetLayout;
 
     if (vkCreatePipelineLayout(p_DeviceManager->getDevice(), &pipeline_layout_info, nullptr, &m_PipelineLayout) != VK_SUCCESS) {

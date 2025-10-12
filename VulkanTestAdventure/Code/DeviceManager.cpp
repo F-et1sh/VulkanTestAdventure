@@ -20,14 +20,14 @@ void VKTest::DeviceManager::CreateInstance() {
     auto extensions = getRequiredExtensions();
 
     VkInstanceCreateInfo create_info{};
-    create_info.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    create_info.pApplicationInfo        = &app_info;
-    create_info.enabledExtensionCount   = static_cast<uint32_t>(extensions.size());
+    create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    create_info.pApplicationInfo = &app_info;
+    create_info.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     create_info.ppEnabledExtensionNames = extensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT debug_create_info{};
     if (ENABLE_VALIDATION_LAYERS) {
-        create_info.enabledLayerCount   = static_cast<uint32_t>(VALIDATION_LAYERS.size());
+        create_info.enabledLayerCount = static_cast<uint32_t>(VALIDATION_LAYERS.size());
         create_info.ppEnabledLayerNames = VALIDATION_LAYERS.data();
 
         populateDebugMessengerCreateInfo(debug_create_info);
@@ -35,7 +35,7 @@ void VKTest::DeviceManager::CreateInstance() {
     }
     else {
         create_info.enabledLayerCount = 0;
-        create_info.pNext             = nullptr;
+        create_info.pNext = nullptr;
     }
 
     if (vkCreateInstance(&create_info, nullptr, &m_Instance) != VK_SUCCESS) {
@@ -52,7 +52,7 @@ void VKTest::DeviceManager::SetupDebugMessenger() {
     populateDebugMessengerCreateInfo(create_info);
 
     if (VKTest::DeviceManager::CreateDebugUtilsMessengerEXT(m_Instance, &create_info, nullptr, &m_DebugMessenger) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug messenger!");
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to set up debug messenger");
     }
 }
 
@@ -246,11 +246,8 @@ std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
 
     std::vector<const char*> extensions(glfw_extensions, glfw_extensions + glfw_extension_count);
 
-    if (ENABLE_VALIDATION_LAYERS) {
-        for (const auto& e : DEVICE_EXTENSIONS) {
-            extensions.emplace_back(e);
-        }
-    }
+    if (ENABLE_VALIDATION_LAYERS)
+        extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
     return extensions;
 }
@@ -409,7 +406,7 @@ void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, 
     // Draw each object with its own descriptor set
     for (const auto& game_object : p_RenderMesh->getGameObjects()) {
         // Bind the descriptor set for this object
-        vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_PipelineManager->getPipelineLayout(), 0, game_object.descriptor_sets.size(), &game_object.descriptor_sets[m_CurrentFrame], 0, nullptr);
+        vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_PipelineManager->getPipelineLayout(), 0, 1, &game_object.descriptor_sets[m_CurrentFrame], 0, nullptr);
 
         // Draw the object
         vkCmdDrawIndexed(command_buffer, p_RenderMesh->getIndices().size(), 1, 0, 0, 0);
@@ -503,7 +500,7 @@ VkImageView VKTest::DeviceManager::createImageView(VkImage image, VkFormat forma
 
     VkImageView image_view = nullptr;
     if (vkCreateImageView(m_Device, &view_info, nullptr, &image_view) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create image view!");
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to create image view");
     }
 
     return image_view;
