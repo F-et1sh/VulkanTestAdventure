@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     catch (const std::exception& e) {
         VK_TEST_SAY(e.what());
 
-        std::ofstream file("output.txt");
+        std::ofstream file("F:/Windows/Desktop/VulkanTestAdventure/output.txt");
         file << e.what();
         file.close();
 

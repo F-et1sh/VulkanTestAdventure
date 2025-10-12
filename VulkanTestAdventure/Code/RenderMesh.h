@@ -17,6 +17,11 @@ namespace VKTest {
         VkSampler   getTextureSampler() const noexcept { return m_TextureSampler; }
         VkImageView getTextureImageView() const noexcept { return m_TextureImageView; }
 
+        VkBuffer getVertexBuffer() const noexcept { return m_VertexBuffer; }
+        VkBuffer getIndexBuffer() const noexcept { return m_IndexBuffer; }
+
+        std::vector<uint32_t> getIndices() const noexcept { return m_Indices; }
+
     private:
         void createTextureImage();
         void createTextureImageView();

@@ -6,10 +6,6 @@ void VKTest::Renderer::Release() {
 
 void VKTest::Renderer::Initialize() {
 
-    /*
-        createSyncObjects();
-    */
-
     m_DeviceManager.CreateInstance();
     m_DeviceManager.SetupDebugMessenger();
 
@@ -38,7 +34,9 @@ void VKTest::Renderer::Initialize() {
     m_PipelineManager.CreateDescriptorSets();
 
     m_DeviceManager.CreateCommandBuffers();
+    m_DeviceManager.CreateSyncObjects();
 }
 
 void VKTest::Renderer::DrawFrame() {
+    m_DeviceManager.DrawFrame();
 }

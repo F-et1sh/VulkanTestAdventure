@@ -10,18 +10,34 @@ namespace VKTest {
 
     constexpr inline static std::array VALIDATION_LAYERS{
         "VK_LAYER_KHRONOS_validation",
-        "VK_EXT_debug_utils"
     };
 
     constexpr inline static std::array DEVICE_EXTENSIONS{
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
-    class SwapchainManager; // forward declaration
+    /* forward declarations */
+    class SwapchainManager;
+    class Window;
+    class RenderPassManager;
+    class PipelineManager;
+    class RenderMesh;
 
     class DeviceManager {
     public:
-        DeviceManager(SwapchainManager* swapchain_manager) : p_SwapchainManager{ swapchain_manager } {}
+        DeviceManager(
+            SwapchainManager*  swapchain_manager,
+            Window*            window,
+            RenderPassManager* render_pass_manager,
+            PipelineManager*   pipeline_manager,
+            RenderMesh*        render_mesh) :
+
+                                       p_SwapchainManager{ swapchain_manager },
+                                       p_Window{ window },
+                                       p_RenderPassManager{ render_pass_manager },
+                                       p_PipelineManager{ pipeline_manager },
+                                       p_RenderMesh{ render_mesh } {}
+
         ~DeviceManager() { this->Release(); }
 
         void Release();
@@ -33,6 +49,8 @@ namespace VKTest {
         void CreateCommandPool();
         void CreateCommandBuffers();
         void CreateSyncObjects();
+
+        void DrawFrame();
 
         VkInstance            getInstance() const noexcept { return m_Instance; }
         VkDevice              getDevice() const noexcept { return m_Device; }
@@ -60,6 +78,7 @@ namespace VKTest {
         bool                            isDeviceSuitable(VkPhysicalDevice device);
         bool                            checkDeviceExtensionSupport();
         uint32_t                        findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
+        void                            recordCommandBuffer(VkCommandBuffer command_buffer, uint32_t image_index);
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
@@ -70,7 +89,11 @@ namespace VKTest {
         }
 
     private:
-        SwapchainManager* p_SwapchainManager = nullptr;
+        SwapchainManager*  p_SwapchainManager  = nullptr;
+        Window*            p_Window            = nullptr;
+        RenderPassManager* p_RenderPassManager = nullptr;
+        PipelineManager*   p_PipelineManager   = nullptr;
+        RenderMesh*        p_RenderMesh        = nullptr;
 
         VkInstance m_Instance{};
 

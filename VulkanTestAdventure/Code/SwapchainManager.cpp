@@ -2,6 +2,23 @@
 #include "SwapchainManager.h"
 
 void VKTest::SwapchainManager::Release() {
+    vkDestroyImageView(p_DeviceManager->getDevice(), m_DepthImageView, nullptr);
+    vkDestroyImage(p_DeviceManager->getDevice(), m_DepthImage, nullptr);
+    vkFreeMemory(p_DeviceManager->getDevice(), m_DepthImageMemory, nullptr);
+
+    vkDestroyImageView(p_DeviceManager->getDevice(), m_ColorImageView, nullptr);
+    vkDestroyImage(p_DeviceManager->getDevice(), m_ColorImage, nullptr);
+    vkFreeMemory(p_DeviceManager->getDevice(), m_ColorImageMemory, nullptr);
+
+    for (auto* framebuffer : m_SwapchainFramebuffers) {
+        vkDestroyFramebuffer(p_DeviceManager->getDevice(), framebuffer, nullptr);
+    }
+
+    for (auto* image_view : m_SwapchainImageViews) {
+        vkDestroyImageView(p_DeviceManager->getDevice(), image_view, nullptr);
+    }
+
+    vkDestroySwapchainKHR(p_DeviceManager->getDevice(), m_Swapchain, nullptr);
 }
 
 void VKTest::SwapchainManager::CreateSurface() {
@@ -175,4 +192,24 @@ SwapChainSupportDetails VKTest::SwapchainManager::querySwapChainSupport(VkPhysic
     }
 
     return details;
+}
+
+void VKTest::SwapchainManager::recreateSwapchain() {
+    int width  = 0;
+    int height = 0;
+    glfwGetFramebufferSize(p_Window->getGLFWWindow(), &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(p_Window->getGLFWWindow(), &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(p_DeviceManager->getDevice());
+
+    this->Release();
+
+    this->CreateSwapchain();
+    this->CreateImageViews();
+    this->CreateColorResources();
+    this->CreateDepthResources();
+    this->CreateFramebuffers();
 }

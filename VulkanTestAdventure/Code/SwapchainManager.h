@@ -30,15 +30,19 @@ namespace VKTest {
         void CreateDepthResources();
         void CreateFramebuffers();
 
-        VkSwapchainKHR getSwapchain() const noexcept { return m_Swapchain; }
-        VkSurfaceKHR   getSurface() const noexcept { return m_Surface; }
-        VkFormat       getImageFormat() const noexcept { return m_SwapchainImageFormat; }
+        VkSwapchainKHR                    getSwapchain() const noexcept { return m_Swapchain; }
+        VkSurfaceKHR                      getSurface() const noexcept { return m_Surface; }
+        VkFormat                          getImageFormat() const noexcept { return m_SwapchainImageFormat; }
+        VkExtent2D                        getExtent() const noexcept { return m_SwapchainExtent; }
+        const std::vector<VkFramebuffer>& getFramebuffers() const noexcept { return m_SwapchainFramebuffers; }
 
     public:
         static VkSurfaceFormatKHR      chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& available_formats);
         static VkPresentModeKHR        chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& available_present_modes);
         static VkExtent2D              chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
         static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
+
+        void recreateSwapchain();
 
     private:
         DeviceManager*     p_DeviceManager     = nullptr;

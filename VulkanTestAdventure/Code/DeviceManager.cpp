@@ -175,6 +175,72 @@ void VKTest::DeviceManager::CreateSyncObjects() {
     }
 }
 
+void VKTest::DeviceManager::DrawFrame() {
+    vkWaitForFences(m_Device, 1, &m_InFlightFences[m_CurrentFrame], VK_TRUE, UINT64_MAX);
+
+    uint32_t image_index = 0;
+    VkResult result      = vkAcquireNextImageKHR(m_Device, p_SwapchainManager->getSwapchain(), UINT64_MAX, m_ImageAvailableSemaphores[m_CurrentFrame], VK_NULL_HANDLE, &image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        p_SwapchainManager->recreateSwapchain();
+        return;
+    }
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to acquire swap chain image");
+    }
+
+    //updateUniformBuffer(currentFrame);
+
+    vkResetFences(m_Device, 1, &m_InFlightFences[m_CurrentFrame]);
+
+    vkResetCommandBuffer(m_CommandBuffers[m_CurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+    recordCommandBuffer(m_CommandBuffers[m_CurrentFrame], image_index);
+
+    VkSubmitInfo submit_info{};
+    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore          wait_semaphores[] = { m_ImageAvailableSemaphores[m_CurrentFrame] };
+    VkPipelineStageFlags wait_stages[]     = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submit_info.waitSemaphoreCount         = 1;
+    submit_info.pWaitSemaphores            = wait_semaphores;
+    submit_info.pWaitDstStageMask          = wait_stages;
+
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers    = &m_CommandBuffers[m_CurrentFrame];
+
+    VkSemaphore signal_semaphores[]  = { m_RenderFinishedSemaphores[m_CurrentFrame] };
+    submit_info.signalSemaphoreCount = 1;
+    submit_info.pSignalSemaphores    = signal_semaphores;
+
+    if (vkQueueSubmit(m_GraphicsQueue, 1, &submit_info, m_InFlightFences[m_CurrentFrame]) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to submit draw command buffer");
+    }
+
+    VkPresentInfoKHR present_info{};
+    present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    present_info.waitSemaphoreCount = 1;
+    present_info.pWaitSemaphores    = signal_semaphores;
+
+    VkSwapchainKHR swapchains[] = { p_SwapchainManager->getSwapchain() };
+    present_info.swapchainCount = 1;
+    present_info.pSwapchains    = swapchains;
+
+    present_info.pImageIndices = &image_index;
+
+    result = vkQueuePresentKHR(m_PresentQueue, &present_info);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || p_Window->isFramebufferResized()) {
+        p_Window->resetFramebufferResized();
+        p_SwapchainManager->recreateSwapchain();
+    }
+    else if (result != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to present swap chain image");
+    }
+
+    m_CurrentFrame = (m_CurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
 std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
     uint32_t     glfw_extension_count = 0;
     const char** glfw_extensions      = nullptr;
@@ -295,6 +361,67 @@ uint32_t VKTest::DeviceManager::findMemoryType(uint32_t type_filter, VkMemoryPro
     }
 
     VK_TEST_RUNTIME_ERROR("ERROR : Failed to find suitable memory type");
+}
+
+void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, uint32_t image_index) {
+    VkCommandBufferBeginInfo begin_info{};
+    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    if (vkBeginCommandBuffer(command_buffer, &begin_info) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to begin recording command buffer");
+    }
+
+    VkRenderPassBeginInfo render_pass_info{};
+    render_pass_info.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    render_pass_info.renderPass        = p_RenderPassManager->getRenderPass();
+    render_pass_info.framebuffer       = p_SwapchainManager->getFramebuffers()[image_index];
+    render_pass_info.renderArea.offset = { 0, 0 };
+    render_pass_info.renderArea.extent = p_SwapchainManager->getExtent();
+
+    std::array<VkClearValue, 2> clear_values{};
+    clear_values[0].color        = { { 0.0F, 0.0F, 0.0F, 1.0F } };
+    clear_values[1].depthStencil = { 1.0F, 0 };
+
+    render_pass_info.clearValueCount = static_cast<uint32_t>(clear_values.size());
+    render_pass_info.pClearValues    = clear_values.data();
+
+    vkCmdBeginRenderPass(command_buffer, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_PipelineManager->getGraphicsPipeline());
+
+    VkViewport viewport{};
+    viewport.x        = 0.0F;
+    viewport.y        = 0.0F;
+    viewport.width    = (float) p_SwapchainManager->getExtent().width;
+    viewport.height   = (float) p_SwapchainManager->getExtent().height;
+    viewport.minDepth = 0.0F;
+    viewport.maxDepth = 1.0F;
+    vkCmdSetViewport(command_buffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = { 0, 0 };
+    scissor.extent = p_SwapchainManager->getExtent();
+    vkCmdSetScissor(command_buffer, 0, 1, &scissor);
+
+    VkBuffer     vertex_buffers[] = { p_RenderMesh->getVertexBuffer() };
+    VkDeviceSize offsets[]        = { 0 };
+    vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, offsets);
+    vkCmdBindIndexBuffer(command_buffer, p_RenderMesh->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+    // Draw each object with its own descriptor set
+    for (const auto& game_object : GAME_OBJECTS) {
+        // Bind the descriptor set for this object
+        vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_PipelineManager->getPipelineLayout(), 0, game_object.descriptor_sets.size(), &game_object.descriptor_sets[m_CurrentFrame], 0, nullptr);
+
+        // Draw the object
+        vkCmdDrawIndexed(command_buffer, p_RenderMesh->getIndices().size(), 1, 0, 0, 0);
+    }
+
+    vkCmdEndRenderPass(command_buffer);
+
+    if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to record command buffer");
+    }
 }
 
 QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkSurfaceKHR surface) {
