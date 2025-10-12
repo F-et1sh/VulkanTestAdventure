@@ -88,6 +88,31 @@ void VKTest::SwapchainManager::CreateDepthResources() {
     m_DepthImageView = p_DeviceManager->createImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 }
 
+void VKTest::SwapchainManager::CreateFramebuffers() {
+    m_SwapchainFramebuffers.resize(m_SwapchainImageViews.size());
+
+    for (size_t i = 0; i < m_SwapchainImageViews.size(); i++) {
+        std::array<VkImageView, 3> attachments = {
+            m_ColorImageView,
+            m_DepthImageView,
+            m_SwapchainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass      = p_RenderPassManager->getRenderPass();
+        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        framebufferInfo.pAttachments    = attachments.data();
+        framebufferInfo.width           = m_SwapchainExtent.width;
+        framebufferInfo.height          = m_SwapchainExtent.height;
+        framebufferInfo.layers          = 1;
+
+        if (vkCreateFramebuffer(p_DeviceManager->getDevice(), &framebufferInfo, nullptr, &m_SwapchainFramebuffers[i]) != VK_SUCCESS) {
+            VK_TEST_RUNTIME_ERROR("ERROR : Failed to create framebuffer");
+        }
+    }
+}
+
 VkSurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& available_formats) {
     for (const auto& available_format : available_formats) {
         if (available_format.format == VK_FORMAT_B8G8R8A8_SRGB && available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {

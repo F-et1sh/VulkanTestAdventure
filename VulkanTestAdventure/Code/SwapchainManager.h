@@ -4,6 +4,7 @@ namespace VKTest {
     /* forward declaration */
     class DeviceManager;
     class Window;
+    class RenderPassManager;
 
     struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR        capabilities{};
@@ -16,7 +17,8 @@ namespace VKTest {
 
     class SwapchainManager {
     public:
-        SwapchainManager(DeviceManager* device_manager, Window* window) : p_DeviceManager{ device_manager }, p_Window{ window } {}
+        SwapchainManager(DeviceManager* device_manager, Window* window, RenderPassManager* render_pass_manager)
+            : p_DeviceManager{ device_manager }, p_Window{ window }, p_RenderPassManager{ render_pass_manager } {}
         ~SwapchainManager() { this->Release(); }
 
         void Release();
@@ -26,6 +28,7 @@ namespace VKTest {
         void CreateImageViews();
         void CreateColorResources();
         void CreateDepthResources();
+        void CreateFramebuffers();
 
         VkSwapchainKHR getSwapchain() const noexcept { return m_Swapchain; }
         VkSurfaceKHR   getSurface() const noexcept { return m_Surface; }
@@ -40,6 +43,7 @@ namespace VKTest {
     private:
         DeviceManager* p_DeviceManager = nullptr;
         Window*        p_Window        = nullptr;
+        RenderPassManager* p_RenderPassManager = nullptr;
 
         VkSwapchainKHR m_Swapchain;
         VkSurfaceKHR   m_Surface;
