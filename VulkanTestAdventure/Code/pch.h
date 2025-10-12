@@ -57,5 +57,5 @@ using namespace VKTest;
 #include "PipelineManager.h"
 
 namespace VKTest {
-	constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
+    constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
 }

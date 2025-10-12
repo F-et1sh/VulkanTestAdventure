@@ -46,6 +46,6 @@ void VKTest::Window::ClearScreen(unsigned int buffer_bit) const noexcept {
 void VKTest::Window::SwapBuffers() const noexcept {
 }
 
-void VKTest::Window::PollEvents() const noexcept {
+void VKTest::Window::PollEvents() noexcept {
     glfwPollEvents();
 }

@@ -20,7 +20,7 @@ namespace VKTest {
         void CreateDescriptorSets();
 
         VkPipelineLayout getPipelineLayout() const noexcept { return m_PipelineLayout; }
-        VkPipeline getGraphicsPipeline() const noexcept { return m_GraphicsPipeline; }
+        VkPipeline       getGraphicsPipeline() const noexcept { return m_GraphicsPipeline; }
 
     private:
         static std::vector<char> readFile(const std::filesystem::path& path);

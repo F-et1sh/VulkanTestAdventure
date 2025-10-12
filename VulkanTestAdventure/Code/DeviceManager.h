@@ -8,11 +8,11 @@ namespace VKTest {
     constexpr inline static bool ENABLE_VALIDATION_LAYERS = true;
 #endif
 
-    constexpr inline static std::array VALIDATION_LAYERS {
+    constexpr inline static std::array VALIDATION_LAYERS{
         "VK_LAYER_KHRONOS_validation"
     };
 
-    constexpr inline static std::array DEVICE_EXTENSIONS {
+    constexpr inline static std::array DEVICE_EXTENSIONS{
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
@@ -58,17 +58,17 @@ namespace VKTest {
         VkSampleCountFlagBits getMSAASamples() const noexcept { return m_MSAA_Samples; }
 
     public:
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
-        void               createImage(uint32_t width, uint32_t height, uint32_t mip_levels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
-        VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
-        VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-        VkFormat           findDepthFormat();
-        VkCommandBuffer    beginSingleTimeCommands();
-        void               endSingleTimeCommands(VkCommandBuffer command_buffer);
-        void               copyBuffer(VkBuffer src_buffer, VkBuffer dst_buffer, VkDeviceSize size);
-        void               createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
-        void               transitionImageLayout(VkImage image, VkFormat format, VkImageLayout old_layout, VkImageLayout new_layout, uint32_t mip_levels);
-        void               copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+        static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
+        void                      createImage(uint32_t width, uint32_t height, uint32_t mip_levels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
+        VkImageView               createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
+        VkFormat                  findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        VkFormat                  findDepthFormat();
+        VkCommandBuffer           beginSingleTimeCommands();
+        void                      endSingleTimeCommands(VkCommandBuffer command_buffer);
+        void                      copyBuffer(VkBuffer src_buffer, VkBuffer dst_buffer, VkDeviceSize size);
+        void                      createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
+        void                      transitionImageLayout(VkImage image, VkFormat format, VkImageLayout old_layout, VkImageLayout new_layout, uint32_t mip_levels);
+        void                      copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
     private:
         static std::vector<const char*> getRequiredExtensions();
@@ -76,7 +76,7 @@ namespace VKTest {
         static bool                     checkValidationLayerSupport();
         VkSampleCountFlagBits           getMaxUsableSampleCount();
         bool                            isDeviceSuitable(VkPhysicalDevice device);
-        bool                            checkDeviceExtensionSupport(VkPhysicalDevice device);
+        static bool                     checkDeviceExtensionSupport(VkPhysicalDevice device);
         uint32_t                        findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
         void                            recordCommandBuffer(VkCommandBuffer command_buffer, uint32_t image_index);
 

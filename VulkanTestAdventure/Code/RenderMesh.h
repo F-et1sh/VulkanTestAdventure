@@ -9,7 +9,8 @@ namespace VKTest {
 
     class RenderMesh {
     public:
-        constexpr inline static int MAX_OBJECTS = 3;
+        constexpr static int MAX_OBJECTS = 3;
+
     public:
         RenderMesh()  = default;
         ~RenderMesh() = default;
@@ -22,7 +23,7 @@ namespace VKTest {
         VkBuffer getVertexBuffer() const noexcept { return m_VertexBuffer; }
         VkBuffer getIndexBuffer() const noexcept { return m_IndexBuffer; }
 
-        std::vector<uint32_t> getIndices() const noexcept { return m_Indices; }
+        std::vector<uint32_t>                getIndices() const noexcept { return m_Indices; }
         std::array<GameObject, MAX_OBJECTS>& getGameObjects() noexcept { return m_GameObjects; }
 
     private:
