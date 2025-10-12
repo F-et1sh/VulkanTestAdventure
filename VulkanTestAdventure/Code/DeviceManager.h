@@ -32,6 +32,7 @@ namespace VKTest {
         void CreateLogicalDevice();
         void CreateCommandPool();
         void CreateCommandBuffers();
+        void CreateSyncObjects();
 
         VkInstance            getInstance() const noexcept { return m_Instance; }
         VkDevice              getDevice() const noexcept { return m_Device; }
@@ -81,8 +82,14 @@ namespace VKTest {
         VkQueue m_GraphicsQueue{};
         VkQueue m_PresentQueue{};
 
-        VkCommandPool m_CommandPool{};
+        VkCommandPool                m_CommandPool{};
+        std::vector<VkCommandBuffer> m_CommandBuffers;
 
         VkDebugUtilsMessengerEXT m_DebugMessenger{};
+
+        std::vector<VkSemaphore> m_ImageAvailableSemaphores;
+        std::vector<VkSemaphore> m_RenderFinishedSemaphores;
+        std::vector<VkFence>     m_InFlightFences;
+        uint32_t                 m_CurrentFrame = 0;
     };
 } // namespace VKTest

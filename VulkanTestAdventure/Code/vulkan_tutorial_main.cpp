@@ -28,6 +28,7 @@
 #include <optional>
 #include <set>
 #include <unordered_map>
+#include "GameObjects.h"
 
 const uint32_t WIDTH  = 800;
 const uint32_t HEIGHT = 600;

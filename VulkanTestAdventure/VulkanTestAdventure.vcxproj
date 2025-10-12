@@ -184,6 +184,7 @@
     <None Include="Code\VkHpp_GPUResourceManager.cpp" />
     <None Include="Code\VkHpp_Image.cpp" />
     <ClCompile Include="Code\DeviceManager.cpp" />
+    <ClCompile Include="Code\GameObjects.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Code\PipelineManager.cpp" />
     <ClCompile Include="Code\QueueFamilyIndices.cpp" />
     <ClCompile Include="Code\Renderer.cpp" />
+    <ClCompile Include="Code\RenderMesh.cpp" />
     <ClCompile Include="Code\RenderPassManager.cpp" />
     <ClCompile Include="Code\SwapchainManager.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
@@ -242,6 +244,7 @@
     <None Include="Code\VkHpp_FrameData.h" />
     <None Include="Code\VkHpp_GPUResourceManager.h" />
     <ClInclude Include="Code\DeviceManager.h" />
+    <ClInclude Include="Code\GameObjects.h" />
     <ClInclude Include="Code\PathManager.h" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />
     <None Include="Code\VkHpp_Renderer.h" />
@@ -250,6 +253,7 @@
     <ClInclude Include="Code\PipelineManager.h" />
     <ClInclude Include="Code\QueueFamilyIndices.h" />
     <ClInclude Include="Code\Renderer.h" />
+    <ClInclude Include="Code\RenderMesh.h" />
     <ClInclude Include="Code\RenderPassManager.h" />
     <ClInclude Include="Code\SwapchainManager.h" />
     <ClInclude Include="Code\traits.hpp" />

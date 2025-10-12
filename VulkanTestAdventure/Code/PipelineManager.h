@@ -1,20 +1,23 @@
 #pragma once
-#include "Vertices.h"
+#include "RenderMesh.h"
 
 namespace VKTest {
-    /* forward declaration */
+    /* forward declarations */
     class DeviceManager;
     class RenderPassManager;
     class SwapchainManager;
+    class RenderMesh;
 
     class PipelineManager {
     public:
-        PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, SwapchainManager* swapchain_manager)
-            : p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_SwapchainManager{ swapchain_manager } {}
+        PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, SwapchainManager* swapchain_manager, RenderMesh* render_mesh)
+            : p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_SwapchainManager{ swapchain_manager }, p_RenderMesh{ render_mesh } {}
         ~PipelineManager() = default;
 
         void CreateDescriptorSetLayout();
         void CreateGraphicsPipeline();
+        void CreateDescriptorPool();
+        void CreateDescriptorSets();
 
     private:
         static std::vector<char> readFile(const std::filesystem::path& path);
@@ -24,8 +27,10 @@ namespace VKTest {
         DeviceManager*     p_DeviceManager     = nullptr;
         RenderPassManager* p_RenderPassManager = nullptr;
         SwapchainManager*  p_SwapchainManager  = nullptr;
+        RenderMesh*        p_RenderMesh        = nullptr;
 
         VkDescriptorSetLayout m_DescriptorSetLayout{};
+        VkDescriptorPool      m_DescriptorPool{};
 
         VkPipelineLayout m_PipelineLayout{};
         VkPipeline       m_GraphicsPipeline{};

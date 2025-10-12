@@ -140,6 +140,39 @@ void VKTest::DeviceManager::CreateCommandPool() {
 }
 
 void VKTest::DeviceManager::CreateCommandBuffers() {
+    m_CommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+    VkCommandBufferAllocateInfo alloc_info{};
+    alloc_info.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    alloc_info.commandPool        = m_CommandPool;
+    alloc_info.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    alloc_info.commandBufferCount = (uint32_t) m_CommandBuffers.size();
+
+    if (vkAllocateCommandBuffers(m_Device, &alloc_info, m_CommandBuffers.data()) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to allocate command buffers");
+    }
+}
+
+void VKTest::DeviceManager::CreateSyncObjects() {
+    m_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    m_RenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    m_InFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
+    VkSemaphoreCreateInfo semaphore_info{};
+    semaphore_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fence_info{};
+    fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fence_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        if (vkCreateSemaphore(m_Device, &semaphore_info, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(m_Device, &semaphore_info, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(m_Device, &fence_info, nullptr, &m_InFlightFences[i]) != VK_SUCCESS) {
+
+            VK_TEST_RUNTIME_ERROR("ERROR : Failed to create synchronization objects for a frame");
+        }
+    }
 }
 
 std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
@@ -256,7 +289,7 @@ uint32_t VKTest::DeviceManager::findMemoryType(uint32_t type_filter, VkMemoryPro
     vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &mem_properties);
 
     for (uint32_t i = 0; i < mem_properties.memoryTypeCount; i++) {
-        if (((type_filter & (1 << i)) != 0u) && (mem_properties.memoryTypes[i].propertyFlags & properties) == properties) {
+        if (((type_filter & (1 << i)) != 0U) && (mem_properties.memoryTypes[i].propertyFlags & properties) == properties) {
             return i;
         }
     }

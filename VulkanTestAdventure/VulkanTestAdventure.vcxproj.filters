@@ -109,6 +109,12 @@
     <Filter Include="Code\Main\Backend\PipelineManager">
       <UniqueIdentifier>{9f4f2b4f-26fe-4f13-8f30-11abc83c76b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Backend\GameObjects">
+      <UniqueIdentifier>{3cea17d0-b2ba-4252-a299-583c0f799ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Backend\RenderMesh">
+      <UniqueIdentifier>{10abfafd-9aff-4445-b4f5-3847fd908600}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -146,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="Code\PipelineManager.cpp">
       <Filter>Code\Main\Backend\PipelineManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameObjects.cpp">
+      <Filter>Code\Main\Backend\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RenderMesh.cpp">
+      <Filter>Code\Main\Backend\RenderMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +216,12 @@
     </ClInclude>
     <ClInclude Include="Code\PipelineManager.h">
       <Filter>Code\Main\Backend\PipelineManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GameObjects.h">
+      <Filter>Code\Main\Backend\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RenderMesh.h">
+      <Filter>Code\Main\Backend\RenderMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -150,6 +150,76 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
     vkDestroyShaderModule(p_DeviceManager->getDevice(), vert_shader_module, nullptr);
 }
 
+void VKTest::PipelineManager::CreateDescriptorPool() {
+    // We need MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT descriptor sets
+    std::array pool_size{
+        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT),
+        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT)
+    };
+    VkDescriptorPoolCreateInfo pool_info{
+        .sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+        .flags         = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+        .maxSets       = MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT,
+        .poolSizeCount = static_cast<uint32_t>(pool_size.size()),
+        .pPoolSizes    = pool_size.data()
+    };
+    vkCreateDescriptorPool(p_DeviceManager->getDevice(), &pool_info, nullptr, &m_DescriptorPool);
+}
+
+void VKTest::PipelineManager::CreateDescriptorSets() {
+    // For each game object
+    for (auto& game_object : GAME_OBJECTS) {
+        // Create descriptor sets for each frame in flight
+        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_DescriptorSetLayout);
+
+        VkDescriptorSetAllocateInfo alloc_info{
+            .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+            .descriptorPool     = m_DescriptorPool,
+            .descriptorSetCount = static_cast<uint32_t>(layouts.size()),
+            .pSetLayouts        = layouts.data()
+        };
+
+        game_object.descriptor_sets.clear();
+        game_object.descriptor_sets.resize(layouts.size());
+        vkAllocateDescriptorSets(p_DeviceManager->getDevice(), &alloc_info, game_object.descriptor_sets.data());
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo buffer_info{
+                .buffer = game_object.uniform_buffers[i],
+                .offset = 0,
+                .range  = sizeof(UniformBufferObject)
+            };
+
+            VkDescriptorImageInfo image_info{
+                .sampler     = p_RenderMesh->getTextureSampler(),
+                .imageView   = p_RenderMesh->getTextureImageView(),
+                .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+            };
+
+            std::array descriptor_writes{
+                VkWriteDescriptorSet{
+                    .sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    .dstSet          = game_object.descriptor_sets[i],
+                    .dstBinding      = 0,
+                    .dstArrayElement = 0,
+                    .descriptorCount = 1,
+                    .descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    .pBufferInfo     = &buffer_info },
+                VkWriteDescriptorSet{
+                    .sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    .dstSet          = game_object.descriptor_sets[i],
+                    .dstBinding      = 1,
+                    .dstArrayElement = 0,
+                    .descriptorCount = 1,
+                    .descriptorType  = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    .pImageInfo      = &image_info }
+            };
+
+            vkUpdateDescriptorSets(p_DeviceManager->getDevice(), descriptor_writes.size(), descriptor_writes.data(), 0, nullptr);
+        }
+    }
+}
+
 std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
     if (!file.good()) {

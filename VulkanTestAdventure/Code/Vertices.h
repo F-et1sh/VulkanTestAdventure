@@ -2,9 +2,9 @@
 
 namespace VKTest {
     struct Vertex {
-        glm::vec3 position      = glm::vec3();
-        glm::vec3 color         = glm::vec3();
-        glm::vec2 texture_coord = glm::vec2();
+        glm::vec3 position      = glm::vec3{};
+        glm::vec3 color         = glm::vec3{};
+        glm::vec2 texture_coord = glm::vec2{};
 
         static constexpr VkVertexInputBindingDescription getBindingDescription() noexcept {
             return {
@@ -51,3 +51,12 @@ namespace VKTest {
         0, 1, 2, 2, 3, 0
     };
 } // namespace VKTest
+
+namespace std {
+    template <>
+    struct hash<Vertex> {
+        size_t operator()(Vertex const& vertex) const {
+            return ((hash<glm::vec3>()(vertex.position) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texture_coord) << 1);
+        }
+    };
+} // namespace std

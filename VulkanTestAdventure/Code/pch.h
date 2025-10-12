@@ -30,9 +30,14 @@
 
 // GLM
 // NOLINTNEXTLINE(readability-identifier-naming)
+#define GLM_FORCE_RADIANS
+// NOLINTNEXTLINE(readability-identifier-naming)
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/hash.hpp>
 
 // Utilities
 #include "utilities.hpp"
@@ -43,9 +48,10 @@
 
 using namespace VKTest;
 
-constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
-constexpr inline static int MAX_OBJECTS          = 3;
-
-#include "Renderer.h"
+#include "Window.h"
 #include "DeviceManager.h"
 #include "SwapchainManager.h"
+#include "RenderPassManager.h"
+#include "GameObjects.h"
+#include "RenderMesh.h"
+#include "PipelineManager.h"
