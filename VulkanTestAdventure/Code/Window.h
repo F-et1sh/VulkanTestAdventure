@@ -15,7 +15,7 @@ namespace VKTest {
 
         void SwapBuffers() const noexcept;
 
-        static void PollEvents() noexcept;
+        void PollEvents() const noexcept;
 
         bool        isRunning() const noexcept { return m_IsRunning; }
         GLFWwindow* getGLFWWindow() const noexcept { return p_GLFWWindow; }

@@ -245,9 +245,6 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Code\main_old.cpp">
-      <Filter>Code\Frozen\YouTube %28 C-Style %29</Filter>
-    </None>
     <None Include="Code\VertexHpp.h">
       <Filter>Code\Frozen\DocsVulkanTutorial %28 VKHpp %29\Vertex</Filter>
     </None>
@@ -259,9 +256,6 @@
     </None>
     <None Include="Code\ApplicationHpp.cpp">
       <Filter>Code\Frozen\DocsVulkanTutorial %28 VKHpp %29\Application</Filter>
-    </None>
-    <None Include="Code\vulkan_tutorial_main.cpp">
-      <Filter>Code\Frozen\VulkanTutorial %28 C-Style %29</Filter>
     </None>
     <None Include="Code\VkHpp_SwapchainManager.h">
       <Filter>Code\Frozen\Backend %28 VKHpp %29\SwapchainManager</Filter>
@@ -316,6 +310,12 @@
     </None>
     <None Include="Code\VkHpp_DeviceManager.cpp">
       <Filter>Code\Frozen\Backend %28 VKHpp %29\DeviceManager</Filter>
+    </None>
+    <None Include="Code\vulkan_tutorial_main.cpp">
+      <Filter>Code\Frozen\VulkanTutorial %28 C-Style %29</Filter>
+    </None>
+    <None Include="Code\main_old.cpp">
+      <Filter>Code\Frozen\YouTube %28 C-Style %29</Filter>
     </None>
   </ItemGroup>
 </Project>

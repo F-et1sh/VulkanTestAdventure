@@ -54,7 +54,7 @@ void VKTest::SwapchainManager::CreateSwapchain() {
     create_info.imageArrayLayers = 1;
     create_info.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices                = p_DeviceManager->findQueueFamilies(m_Surface);
+    QueueFamilyIndices indices                = p_DeviceManager->findQueueFamilies(p_DeviceManager->getPhysicalDevice(), m_Surface);
     uint32_t           queue_family_indices[] = { indices.graphics_family.value(), indices.present_family.value() };
 
     if (indices.graphics_family != indices.present_family) {

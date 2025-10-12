@@ -9,6 +9,8 @@ namespace VKTest {
 
     class RenderMesh {
     public:
+        constexpr inline static int MAX_OBJECTS = 3;
+    public:
         RenderMesh()  = default;
         ~RenderMesh() = default;
 
@@ -21,6 +23,7 @@ namespace VKTest {
         VkBuffer getIndexBuffer() const noexcept { return m_IndexBuffer; }
 
         std::vector<uint32_t> getIndices() const noexcept { return m_Indices; }
+        std::array<GameObject, MAX_OBJECTS>& getGameObjects() noexcept { return m_GameObjects; }
 
     private:
         void createTextureImage();
@@ -50,5 +53,7 @@ namespace VKTest {
 
         VkBuffer       m_IndexBuffer{};
         VkDeviceMemory m_IndexBufferMemory{};
+
+        std::array<GameObject, MAX_OBJECTS> m_GameObjects;
     };
 } // namespace VKTest

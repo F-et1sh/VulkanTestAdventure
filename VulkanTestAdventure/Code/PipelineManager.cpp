@@ -153,13 +153,13 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
 void VKTest::PipelineManager::CreateDescriptorPool() {
     // We need MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT descriptor sets
     std::array pool_size{
-        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT),
-        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT)
+        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, RenderMesh::MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT),
+        VkDescriptorPoolSize(VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, RenderMesh::MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT)
     };
     VkDescriptorPoolCreateInfo pool_info{
         .sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
         .flags         = VkDescriptorPoolCreateFlagBits::VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-        .maxSets       = MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT,
+        .maxSets       = RenderMesh::MAX_OBJECTS * MAX_FRAMES_IN_FLIGHT,
         .poolSizeCount = static_cast<uint32_t>(pool_size.size()),
         .pPoolSizes    = pool_size.data()
     };
@@ -168,7 +168,7 @@ void VKTest::PipelineManager::CreateDescriptorPool() {
 
 void VKTest::PipelineManager::CreateDescriptorSets() {
     // For each game object
-    for (auto& game_object : GAME_OBJECTS) {
+    for (auto& game_object : p_RenderMesh->getGameObjects()) {
         // Create descriptor sets for each frame in flight
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_DescriptorSetLayout);
 

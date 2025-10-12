@@ -55,3 +55,7 @@ using namespace VKTest;
 #include "GameObjects.h"
 #include "RenderMesh.h"
 #include "PipelineManager.h"
+
+namespace VKTest {
+	constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
+}

@@ -5,11 +5,11 @@ namespace VKTest {
 #ifdef NDEBUG
     constexpr inline static bool ENABLE_VALIDATION_LAYERS = false;
 #else
-    constexpr inline static bool ENABLE_VALIDATION_LAYERS = true;
+    constexpr inline static bool ENABLE_VALIDATION_LAYERS = false;
 #endif
 
     constexpr inline static std::array VALIDATION_LAYERS{
-        "VK_LAYER_KHRONOS_validation",
+        "VK_LAYER_KHRONOS_validation"
     };
 
     constexpr inline static std::array DEVICE_EXTENSIONS{
@@ -58,7 +58,7 @@ namespace VKTest {
         VkSampleCountFlagBits getMSAASamples() const noexcept { return m_MSAA_Samples; }
 
     public:
-        QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
+        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
         void               createImage(uint32_t width, uint32_t height, uint32_t mip_levels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
         VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
         VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
@@ -76,7 +76,7 @@ namespace VKTest {
         static bool                     checkValidationLayerSupport();
         VkSampleCountFlagBits           getMaxUsableSampleCount();
         bool                            isDeviceSuitable(VkPhysicalDevice device);
-        bool                            checkDeviceExtensionSupport();
+        bool                            checkDeviceExtensionSupport(VkPhysicalDevice device);
         uint32_t                        findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
         void                            recordCommandBuffer(VkCommandBuffer command_buffer, uint32_t image_index);
 

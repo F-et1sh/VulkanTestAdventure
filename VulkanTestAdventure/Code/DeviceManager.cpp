@@ -17,11 +17,11 @@ void VKTest::DeviceManager::CreateInstance() {
     app_info.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
     app_info.apiVersion         = VK_API_VERSION_1_0;
 
-    VkInstanceCreateInfo create_info{};
-    create_info.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    create_info.pApplicationInfo = &app_info;
+    auto extensions = getRequiredExtensions();
 
-    auto extensions                     = getRequiredExtensions();
+    VkInstanceCreateInfo create_info{};
+    create_info.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    create_info.pApplicationInfo        = &app_info;
     create_info.enabledExtensionCount   = static_cast<uint32_t>(extensions.size());
     create_info.ppEnabledExtensionNames = extensions.data();
 
@@ -31,7 +31,7 @@ void VKTest::DeviceManager::CreateInstance() {
         create_info.ppEnabledLayerNames = VALIDATION_LAYERS.data();
 
         populateDebugMessengerCreateInfo(debug_create_info);
-        create_info.pNext = (&debug_create_info);
+        create_info.pNext = &debug_create_info;
     }
     else {
         create_info.enabledLayerCount = 0;
@@ -75,13 +75,11 @@ void VKTest::DeviceManager::PickPhysicalDevice() {
         }
     }
 
-    if (m_PhysicalDevice == VK_NULL_HANDLE) {
-        throw std::runtime_error("failed to find a suitable GPU!");
-    }
+    if (m_PhysicalDevice == VK_NULL_HANDLE) VK_TEST_RUNTIME_ERROR("ERROR : Failed to find a suitable GPU");
 }
 
 void VKTest::DeviceManager::CreateLogicalDevice() {
-    QueueFamilyIndices indices = findQueueFamilies(p_SwapchainManager->getSurface());
+    QueueFamilyIndices indices = findQueueFamilies(m_PhysicalDevice, p_SwapchainManager->getSurface());
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
     std::set<uint32_t>                   unique_queue_families = { indices.graphics_family.value(), indices.present_family.value() };
@@ -127,7 +125,7 @@ void VKTest::DeviceManager::CreateLogicalDevice() {
 }
 
 void VKTest::DeviceManager::CreateCommandPool() {
-    QueueFamilyIndices queue_family_indices = findQueueFamilies(p_SwapchainManager->getSurface());
+    QueueFamilyIndices queue_family_indices = findQueueFamilies(m_PhysicalDevice, p_SwapchainManager->getSurface());
 
     VkCommandPoolCreateInfo pool_info{};
     pool_info.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -249,8 +247,8 @@ std::vector<const char*> VKTest::DeviceManager::getRequiredExtensions() {
     std::vector<const char*> extensions(glfw_extensions, glfw_extensions + glfw_extension_count);
 
     if (ENABLE_VALIDATION_LAYERS) {
-        for (const auto& l : VALIDATION_LAYERS) {
-            extensions.emplace_back(l);
+        for (const auto& e : DEVICE_EXTENSIONS) {
+            extensions.emplace_back(e);
         }
     }
 
@@ -318,13 +316,13 @@ VkSampleCountFlagBits VKTest::DeviceManager::getMaxUsableSampleCount() {
 }
 
 bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
-    QueueFamilyIndices indices = findQueueFamilies(p_SwapchainManager->getSurface());
+    QueueFamilyIndices indices = findQueueFamilies(device, p_SwapchainManager->getSurface());
 
-    bool extensions_supported = checkDeviceExtensionSupport();
+    bool extensions_supported = checkDeviceExtensionSupport(device);
 
     bool swap_chain_adequate = false;
     if (extensions_supported) {
-        SwapChainSupportDetails swap_chain_support = VKTest::SwapchainManager::querySwapChainSupport(m_PhysicalDevice, p_SwapchainManager->getSurface());
+        SwapChainSupportDetails swap_chain_support = VKTest::SwapchainManager::querySwapChainSupport(device, p_SwapchainManager->getSurface());
         swap_chain_adequate                        = !swap_chain_support.formats.empty() && !swap_chain_support.present_modes.empty();
     }
 
@@ -334,12 +332,12 @@ bool VKTest::DeviceManager::isDeviceSuitable(VkPhysicalDevice device) {
     return indices.is_complete() && extensions_supported && swap_chain_adequate && (supported_features.samplerAnisotropy != 0U);
 }
 
-bool VKTest::DeviceManager::checkDeviceExtensionSupport() {
+bool VKTest::DeviceManager::checkDeviceExtensionSupport(VkPhysicalDevice device) {
     uint32_t extension_count = 0;
-    vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &extension_count, nullptr);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, nullptr);
 
     std::vector<VkExtensionProperties> available_extensions(extension_count);
-    vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &extension_count, available_extensions.data());
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, available_extensions.data());
 
     std::set<std::string> required_extensions(DEVICE_EXTENSIONS.begin(), DEVICE_EXTENSIONS.end());
 
@@ -409,7 +407,7 @@ void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, 
     vkCmdBindIndexBuffer(command_buffer, p_RenderMesh->getIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
     // Draw each object with its own descriptor set
-    for (const auto& game_object : GAME_OBJECTS) {
+    for (const auto& game_object : p_RenderMesh->getGameObjects()) {
         // Bind the descriptor set for this object
         vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_PipelineManager->getPipelineLayout(), 0, game_object.descriptor_sets.size(), &game_object.descriptor_sets[m_CurrentFrame], 0, nullptr);
 
@@ -424,14 +422,14 @@ void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, 
     }
 }
 
-QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkSurfaceKHR surface) {
+QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface) {
     QueueFamilyIndices indices{};
 
     uint32_t queue_family_count = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queue_family_count, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
 
     std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
-    vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queue_family_count, queue_families.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_families.data());
 
     int i = 0;
     for (const auto& queue_family : queue_families) {
@@ -440,7 +438,7 @@ QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkSurfaceKHR surface
         }
 
         VkBool32 present_support = 0U;
-        vkGetPhysicalDeviceSurfaceSupportKHR(m_PhysicalDevice, i, surface, &present_support);
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &present_support);
 
         if (present_support != 0U) {
             indices.present_family = i;

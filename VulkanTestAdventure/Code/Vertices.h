@@ -54,8 +54,8 @@ namespace VKTest {
 
 namespace std {
     template <>
-    struct hash<Vertex> {
-        size_t operator()(Vertex const& vertex) const {
+    struct hash<VKTest::Vertex> {
+        size_t operator()(VKTest::Vertex const& vertex) const {
             return ((hash<glm::vec3>()(vertex.position) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texture_coord) << 1);
         }
     };

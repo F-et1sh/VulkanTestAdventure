@@ -15,6 +15,7 @@ void VKTest::Renderer::Initialize() {
 
     m_DeviceManager.CreateLogicalDevice();
     m_SwapchainManager.CreateSwapchain();
+    m_SwapchainManager.CreateImageViews();
 
     m_RenderPassManager.CreateRenderPass();
 
