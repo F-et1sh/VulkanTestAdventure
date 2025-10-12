@@ -25,9 +25,9 @@ namespace VKTest {
         RenderPassManager* p_RenderPassManager = nullptr;
         SwapchainManager*  p_SwapchainManager  = nullptr;
 
-        VkDescriptorSetLayout m_DescriptorSetLayout{};
+        VkDescriptorSetLayout m_DescriptorSetLayout;
 
-        VkPipelineLayout m_PipelineLayout{};
-        VkPipeline       m_GraphicsPipeline{};
+        VkPipelineLayout m_PipelineLayout;
+        VkPipeline       m_GraphicsPipeline;
     };
 } // namespace VKTest

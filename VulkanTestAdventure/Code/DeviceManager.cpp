@@ -127,6 +127,16 @@ void VKTest::DeviceManager::CreateLogicalDevice() {
 }
 
 void VKTest::DeviceManager::CreateCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = findQueueFamilies(p_SwapchainManager->getSurface());
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphics_family.value();
+
+    if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to create graphics command pool");
+    }
 }
 
 void VKTest::DeviceManager::CreateCommandBuffers() {
@@ -241,6 +251,19 @@ bool VKTest::DeviceManager::checkDeviceExtensionSupport() {
     return required_extensions.empty();
 }
 
+uint32_t VKTest::DeviceManager::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+
+    VK_TEST_RUNTIME_ERROR("ERROR : Failed to find suitable memory type");
+}
+
 QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkSurfaceKHR surface) {
     QueueFamilyIndices indices{};
 
@@ -271,6 +294,41 @@ QueueFamilyIndices VKTest::DeviceManager::findQueueFamilies(VkSurfaceKHR surface
     }
 
     return indices;
+}
+
+void VKTest::DeviceManager::createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
+    VkImageCreateInfo imageInfo{};
+    imageInfo.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imageInfo.imageType     = VK_IMAGE_TYPE_2D;
+    imageInfo.extent.width  = width;
+    imageInfo.extent.height = height;
+    imageInfo.extent.depth  = 1;
+    imageInfo.mipLevels     = mipLevels;
+    imageInfo.arrayLayers   = 1;
+    imageInfo.format        = format;
+    imageInfo.tiling        = tiling;
+    imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageInfo.usage         = usage;
+    imageInfo.samples       = numSamples;
+    imageInfo.sharingMode   = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateImage(m_Device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to create image");
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetImageMemoryRequirements(m_Device, image, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize  = memRequirements.size;
+    allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+    if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to allocate image memory");
+    }
+
+    vkBindImageMemory(m_Device, image, imageMemory, 0);
 }
 
 VkImageView VKTest::DeviceManager::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels) {
@@ -307,6 +365,13 @@ VkFormat VKTest::DeviceManager::findSupportedFormat(const std::vector<VkFormat>&
     }
 
     VK_TEST_RUNTIME_ERROR("ERROR : Failed to find supported format");
+}
+
+VkFormat VKTest::DeviceManager::findDepthFormat() {
+    return findSupportedFormat(
+        { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+        VK_IMAGE_TILING_OPTIMAL,
+        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
 VkResult VKTest::DeviceManager::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* p_create_info, const VkAllocationCallbacks* p_allocator, VkDebugUtilsMessengerEXT* p_debug_messenger) {

@@ -40,16 +40,19 @@ namespace VKTest {
 
     public:
         QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
+        void               createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
         VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
         VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        VkFormat           findDepthFormat();
 
     private:
         static std::vector<const char*> getRequiredExtensions();
         static void                     populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create_info);
         static bool                     checkValidationLayerSupport();
-        VkSampleCountFlagBits    getMaxUsableSampleCount();
-        bool                     isDeviceSuitable(VkPhysicalDevice device);
-        bool                     checkDeviceExtensionSupport();
+        VkSampleCountFlagBits           getMaxUsableSampleCount();
+        bool                            isDeviceSuitable(VkPhysicalDevice device);
+        bool                            checkDeviceExtensionSupport();
+        uint32_t                        findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
@@ -62,16 +65,18 @@ namespace VKTest {
     private:
         SwapchainManager* p_SwapchainManager = nullptr;
 
-        VkInstance m_Instance{};
+        VkInstance m_Instance;
 
-        VkDevice         m_Device{};
-        VkPhysicalDevice m_PhysicalDevice{};
+        VkDevice         m_Device;
+        VkPhysicalDevice m_PhysicalDevice;
 
         VkSampleCountFlagBits m_MSAA_Samples = VK_SAMPLE_COUNT_1_BIT;
 
-        VkQueue m_GraphicsQueue{};
-        VkQueue m_PresentQueue{};
+        VkQueue m_GraphicsQueue;
+        VkQueue m_PresentQueue;
 
-        VkDebugUtilsMessengerEXT m_DebugMessenger{};
+        VkCommandPool m_CommandPool;
+
+        VkDebugUtilsMessengerEXT m_DebugMessenger;
     };
 } // namespace VKTest

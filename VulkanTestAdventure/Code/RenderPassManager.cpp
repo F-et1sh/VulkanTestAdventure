@@ -13,7 +13,7 @@ void VKTest::RenderPassManager::CreateRenderPass() {
     color_attachment.finalLayout    = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkAttachmentDescription depth_attachment{};
-    depth_attachment.format         = findDepthFormat();
+    depth_attachment.format         = p_DeviceManager->findDepthFormat();
     depth_attachment.samples        = p_DeviceManager->getMSAASamples();
     depth_attachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depth_attachment.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -72,11 +72,4 @@ void VKTest::RenderPassManager::CreateRenderPass() {
     if (vkCreateRenderPass(p_DeviceManager->getDevice(), &render_pass_info, nullptr, &m_RenderPass) != VK_SUCCESS) {
         VK_TEST_RUNTIME_ERROR("ERROR : Failed to create render pass");
     }
-}
-
-VkFormat VKTest::RenderPassManager::findDepthFormat() {
-    return p_DeviceManager->findSupportedFormat(
-        { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
-        VK_IMAGE_TILING_OPTIMAL,
-        VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }

@@ -24,6 +24,8 @@ namespace VKTest {
         void CreateSurface();
         void CreateSwapchain();
         void CreateImageViews();
+        void CreateColorResources();
+        void CreateDepthResources();
 
         VkSwapchainKHR getSwapchain() const noexcept { return m_Swapchain; }
         VkSurfaceKHR   getSurface() const noexcept { return m_Surface; }
@@ -39,15 +41,23 @@ namespace VKTest {
         DeviceManager* p_DeviceManager = nullptr;
         Window*        p_Window        = nullptr;
 
-        VkSwapchainKHR m_Swapchain{};
-        VkSurfaceKHR   m_Surface{};
+        VkSwapchainKHR m_Swapchain;
+        VkSurfaceKHR   m_Surface;
 
         std::vector<VkImage> m_SwapchainImages;
 
         VkFormat   m_SwapchainImageFormat;
-        VkExtent2D m_SwapchainExtent{};
+        VkExtent2D m_SwapchainExtent;
 
         std::vector<VkImageView>   m_SwapchainImageViews;
         std::vector<VkFramebuffer> m_SwapchainFramebuffers;
+
+        VkImage        m_ColorImage;
+        VkDeviceMemory m_ColorImageMemory;
+        VkImageView    m_ColorImageView;
+
+        VkImage        m_DepthImage;
+        VkDeviceMemory m_DepthImageMemory;
+        VkImageView    m_DepthImageView;
     };
 } // namespace VKTest

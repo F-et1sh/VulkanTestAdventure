@@ -74,13 +74,27 @@ void VKTest::SwapchainManager::CreateImageViews() {
     }
 }
 
+void VKTest::SwapchainManager::CreateColorResources() {
+    VkFormat colorFormat = m_SwapchainImageFormat;
+    
+    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_ColorImage, m_ColorImageMemory);
+    m_ColorImageView = p_DeviceManager->createImageView(m_ColorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+}
+
+void VKTest::SwapchainManager::CreateDepthResources() {
+    VkFormat depthFormat = p_DeviceManager->findDepthFormat();
+
+    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
+    m_DepthImageView = p_DeviceManager->createImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
+}
+
 VkSurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& available_formats) {
     for (const auto& available_format : available_formats) {
         if (available_format.format == VK_FORMAT_B8G8R8A8_SRGB && available_format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return available_format;
         }
     }
-
+    
     return available_formats[0];
 }
 

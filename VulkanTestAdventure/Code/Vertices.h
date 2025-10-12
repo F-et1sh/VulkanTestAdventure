@@ -8,9 +8,9 @@ namespace VKTest {
 
         static constexpr VkVertexInputBindingDescription getBindingDescription() noexcept {
             return {
-                0,                         // Binding
-                sizeof(Vertex),            // Stride
-                VkVertexInputRate::eVertex // Input Rate
+                0,                          // Binding
+                sizeof(Vertex),             // Stride
+                VK_VERTEX_INPUT_RATE_VERTEX // Input Rate
             };
         }
 
@@ -19,19 +19,19 @@ namespace VKTest {
                 VkVertexInputAttributeDescription{
                     0,                                                // Location
                     0,                                                // Binding
-                    vk::Format::eR32G32B32Sfloat,                     // Format
+                    VK_FORMAT_R32G32B32_SFLOAT,                       // Format
                     static_cast<uint32_t>(offsetof(Vertex, position)) // Offset
                 },
                 VkVertexInputAttributeDescription{
                     1,                                             // Location
                     0,                                             // Binding
-                    vk::Format::eR32G32B32Sfloat,                  // Format
+                    VK_FORMAT_R32G32B32_SFLOAT,                    // Format
                     static_cast<uint32_t>(offsetof(Vertex, color)) // Offset
                 },
                 VkVertexInputAttributeDescription{
                     2,                                                     // Location
                     0,                                                     // Binding
-                    vk::Format::eR32G32Sfloat,                             // Format
+                    VK_FORMAT_R32G32_SFLOAT,                               // Format
                     static_cast<uint32_t>(offsetof(Vertex, texture_coord)) // Offset
                 },
             };
