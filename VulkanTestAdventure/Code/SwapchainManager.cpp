@@ -75,17 +75,17 @@ void VKTest::SwapchainManager::CreateImageViews() {
 }
 
 void VKTest::SwapchainManager::CreateColorResources() {
-    VkFormat colorFormat = m_SwapchainImageFormat;
-    
-    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_ColorImage, m_ColorImageMemory);
-    m_ColorImageView = p_DeviceManager->createImageView(m_ColorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+    VkFormat color_format = m_SwapchainImageFormat;
+
+    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), color_format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_ColorImage, m_ColorImageMemory);
+    m_ColorImageView = p_DeviceManager->createImageView(m_ColorImage, color_format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 }
 
 void VKTest::SwapchainManager::CreateDepthResources() {
-    VkFormat depthFormat = p_DeviceManager->findDepthFormat();
+    VkFormat depth_format = p_DeviceManager->findDepthFormat();
 
-    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
-    m_DepthImageView = p_DeviceManager->createImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
+    p_DeviceManager->createImage(m_SwapchainExtent.width, m_SwapchainExtent.height, 1, p_DeviceManager->getMSAASamples(), depth_format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
+    m_DepthImageView = p_DeviceManager->createImageView(m_DepthImage, depth_format, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 }
 
 void VKTest::SwapchainManager::CreateFramebuffers() {
@@ -98,16 +98,16 @@ void VKTest::SwapchainManager::CreateFramebuffers() {
             m_SwapchainImageViews[i]
         };
 
-        VkFramebufferCreateInfo framebufferInfo{};
-        framebufferInfo.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass      = p_RenderPassManager->getRenderPass();
-        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-        framebufferInfo.pAttachments    = attachments.data();
-        framebufferInfo.width           = m_SwapchainExtent.width;
-        framebufferInfo.height          = m_SwapchainExtent.height;
-        framebufferInfo.layers          = 1;
+        VkFramebufferCreateInfo framebuffer_info{};
+        framebuffer_info.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebuffer_info.renderPass      = p_RenderPassManager->getRenderPass();
+        framebuffer_info.attachmentCount = static_cast<uint32_t>(attachments.size());
+        framebuffer_info.pAttachments    = attachments.data();
+        framebuffer_info.width           = m_SwapchainExtent.width;
+        framebuffer_info.height          = m_SwapchainExtent.height;
+        framebuffer_info.layers          = 1;
 
-        if (vkCreateFramebuffer(p_DeviceManager->getDevice(), &framebufferInfo, nullptr, &m_SwapchainFramebuffers[i]) != VK_SUCCESS) {
+        if (vkCreateFramebuffer(p_DeviceManager->getDevice(), &framebuffer_info, nullptr, &m_SwapchainFramebuffers[i]) != VK_SUCCESS) {
             VK_TEST_RUNTIME_ERROR("ERROR : Failed to create framebuffer");
         }
     }
@@ -119,7 +119,7 @@ VkSurfaceFormatKHR VKTest::SwapchainManager::chooseSwapSurfaceFormat(const std::
             return available_format;
         }
     }
-    
+
     return available_formats[0];
 }
 

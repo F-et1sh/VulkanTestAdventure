@@ -18,6 +18,6 @@ namespace VKTest {
         DeviceManager*    p_DeviceManager    = nullptr;
         SwapchainManager* p_SwapchainManager = nullptr;
 
-        VkRenderPass m_RenderPass;
+        VkRenderPass m_RenderPass{};
     };
 } // namespace VKTest

@@ -40,10 +40,16 @@ namespace VKTest {
 
     public:
         QueueFamilyIndices findQueueFamilies(VkSurfaceKHR surface);
-        void               createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
+        void               createImage(uint32_t width, uint32_t height, uint32_t mip_levels, VkSampleCountFlagBits num_samples, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& image_memory);
         VkImageView        createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
         VkFormat           findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
         VkFormat           findDepthFormat();
+        VkCommandBuffer    beginSingleTimeCommands();
+        void               endSingleTimeCommands(VkCommandBuffer command_buffer);
+        void               copyBuffer(VkBuffer src_buffer, VkBuffer dst_buffer, VkDeviceSize size);
+        void               createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
+        void               transitionImageLayout(VkImage image, VkFormat format, VkImageLayout old_layout, VkImageLayout new_layout, uint32_t mip_levels);
+        void               copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
     private:
         static std::vector<const char*> getRequiredExtensions();
@@ -52,7 +58,7 @@ namespace VKTest {
         VkSampleCountFlagBits           getMaxUsableSampleCount();
         bool                            isDeviceSuitable(VkPhysicalDevice device);
         bool                            checkDeviceExtensionSupport();
-        uint32_t                        findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        uint32_t                        findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties);
 
         static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* create_info, const VkAllocationCallbacks* allocator, VkDebugUtilsMessengerEXT* debug_messenger);
         static void     DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger, const VkAllocationCallbacks* allocator);
@@ -65,18 +71,18 @@ namespace VKTest {
     private:
         SwapchainManager* p_SwapchainManager = nullptr;
 
-        VkInstance m_Instance;
+        VkInstance m_Instance{};
 
-        VkDevice         m_Device;
-        VkPhysicalDevice m_PhysicalDevice;
+        VkDevice         m_Device{};
+        VkPhysicalDevice m_PhysicalDevice{};
 
         VkSampleCountFlagBits m_MSAA_Samples = VK_SAMPLE_COUNT_1_BIT;
 
-        VkQueue m_GraphicsQueue;
-        VkQueue m_PresentQueue;
+        VkQueue m_GraphicsQueue{};
+        VkQueue m_PresentQueue{};
 
-        VkCommandPool m_CommandPool;
+        VkCommandPool m_CommandPool{};
 
-        VkDebugUtilsMessengerEXT m_DebugMessenger;
+        VkDebugUtilsMessengerEXT m_DebugMessenger{};
     };
 } // namespace VKTest

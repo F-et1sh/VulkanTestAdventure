@@ -41,27 +41,27 @@ namespace VKTest {
         static SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
 
     private:
-        DeviceManager* p_DeviceManager = nullptr;
-        Window*        p_Window        = nullptr;
+        DeviceManager*     p_DeviceManager     = nullptr;
+        Window*            p_Window            = nullptr;
         RenderPassManager* p_RenderPassManager = nullptr;
 
-        VkSwapchainKHR m_Swapchain;
-        VkSurfaceKHR   m_Surface;
+        VkSwapchainKHR m_Swapchain{};
+        VkSurfaceKHR   m_Surface{};
 
         std::vector<VkImage> m_SwapchainImages;
 
         VkFormat   m_SwapchainImageFormat;
-        VkExtent2D m_SwapchainExtent;
+        VkExtent2D m_SwapchainExtent{};
 
         std::vector<VkImageView>   m_SwapchainImageViews;
         std::vector<VkFramebuffer> m_SwapchainFramebuffers;
 
-        VkImage        m_ColorImage;
-        VkDeviceMemory m_ColorImageMemory;
-        VkImageView    m_ColorImageView;
+        VkImage        m_ColorImage{};
+        VkDeviceMemory m_ColorImageMemory{};
+        VkImageView    m_ColorImageView{};
 
-        VkImage        m_DepthImage;
-        VkDeviceMemory m_DepthImageMemory;
-        VkImageView    m_DepthImageView;
+        VkImage        m_DepthImage{};
+        VkDeviceMemory m_DepthImageMemory{};
+        VkImageView    m_DepthImageView{};
     };
 } // namespace VKTest

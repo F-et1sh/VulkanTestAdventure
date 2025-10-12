@@ -18,6 +18,7 @@
 #include <thread>
 #include <streambuf>
 #include <span>
+#include <unordered_map>
 
 // GLFW
 // NOLINTNEXTLINE(readability-identifier-naming)

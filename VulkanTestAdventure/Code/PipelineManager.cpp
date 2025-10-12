@@ -152,8 +152,9 @@ void VKTest::PipelineManager::CreateGraphicsPipeline() {
 
 std::vector<char> VKTest::PipelineManager::readFile(const std::filesystem::path& path) {
     std::ifstream file{ path, std::ios::ate | std::ios::binary };
-    if (!file.good()) { VK_TEST_RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());
-}
+    if (!file.good()) {
+        VK_TEST_RUNTIME_ERROR("ERROR : Failed to open file\nPath : " + path.string());
+    }
 
     std::vector<char> buffer(file.tellg());
     file.seekg(0, std::ios::beg);
