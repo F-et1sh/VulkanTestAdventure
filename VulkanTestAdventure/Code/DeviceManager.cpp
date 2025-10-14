@@ -2,6 +2,21 @@
 #include "DeviceManager.h"
 
 void VKTest::DeviceManager::Release() {
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        vkDestroySemaphore(m_Device, m_RenderFinishedSemaphores[i], nullptr);
+        vkDestroySemaphore(m_Device, m_ImageAvailableSemaphores[i], nullptr);
+        vkDestroyFence(m_Device, m_InFlightFences[i], nullptr);
+    }
+
+    vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
+
+    vkDestroyDevice(m_Device, nullptr);
+
+    if (ENABLE_VALIDATION_LAYERS) {
+        DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
+    }
+
+    vkDestroyInstance(m_Instance, nullptr);
 }
 
 void VKTest::DeviceManager::CreateInstance() {
@@ -423,26 +438,26 @@ void VKTest::DeviceManager::recordCommandBuffer(VkCommandBuffer command_buffer, 
 }
 
 void VKTest::DeviceManager::updateUniformBuffer(uint32_t current_image) {
-    static auto startTime   = std::chrono::high_resolution_clock::now();
-    auto        currentTime = std::chrono::high_resolution_clock::now();
-    float       time        = std::chrono::duration<float>(currentTime - startTime).count();
+    static auto start_time   = std::chrono::high_resolution_clock::now();
+    auto        current_time = std::chrono::high_resolution_clock::now();
+    float       time         = std::chrono::duration<float>(current_time - start_time).count();
 
     // Camera and projection matrices (shared by all objects)
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 6.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f),
+    glm::mat4 view = glm::lookAt(glm::vec3(2.0F, 2.0F, 6.0F), glm::vec3(0.0F, 0.0F, 0.0F), glm::vec3(0.0F, 1.0F, 0.0F));
+    glm::mat4 proj = glm::perspective(glm::radians(45.0F),
                                       static_cast<float>(p_SwapchainManager->getExtent().width) / static_cast<float>(p_SwapchainManager->getExtent().height),
-                                      0.1f,
-                                      20.0f);
+                                      0.1F,
+                                      20.0F);
     proj[1][1] *= -1; // Flip Y for Vulkan
 
     // Update uniform buffers for each object
-    for (auto& gameObject : p_RenderMesh->getGameObjects()) {
+    for (auto& game_object : p_RenderMesh->getGameObjects()) {
         // Apply continuous rotation to the object
-        gameObject.rotation.y += 0.001f; // Slow rotation around Y axis
+        game_object.rotation.y += 0.001F; // Slow rotation around Y axis
 
         // Get the model matrix for this object
-        glm::mat4 initialRotation = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 model           = gameObject.getModelMatrix() * initialRotation;
+        glm::mat4 initial_rotation = glm::rotate(glm::mat4(1.0F), glm::radians(-90.0F), glm::vec3(1.0F, 0.0F, 0.0F));
+        glm::mat4 model            = game_object.getModelMatrix() * initial_rotation;
 
         // Create and update the UBO
         UniformBufferObject ubo{
@@ -452,7 +467,7 @@ void VKTest::DeviceManager::updateUniformBuffer(uint32_t current_image) {
         };
 
         // Copy the UBO data to the mapped memory
-        memcpy(gameObject.uniform_buffers_mapped[current_image], &ubo, sizeof(ubo));
+        memcpy(game_object.uniform_buffers_mapped[current_image], &ubo, sizeof(ubo));
     }
 }
 

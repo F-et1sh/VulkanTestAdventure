@@ -2,23 +2,60 @@
 #include "SwapchainManager.h"
 
 void VKTest::SwapchainManager::Release() {
-    vkDestroyImageView(p_DeviceManager->getDevice(), m_DepthImageView, nullptr);
-    vkDestroyImage(p_DeviceManager->getDevice(), m_DepthImage, nullptr);
-    vkFreeMemory(p_DeviceManager->getDevice(), m_DepthImageMemory, nullptr);
+    VkDevice   device   = (p_DeviceManager != nullptr) ? p_DeviceManager->getDevice() : VK_NULL_HANDLE;
+    VkInstance instance = (p_DeviceManager != nullptr) ? p_DeviceManager->getInstance() : VK_NULL_HANDLE;
 
-    vkDestroyImageView(p_DeviceManager->getDevice(), m_ColorImageView, nullptr);
-    vkDestroyImage(p_DeviceManager->getDevice(), m_ColorImage, nullptr);
-    vkFreeMemory(p_DeviceManager->getDevice(), m_ColorImageMemory, nullptr);
+    if (device == VK_NULL_HANDLE) {
+        return;
+    }
 
     for (auto* framebuffer : m_SwapchainFramebuffers) {
-        vkDestroyFramebuffer(p_DeviceManager->getDevice(), framebuffer, nullptr);
+        if (framebuffer != VK_NULL_HANDLE) {
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
+        }
     }
 
     for (auto* image_view : m_SwapchainImageViews) {
-        vkDestroyImageView(p_DeviceManager->getDevice(), image_view, nullptr);
+        if (image_view != VK_NULL_HANDLE) {
+            vkDestroyImageView(device, image_view, nullptr);
+        }
     }
 
-    vkDestroySwapchainKHR(p_DeviceManager->getDevice(), m_Swapchain, nullptr);
+    if (m_DepthImageView != VK_NULL_HANDLE) {
+        vkDestroyImageView(device, m_DepthImageView, nullptr);
+        m_DepthImageView = VK_NULL_HANDLE;
+    }
+    if (m_DepthImage != VK_NULL_HANDLE) {
+        vkDestroyImage(device, m_DepthImage, nullptr);
+        m_DepthImage = VK_NULL_HANDLE;
+    }
+    if (m_DepthImageMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(device, m_DepthImageMemory, nullptr);
+        m_DepthImageMemory = VK_NULL_HANDLE;
+    }
+
+    if (m_ColorImageView != VK_NULL_HANDLE) {
+        vkDestroyImageView(device, m_ColorImageView, nullptr);
+        m_ColorImageView = VK_NULL_HANDLE;
+    }
+    if (m_ColorImage != VK_NULL_HANDLE) {
+        vkDestroyImage(device, m_ColorImage, nullptr);
+        m_ColorImage = VK_NULL_HANDLE;
+    }
+    if (m_ColorImageMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(device, m_ColorImageMemory, nullptr);
+        m_ColorImageMemory = VK_NULL_HANDLE;
+    }
+
+    if (m_Swapchain != VK_NULL_HANDLE) {
+        vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
+        m_Swapchain = VK_NULL_HANDLE;
+    }
+
+    if (instance != VK_NULL_HANDLE && m_Surface != VK_NULL_HANDLE) {
+        vkDestroySurfaceKHR(instance, m_Surface, nullptr);
+        m_Surface = VK_NULL_HANDLE;
+    }
 }
 
 void VKTest::SwapchainManager::CreateSurface() {
@@ -54,7 +91,7 @@ void VKTest::SwapchainManager::CreateSwapchain() {
     create_info.imageArrayLayers = 1;
     create_info.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-    QueueFamilyIndices indices                = p_DeviceManager->findQueueFamilies(p_DeviceManager->getPhysicalDevice(), m_Surface);
+    QueueFamilyIndices indices                = VKTest::DeviceManager::findQueueFamilies(p_DeviceManager->getPhysicalDevice(), m_Surface);
     uint32_t           queue_family_indices[] = { indices.graphics_family.value(), indices.present_family.value() };
 
     if (indices.graphics_family != indices.present_family) {

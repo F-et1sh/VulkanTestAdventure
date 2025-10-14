@@ -1,6 +1,14 @@
 #include "pch.h"
 #include "PipelineManager.h"
 
+void VKTest::PipelineManager::Release() {
+    vkDestroyPipeline(p_DeviceManager->getDevice(), m_GraphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(p_DeviceManager->getDevice(), m_PipelineLayout, nullptr);
+
+    vkDestroyDescriptorPool(p_DeviceManager->getDevice(), m_DescriptorPool, nullptr);
+    vkDestroyDescriptorSetLayout(p_DeviceManager->getDevice(), m_DescriptorSetLayout, nullptr);
+}
+
 void VKTest::PipelineManager::CreateDescriptorSetLayout() {
     VkDescriptorSetLayoutBinding ubo_layout_binding{};
     ubo_layout_binding.binding            = 0;

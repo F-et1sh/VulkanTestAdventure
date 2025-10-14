@@ -33,6 +33,12 @@ namespace VKTest {
             model           = glm::scale(model, scale);
             return model;
         }
+
+        GameObject() = default;
+        ~GameObject();
+
+    public:
+        VkDevice p_device = nullptr;
     };
 
 }; // namespace VKTest

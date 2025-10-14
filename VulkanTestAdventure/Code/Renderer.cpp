@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Renderer.h"
 
-void VKTest::Renderer::Release() {
+VKTest::Renderer::~Renderer() {
+    vkDeviceWaitIdle(m_DeviceManager.getDevice());
 }
 
 void VKTest::Renderer::Initialize() {

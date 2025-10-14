@@ -13,10 +13,8 @@ namespace VKTest {
                                    m_SwapchainManager{ &m_DeviceManager, p_Window, &m_RenderPassManager },
                                    m_RenderPassManager{ &m_DeviceManager, &m_SwapchainManager },
                                    m_PipelineManager{ &m_DeviceManager, &m_RenderPassManager, &m_SwapchainManager, &m_RenderMesh } {}
+        ~Renderer();
 
-        ~Renderer() { this->Release(); }
-
-        void Release();
         void Initialize();
 
         void DrawFrame();

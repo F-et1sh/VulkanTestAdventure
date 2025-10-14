@@ -12,9 +12,10 @@ namespace VKTest {
         constexpr static int MAX_OBJECTS = 3;
 
     public:
-        RenderMesh()  = default;
-        ~RenderMesh() = default;
+        RenderMesh() = default;
+        ~RenderMesh() { this->Release(); }
 
+        void Release();
         void Initialize(DeviceManager* device_manager);
 
         VkSampler   getTextureSampler() const noexcept { return m_TextureSampler; }

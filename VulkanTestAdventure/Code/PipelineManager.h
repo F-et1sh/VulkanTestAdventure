@@ -12,7 +12,9 @@ namespace VKTest {
     public:
         PipelineManager(DeviceManager* device_manager, RenderPassManager* render_pass_manager, SwapchainManager* swapchain_manager, RenderMesh* render_mesh)
             : p_DeviceManager{ device_manager }, p_RenderPassManager{ render_pass_manager }, p_SwapchainManager{ swapchain_manager }, p_RenderMesh{ render_mesh } {}
-        ~PipelineManager() = default;
+        ~PipelineManager() { this->Release(); }
+
+        void Release();
 
         void CreateDescriptorSetLayout();
         void CreateGraphicsPipeline();

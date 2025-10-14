@@ -8,8 +8,9 @@ namespace VKTest {
     class RenderPassManager {
     public:
         RenderPassManager(DeviceManager* device_manager, SwapchainManager* swapchain_manager) : p_DeviceManager{ device_manager }, p_SwapchainManager{ swapchain_manager } {}
-        ~RenderPassManager() = default;
+        ~RenderPassManager() { this->Release(); }
 
+        void Release();
         void CreateRenderPass();
 
         VkRenderPass getRenderPass() const noexcept { return m_RenderPass; }

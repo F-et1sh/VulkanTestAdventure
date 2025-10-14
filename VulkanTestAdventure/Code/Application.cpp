@@ -7,10 +7,10 @@ VKTest::Application::~Application() {
 void VKTest::Application::Loop() {
     m_Renderer.Initialize();
 
-    while (!glfwWindowShouldClose(m_Window.getGLFWWindow())) {
+    while (glfwWindowShouldClose(m_Window.getGLFWWindow()) == 0) {
 
         m_Renderer.DrawFrame();
 
-        m_Window.PollEvents();
+        VKTest::Window::PollEvents();
     }
 }

@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "RenderPassManager.h"
 
+void VKTest::RenderPassManager::Release() {
+    vkDestroyRenderPass(p_DeviceManager->getDevice(), m_RenderPass, nullptr);
+}
+
 void VKTest::RenderPassManager::CreateRenderPass() {
     VkAttachmentDescription color_attachment{};
     color_attachment.format         = p_SwapchainManager->getImageFormat();

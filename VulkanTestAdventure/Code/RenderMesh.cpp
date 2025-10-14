@@ -9,20 +9,36 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+void VKTest::RenderMesh::Release() {
+    vkDestroyBuffer(p_DeviceManager->getDevice(), m_IndexBuffer, nullptr);
+    vkFreeMemory(p_DeviceManager->getDevice(), m_IndexBufferMemory, nullptr);
+
+    vkDestroyBuffer(p_DeviceManager->getDevice(), m_VertexBuffer, nullptr);
+    vkFreeMemory(p_DeviceManager->getDevice(), m_VertexBufferMemory, nullptr);
+
+    vkDestroySampler(p_DeviceManager->getDevice(), m_TextureSampler, nullptr);
+    vkDestroyImageView(p_DeviceManager->getDevice(), m_TextureImageView, nullptr);
+    vkFreeMemory(p_DeviceManager->getDevice(), m_TextureImageMemory, nullptr);
+    vkDestroyImage(p_DeviceManager->getDevice(), m_TextureImage, nullptr);
+}
+
 void VKTest::RenderMesh::Initialize(DeviceManager* device_manager) {
     p_DeviceManager = device_manager;
 
     // Object 1 - Center
+    m_GameObjects[0].p_device = p_DeviceManager->getDevice();
     m_GameObjects[0].position = { 0.0F, 0.0F, 0.0F };
     m_GameObjects[0].rotation = { 0.0F, 0.0F, 0.0F };
     m_GameObjects[0].scale    = { 1.0F, 1.0F, 1.0F };
 
     // Object 2 - Left
+    m_GameObjects[1].p_device = p_DeviceManager->getDevice();
     m_GameObjects[1].position = { -2.0F, 0.0F, -1.0F };
     m_GameObjects[1].rotation = { 0.0F, glm::radians(45.0F), 0.0F };
     m_GameObjects[1].scale    = { 0.75F, 0.75F, 0.75F };
 
     // Object 3 - Right
+    m_GameObjects[2].p_device = p_DeviceManager->getDevice();
     m_GameObjects[2].position = { 2.0F, 0.0F, -1.0F };
     m_GameObjects[2].rotation = { 0.0F, glm::radians(-45.0F), 0.0F };
     m_GameObjects[2].scale    = { 0.75F, 0.75F, 0.75F };
