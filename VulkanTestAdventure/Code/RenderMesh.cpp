@@ -25,6 +25,9 @@ void VKTest::RenderMesh::Release() {
 void VKTest::RenderMesh::Initialize(DeviceManager* device_manager) {
     p_DeviceManager = device_manager;
 
+    m_ModelPath   = PATH.getAssetsPath() / "Models" / "viking_room.obj";
+    m_TexturePath = PATH.getAssetsPath() / "Textures" / "viking_room.png";
+
     // Object 1 - Center
     m_GameObjects[0].p_device = p_DeviceManager->getDevice();
     m_GameObjects[0].position = { 0.0F, 0.0F, 0.0F };
@@ -59,12 +62,12 @@ void VKTest::RenderMesh::createTextureImage() {
     int          texture_width    = 0;
     int          texture_height   = 0;
     int          texture_channels = 0;
-    stbi_uc*     pixels           = stbi_load(TEXTURE_PATH.c_str(), &texture_width, &texture_height, &texture_channels, STBI_rgb_alpha);
+    stbi_uc*     pixels           = stbi_load(m_TexturePath.string().c_str(), &texture_width, &texture_height, &texture_channels, STBI_rgb_alpha);
     VkDeviceSize image_size       = texture_width * texture_height * 4;
     m_MipLevels                   = static_cast<uint32_t>(std::floor(std::log2(std::max(texture_width, texture_height)))) + 1;
 
     if (pixels == nullptr) {
-        VK_TEST_RUNTIME_ERROR(std::string("ERROR : Failed to load texture image\nPath : ") + TEXTURE_PATH);
+        VK_TEST_RUNTIME_ERROR(std::string("ERROR : Failed to load texture image\nPath : ") + m_TexturePath.string());
     }
 
     VkBuffer       staging_buffer        = nullptr;
@@ -246,7 +249,7 @@ void VKTest::RenderMesh::loadModel() {
     std::vector<tinyobj::material_t> materials;
     std::string                      err;
 
-    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, m_ModelPath.string().c_str())) {
         throw std::runtime_error(err);
     }
 

@@ -11,14 +11,27 @@ constexpr inline static int FAILED_EXIT     = -1;
 int main(int argc, char* argv[]) {
     try {
         VKTest::PATH.init(argv[0], true); // instance of the PathManager
+    }
+    catch (const std::exception& e) {
+        VK_TEST_SAY(e.what());
 
-        std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
+        std::ofstream file(VKTest::PATH.getExecutablePath().string() + "PATH_output.txt");
+        file << e.what();
+        file.close();
+
+        return FAILED_EXIT;
+    }
+
+    std::unique_ptr<VKTest::Application> app = std::make_unique<VKTest::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
+
+    try {
+        app->Initialize();
         app->Loop();
     }
     catch (const std::exception& e) {
         VK_TEST_SAY(e.what());
 
-        std::ofstream file("F:/Windows/Desktop/VulkanTestAdventure/output.txt");
+        std::ofstream file(VKTest::PATH.getExecutablePath().string() + "output.txt");
         file << e.what();
         file.close();
 

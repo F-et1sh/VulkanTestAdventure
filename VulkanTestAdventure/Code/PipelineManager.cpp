@@ -36,8 +36,10 @@ void VKTest::PipelineManager::CreateDescriptorSetLayout() {
 }
 
 void VKTest::PipelineManager::CreateGraphicsPipeline() {
-    auto vert_shader_code = readFile("F:/Windows/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.vert.spv");
-    auto frag_shader_code = readFile("F:/Windows/Desktop/VulkanTestAdventure/Files/Shaders/Test1/shader.frag.spv");
+    auto base = PATH.getAssetsPath() / "Shaders" / "Test1" / "shader";
+
+    auto vert_shader_code = readFile(base.string() + ".vert.spv");
+    auto frag_shader_code = readFile(base.string() + ".frag.spv");
 
     VkShaderModule vert_shader_module = createShaderModule(vert_shader_code);
     VkShaderModule frag_shader_module = createShaderModule(frag_shader_code);

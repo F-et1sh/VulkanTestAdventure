@@ -5,57 +5,25 @@ void VKTest::SwapchainManager::Release() {
     VkDevice   device   = (p_DeviceManager != nullptr) ? p_DeviceManager->getDevice() : VK_NULL_HANDLE;
     VkInstance instance = (p_DeviceManager != nullptr) ? p_DeviceManager->getInstance() : VK_NULL_HANDLE;
 
-    if (device == VK_NULL_HANDLE) {
-        return;
-    }
-
     for (auto* framebuffer : m_SwapchainFramebuffers) {
-        if (framebuffer != VK_NULL_HANDLE) {
-            vkDestroyFramebuffer(device, framebuffer, nullptr);
-        }
+        vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
 
     for (auto* image_view : m_SwapchainImageViews) {
-        if (image_view != VK_NULL_HANDLE) {
-            vkDestroyImageView(device, image_view, nullptr);
-        }
+        vkDestroyImageView(device, image_view, nullptr);
     }
 
-    if (m_DepthImageView != VK_NULL_HANDLE) {
-        vkDestroyImageView(device, m_DepthImageView, nullptr);
-        m_DepthImageView = VK_NULL_HANDLE;
-    }
-    if (m_DepthImage != VK_NULL_HANDLE) {
-        vkDestroyImage(device, m_DepthImage, nullptr);
-        m_DepthImage = VK_NULL_HANDLE;
-    }
-    if (m_DepthImageMemory != VK_NULL_HANDLE) {
-        vkFreeMemory(device, m_DepthImageMemory, nullptr);
-        m_DepthImageMemory = VK_NULL_HANDLE;
-    }
+    vkDestroyImageView(device, m_DepthImageView, nullptr);
+    vkDestroyImage(device, m_DepthImage, nullptr);
+    vkFreeMemory(device, m_DepthImageMemory, nullptr);
 
-    if (m_ColorImageView != VK_NULL_HANDLE) {
-        vkDestroyImageView(device, m_ColorImageView, nullptr);
-        m_ColorImageView = VK_NULL_HANDLE;
-    }
-    if (m_ColorImage != VK_NULL_HANDLE) {
-        vkDestroyImage(device, m_ColorImage, nullptr);
-        m_ColorImage = VK_NULL_HANDLE;
-    }
-    if (m_ColorImageMemory != VK_NULL_HANDLE) {
-        vkFreeMemory(device, m_ColorImageMemory, nullptr);
-        m_ColorImageMemory = VK_NULL_HANDLE;
-    }
+    vkDestroyImageView(device, m_ColorImageView, nullptr);
+    vkDestroyImage(device, m_ColorImage, nullptr);
+    vkFreeMemory(device, m_ColorImageMemory, nullptr);
 
-    if (m_Swapchain != VK_NULL_HANDLE) {
-        vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
-        m_Swapchain = VK_NULL_HANDLE;
-    }
+    vkDestroySwapchainKHR(device, m_Swapchain, nullptr);
 
-    if (instance != VK_NULL_HANDLE && m_Surface != VK_NULL_HANDLE) {
-        vkDestroySurfaceKHR(instance, m_Surface, nullptr);
-        m_Surface = VK_NULL_HANDLE;
-    }
+    vkDestroySurfaceKHR(instance, m_Surface, nullptr);
 }
 
 void VKTest::SwapchainManager::CreateSurface() {

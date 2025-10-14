@@ -1,0 +1,2 @@
+ERROR : Failed to load texture image
+Path : F:\Windows\Desktop\VulkanTestAdventure\Files\Texture\viking_room.png

@@ -4,9 +4,6 @@
 namespace VKTest {
     class DeviceManager; // forward declaration
 
-    const std::string MODEL_PATH   = "F:/Windows/Desktop/VulkanTestAdventure/Files/Models/viking_room.obj";
-    const std::string TEXTURE_PATH = "F:/Windows/Desktop/VulkanTestAdventure/Files/Textures/viking_room.png";
-
     class RenderMesh {
     public:
         constexpr static int MAX_OBJECTS = 3;
@@ -57,5 +54,8 @@ namespace VKTest {
         VkDeviceMemory m_IndexBufferMemory{};
 
         std::array<GameObject, MAX_OBJECTS> m_GameObjects;
+
+        std::filesystem::path m_ModelPath;
+        std::filesystem::path m_TexturePath;
     };
 } // namespace VKTest
