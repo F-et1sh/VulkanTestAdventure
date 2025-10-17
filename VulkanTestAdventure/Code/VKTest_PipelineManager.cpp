@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "PipelineManager.h"
+#include "VKTest_PipelineManager.h"
 
 void VKTest::PipelineManager::Release() {
     vkDestroyPipeline(p_DeviceManager->getDevice(), m_GraphicsPipeline, nullptr);

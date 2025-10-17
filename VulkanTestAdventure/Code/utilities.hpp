@@ -8,7 +8,7 @@
 
 #define VK_TEST_NODISCARD [[nodiscard]]
 
-namespace VKTest {
+namespace vk_test {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         if (!std::filesystem::exists(to)) {
             std::filesystem::create_directories(to);
@@ -52,4 +52,4 @@ namespace VKTest {
 
         return path;
     }
-} // namespace VKTest
+} // namespace vk_test

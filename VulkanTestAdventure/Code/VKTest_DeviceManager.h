@@ -1,5 +1,5 @@
 #pragma once
-#include "QueueFamilyIndices.h"
+#include "VKTest_QueueFamilyIndices.h"
 
 namespace VKTest {
 #ifdef NDEBUG

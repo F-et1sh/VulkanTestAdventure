@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderMesh.h"
+#include "VKTest_RenderMesh.h"
 
 namespace VKTest {
     /* forward declarations */
