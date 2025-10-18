@@ -1,20 +1,20 @@
 #include "pch.h"
-#include "Window.h"
+#include "Window.hpp"
 
-VKTest::Window::Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) {
+vk_test::Window::Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     this->CreateWindow(window_resolution, window_title, window_monitor);
 }
 
-VKTest::Window::~Window() {
+vk_test::Window::~Window() {
     m_IsRunning = false;
 
     glfwDestroyWindow(p_GLFWWindow);
     glfwTerminate();
 }
 
-void VKTest::Window::CreateWindow(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) {
+void vk_test::Window::CreateWindow(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor) {
     GLFWmonitor* monitor = nullptr;
 
     int   monitor_count = 0;
@@ -34,18 +34,18 @@ void VKTest::Window::CreateWindow(const glm::vec2& window_resolution, const std:
     m_IsRunning = true;
 }
 
-void VKTest::Window::ClearColor(glm::vec4 color) const noexcept {
+void vk_test::Window::ClearColor(glm::vec4 color) const noexcept {
 }
 
-void VKTest::Window::ClearColor(float r, float g, float b, float a) const noexcept {
+void vk_test::Window::ClearColor(float r, float g, float b, float a) const noexcept {
 }
 
-void VKTest::Window::ClearScreen(unsigned int buffer_bit) const noexcept {
+void vk_test::Window::ClearScreen(unsigned int buffer_bit) const noexcept {
 }
 
-void VKTest::Window::SwapBuffers() const noexcept {
+void vk_test::Window::SwapBuffers() const noexcept {
 }
 
-void VKTest::Window::PollEvents() noexcept {
+void vk_test::Window::PollEvents() noexcept {
     glfwPollEvents();
 }

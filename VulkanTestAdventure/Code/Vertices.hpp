@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace vk_test {
     struct Vertex {
         glm::vec3 position      = glm::vec3{};
         glm::vec3 color         = glm::vec3{};
@@ -50,12 +50,12 @@ namespace VKTest {
     const std::vector<uint16_t> INDICES = {
         0, 1, 2, 2, 3, 0
     };
-} // namespace VKTest
+} // namespace vk_test
 
 namespace std {
     template <>
-    struct hash<VKTest::Vertex> {
-        size_t operator()(VKTest::Vertex const& vertex) const {
+    struct hash<vk_test::Vertex> {
+        size_t operator()(vk_test::Vertex const& vertex) const {
             return ((hash<glm::vec3>()(vertex.position) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texture_coord) << 1);
         }
     };

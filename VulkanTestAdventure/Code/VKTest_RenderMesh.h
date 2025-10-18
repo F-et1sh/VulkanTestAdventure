@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObjects.h"
+#include "VKTest_GameObjects.h"
 
 namespace VKTest {
     class DeviceManager; // forward declaration

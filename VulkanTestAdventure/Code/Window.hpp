@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace vk_test {
     class Window {
     public:
         Window(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor);
@@ -34,4 +34,4 @@ namespace VKTest {
 
         bool m_IsRunning = false;
     };
-} // namespace VKTest
+} // namespace vk_test

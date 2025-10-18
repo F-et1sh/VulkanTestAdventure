@@ -1,18 +1,15 @@
 #include "pch.h"
-#include "Application.h"
+#include "Application.hpp"
 
-VKTest::Application::~Application() {
+vk_test::Application::~Application() {
 }
 
-void VKTest::Application::Initialize() {
-    m_Renderer.Initialize();
+void vk_test::Application::Initialize() {
 }
 
-void VKTest::Application::Loop() {
+void vk_test::Application::Loop() {
     while (glfwWindowShouldClose(m_Window.getGLFWWindow()) == 0) {
 
-        m_Renderer.DrawFrame();
-
-        VKTest::Window::PollEvents();
+        vk_test::Window::PollEvents();
     }
 }

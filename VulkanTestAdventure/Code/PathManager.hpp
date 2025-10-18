@@ -1,6 +1,6 @@
 #pragma once
 
-namespace VKTest {
+namespace vk_test {
     class PathManager {
     public:
         VK_TEST_CLASS_NONCOPYABLE(PathManager)
@@ -32,4 +32,4 @@ namespace VKTest {
     };
 
     inline static PathManager& PATH = PathManager::Instance();
-} // namespace VKTest
+} // namespace vk_test

@@ -19,6 +19,8 @@
 #include <streambuf>
 #include <span>
 #include <unordered_map>
+#include <cassert>
+#include <tuple>
 
 // GLFW
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -26,7 +28,7 @@
 #include <glfw3.h>
 
 // Vulkan
-#include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan_core.h>
 
 // GLM
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -44,18 +46,8 @@
 #include "traits.hpp"
 
 // Path Manager
-#include "PathManager.h"
+#include "PathManager.hpp"
 
-using namespace VKTest;
+using namespace vk_test;
 
-#include "Window.h"
-#include "DeviceManager.h"
-#include "SwapchainManager.h"
-#include "RenderPassManager.h"
-#include "GameObjects.h"
-#include "RenderMesh.h"
-#include "PipelineManager.h"
-
-namespace VKTest {
-    constexpr inline static int MAX_FRAMES_IN_FLIGHT = 2;
-}
+#include "Window.hpp"

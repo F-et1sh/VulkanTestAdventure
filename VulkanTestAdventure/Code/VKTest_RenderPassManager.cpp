@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RenderPassManager.h"
+#include "VKTest_RenderPassManager.h"
 
 void VKTest::RenderPassManager::Release() {
     vkDestroyRenderPass(p_DeviceManager->getDevice(), m_RenderPass, nullptr);

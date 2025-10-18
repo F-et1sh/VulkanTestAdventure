@@ -1,9 +1,9 @@
 #pragma once
 #include "Window.h"
-#include "DeviceManager.h"
-#include "SwapchainManager.h"
-#include "RenderPassManager.h"
-#include "PipelineManager.h"
+#include "VKTest_DeviceManager.h"
+#include "VKTest_SwapchainManager.h"
+#include "VKTest_RenderPassManager.h"
+#include "VKTest_PipelineManager.h"
 
 namespace VKTest {
     class Renderer {

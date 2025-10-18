@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GameObjects.h"
+#include "VKTest_GameObjects.h"
 
 VKTest::GameObject::~GameObject() {
     for (auto* buffer : uniform_buffers) {

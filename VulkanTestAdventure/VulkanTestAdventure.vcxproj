@@ -183,20 +183,24 @@
     <None Include="Code\VkHpp_FrameData.cpp" />
     <None Include="Code\VkHpp_GPUResourceManager.cpp" />
     <None Include="Code\VkHpp_Image.cpp" />
-    <ClCompile Include="Code\DeviceManager.cpp" />
-    <ClCompile Include="Code\GameObjects.cpp" />
+    <None Include="Code\VKTest_DeviceManager.cpp" />
+    <None Include="Code\VKTest_GameObjects.cpp" />
+    <ClCompile Include="Code\barriers.cpp" />
+    <ClCompile Include="Code\IRenderer.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.cpp" />
     <None Include="Code\VkHpp_Renderer.cpp" />
     <None Include="Code\VkHpp_RenderPassManager.cpp" />
     <None Include="Code\VkHpp_SwapchainManager.cpp" />
-    <ClCompile Include="Code\PipelineManager.cpp" />
-    <ClCompile Include="Code\QueueFamilyIndices.cpp" />
-    <ClCompile Include="Code\Renderer.cpp" />
-    <ClCompile Include="Code\RenderMesh.cpp" />
-    <ClCompile Include="Code\RenderPassManager.cpp" />
-    <ClCompile Include="Code\SwapchainManager.cpp" />
+    <None Include="Code\VKTest_PipelineManager.cpp" />
+    <None Include="Code\VKTest_QueueFamilyIndices.cpp" />
+    <None Include="Code\VKTest_Renderer.cpp" />
+    <None Include="Code\VKTest_RenderMesh.cpp" />
+    <None Include="Code\VKTest_RenderPassManager.cpp" />
+    <None Include="Code\VKTest_SwapchainManager.cpp" />
+    <ClCompile Include="Code\RendererVulkan.cpp" />
+    <ClCompile Include="Code\Swapchain.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -225,6 +229,9 @@
     <CopyFileToFolders Include="Lisenses\KTX-Software_LICENSE.md">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Lisenses\NVIDIA_LICENSE">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt" />
@@ -243,25 +250,31 @@
     <None Include="Code\VkHpp_DeviceManager.h" />
     <None Include="Code\VkHpp_FrameData.h" />
     <None Include="Code\VkHpp_GPUResourceManager.h" />
-    <ClInclude Include="Code\DeviceManager.h" />
-    <ClInclude Include="Code\GameObjects.h" />
-    <ClInclude Include="Code\PathManager.h" />
+    <None Include="Code\VKTest_DeviceManager.h" />
+    <None Include="Code\VKTest_GameObjects.h" />
+    <ClInclude Include="Code\barriers.hpp" />
+    <ClInclude Include="Code\IRenderer.hpp" />
+    <ClInclude Include="Code\PathManager.hpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />
     <None Include="Code\VkHpp_Renderer.h" />
     <None Include="Code\VkHpp_RenderPassManager.h" />
     <None Include="Code\VkHpp_SwapchainManager.h" />
-    <ClInclude Include="Code\PipelineManager.h" />
-    <ClInclude Include="Code\QueueFamilyIndices.h" />
-    <ClInclude Include="Code\Renderer.h" />
-    <ClInclude Include="Code\RenderMesh.h" />
-    <ClInclude Include="Code\RenderPassManager.h" />
-    <ClInclude Include="Code\SwapchainManager.h" />
+    <None Include="Code\VKTest_PipelineManager.h" />
+    <None Include="Code\VKTest_QueueFamilyIndices.h" />
+    <None Include="Code\VKTest_Renderer.h" />
+    <None Include="Code\VKTest_RenderMesh.h" />
+    <None Include="Code\VKTest_RenderPassManager.h" />
+    <None Include="Code\VKTest_SwapchainManager.h" />
+    <ClInclude Include="Code\Renderer.hpp" />
+    <ClInclude Include="Code\RendererVulkan.hpp" />
+    <ClInclude Include="Code\resources.hpp" />
+    <ClInclude Include="Code\Swapchain.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
-    <ClInclude Include="Code\Vertices.h" />
-    <ClInclude Include="Code\Window.h" />
+    <ClInclude Include="Code\Vertices.hpp" />
+    <ClInclude Include="Code\Window.hpp" />
     <None Include="Code\ApplicationHpp.h" />
-    <ClInclude Include="Code\Application.h" />
+    <ClInclude Include="Code\Application.hpp" />
     <ClInclude Include="Code\pch.h" />
     <None Include="Code\VertexHpp.h" />
   </ItemGroup>
