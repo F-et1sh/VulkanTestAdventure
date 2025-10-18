@@ -212,6 +212,7 @@ void VKTest::SwapchainManager::recreateSwapchain() {
 
     this->Release();
 
+    this->CreateSurface();
     this->CreateSwapchain();
     this->CreateImageViews();
     this->CreateColorResources();
