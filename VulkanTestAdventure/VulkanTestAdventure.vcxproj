@@ -185,6 +185,7 @@
     <None Include="Code\VkHpp_Image.cpp" />
     <None Include="Code\VKTest_DeviceManager.cpp" />
     <None Include="Code\VKTest_GameObjects.cpp" />
+    <ClCompile Include="Code\barriers.cpp" />
     <ClCompile Include="Code\IRenderer.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
@@ -251,6 +252,7 @@
     <None Include="Code\VkHpp_GPUResourceManager.h" />
     <None Include="Code\VKTest_DeviceManager.h" />
     <None Include="Code\VKTest_GameObjects.h" />
+    <ClInclude Include="Code\barriers.hpp" />
     <ClInclude Include="Code\IRenderer.hpp" />
     <ClInclude Include="Code\PathManager.hpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />

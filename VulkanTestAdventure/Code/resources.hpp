@@ -24,10 +24,6 @@
 
 #pragma once
 
-#include <cassert>
-#include <vector>
-
-#include <vulkan/vulkan_core.h>
 // Forward declare VmaAllocation so we don't need to pull in vk_mem_alloc.h
 VK_DEFINE_HANDLE(VmaAllocation)
 

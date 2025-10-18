@@ -46,7 +46,7 @@ namespace vk_test {
     class Swapchain {
     public:
         Swapchain() = default;
-        ~Swapchain() { assert(m_swapChain == VK_NULL_HANDLE && "Missing deinit()"); }
+        ~Swapchain() { assert(m_Swapchain == VK_NULL_HANDLE && "Missing deinit()"); }
 
         void        requestRebuild() { m_NeedRebuild = true; }
         bool        needRebuilding() const { return m_NeedRebuild; }
@@ -79,7 +79,7 @@ namespace vk_test {
          * Create the swapchain using the provided context, surface, and vSync option. The actual window size is returned.
          * Queries the GPU capabilities, selects the best surface format and present mode, and creates the swapchain accordingly.
         -*/
-        VkResult initResources(VkExtent2D& out_window_size, bool v_sync = true);
+        VkResult initResources(VkExtent2D& out_window_size, bool vsync = true);
 
         /*--
          * Recreate the swapchain, typically after a window resize or when it becomes invalid.
@@ -143,10 +143,10 @@ namespace vk_test {
         VkPhysicalDevice m_PhysicalDevice{}; // The physical device (GPU)
         VkDevice         m_Device{};         // The logical device (interface to the physical device)
         QueueInfo        m_Queue{};          // The queue used to submit command buffers to the GPU
-        VkSwapchainKHR   m_SwapChain{};      // The swapchain
+        VkSwapchainKHR   m_Swapchain{};      // The swapchain
         VkFormat         m_ImageFormat{};    // The format of the swapchain images
         VkSurfaceKHR     m_Surface{};        // The surface to present images to
-        VkCommandPool    m_commandPool{};    // The command pool for the swapchain
+        VkCommandPool    m_CommandPool{};    // The command pool for the swapchain
 
         std::vector<Image>          m_Images;                     // The swapchain images and their views
         std::vector<FrameResources> m_FrameResources;             // Synchronization primitives for each frame

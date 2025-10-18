@@ -20,6 +20,7 @@
 #include <span>
 #include <unordered_map>
 #include <cassert>
+#include <tuple>
 
 // GLFW
 // NOLINTNEXTLINE(readability-identifier-naming)
