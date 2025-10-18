@@ -130,6 +130,9 @@
     <Filter Include="Code\Main\Renderer\RendererVulkan\Resources">
       <UniqueIdentifier>{eda0d56b-519a-4549-9057-d95e152889b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Renderer\RendererVulkan\Swapchain">
+      <UniqueIdentifier>{317e7b0c-0513-4c27-aa17-4c85cc83c8b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Code\RendererVulkan.cpp">
       <Filter>Code\Main\Renderer\RendererVulkan\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Swapchain.cpp">
+      <Filter>Code\Main\Renderer\RendererVulkan\Swapchain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +213,9 @@
     </ClInclude>
     <ClInclude Include="Code\resources.hpp">
       <Filter>Code\Main\Renderer\RendererVulkan\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Swapchain.hpp">
+      <Filter>Code\Main\Renderer\RendererVulkan\Swapchain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

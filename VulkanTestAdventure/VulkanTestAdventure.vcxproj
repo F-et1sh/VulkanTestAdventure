@@ -199,6 +199,7 @@
     <None Include="Code\VKTest_RenderPassManager.cpp" />
     <None Include="Code\VKTest_SwapchainManager.cpp" />
     <ClCompile Include="Code\RendererVulkan.cpp" />
+    <ClCompile Include="Code\Swapchain.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -265,6 +266,7 @@
     <ClInclude Include="Code\Renderer.hpp" />
     <ClInclude Include="Code\RendererVulkan.hpp" />
     <ClInclude Include="Code\resources.hpp" />
+    <ClInclude Include="Code\Swapchain.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.hpp" />

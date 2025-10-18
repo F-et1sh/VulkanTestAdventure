@@ -1,17 +1,17 @@
 #pragma once
 #include "IRenderer.hpp"
 
-#include "resources.hpp"
+#include "Swapchain.hpp"
 
 namespace vk_test {
     // Renderer creation info
     struct RendererVulkanCreateInfo {
         // Vulkan
-        VkInstance                   instance{ VK_NULL_HANDLE };        // Vulkan instance
-        VkDevice                     device{ VK_NULL_HANDLE };          // Logical device
-        VkPhysicalDevice             physical_device{ VK_NULL_HANDLE }; // Physical device
-        std::vector<nvvk::QueueInfo> queues;                            // Queue family and properties (0: Graphics)
-        uint32_t                     texture_pool_size = 128U;          // Maximum number of textures in the descriptor pool
+        VkInstance             instance{ VK_NULL_HANDLE };        // Vulkan instance
+        VkDevice               device{ VK_NULL_HANDLE };          // Logical device
+        VkPhysicalDevice       physical_device{ VK_NULL_HANDLE }; // Physical device
+        std::vector<QueueInfo> queues;                            // Queue family and properties (0: Graphics)
+        uint32_t               texture_pool_size = 128U;          // Maximum number of textures in the descriptor pool
 
         // Swapchain
         // VK_PRESENT_MODE_MAX_ENUM_KHR means no preference
@@ -29,8 +29,8 @@ namespace vk_test {
 
         void run();
 
-        inline uint32_t getFrameCycleIndex() const { return m_FrameRingCurrent; }
-        inline uint32_t getFrameCycleSize() const { return uint32_t(m_FrameData.size()); }
+        uint32_t getFrameCycleIndex() const { return m_FrameRingCurrent; }
+        uint32_t getFrameCycleSize() const { return uint32_t(m_FrameData.size()); }
 
     private:
         void createTransientCommandPool();
@@ -42,17 +42,17 @@ namespace vk_test {
         Window* p_Window{ nullptr };
 
         // Vulkan resources
-        VkInstance                   m_Instance{ VK_NULL_HANDLE };
-        VkPhysicalDevice             m_PhysicalDevice{ VK_NULL_HANDLE };
-        VkDevice                     m_Device{ VK_NULL_HANDLE };
-        std::vector<nvvk::QueueInfo> m_Queues;                // All queues, first one should be a graphics queue
-        VkSurfaceKHR                 m_Surface{};             // The window surface
-        VkCommandPool                m_TransientCmdPool{};    // The command pool
-        VkDescriptorPool             m_DescriptorPool{};      // Renderer descriptor pool
-        uint32_t                     m_MaxTexturePool{ 128 }; // Maximum number of textures in the descriptor pool
+        VkInstance             m_Instance{ VK_NULL_HANDLE };
+        VkPhysicalDevice       m_PhysicalDevice{ VK_NULL_HANDLE };
+        VkDevice               m_Device{ VK_NULL_HANDLE };
+        std::vector<QueueInfo> m_Queues;                // All queues, first one should be a graphics queue
+        VkSurfaceKHR           m_Surface{};             // The window surface
+        VkCommandPool          m_TransientCmdPool{};    // The command pool
+        VkDescriptorPool       m_DescriptorPool{};      // Renderer descriptor pool
+        uint32_t               m_MaxTexturePool{ 128 }; // Maximum number of textures in the descriptor pool
 
         // Frame resources and synchronization (Swapchain, Command buffers, Semaphores, Fences)
-        //nvvk::Swapchain m_swapchain;
+        Swapchain m_Swapchain;
         struct FrameData {
             VkCommandPool   command_pool{};   // Command pool for recording commands for this frame
             VkCommandBuffer command_buffer{}; // Command buffer containing the frame's rendering commands

@@ -17,6 +17,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/*
+* Modified by Farrakh
+* 2025
+*/
+
 #pragma once
 
 #include <cassert>
@@ -26,7 +31,7 @@
 // Forward declare VmaAllocation so we don't need to pull in vk_mem_alloc.h
 VK_DEFINE_HANDLE(VmaAllocation)
 
-namespace nvvk {
+namespace vk_test {
 
     //-----------------------------------------------------------------
     // A buffer is a region of memory used to store data.
@@ -170,4 +175,4 @@ namespace nvvk {
         uint64_t    value{};     // Timeline value
     };
 
-} // namespace nvvk
+} // namespace vk_test

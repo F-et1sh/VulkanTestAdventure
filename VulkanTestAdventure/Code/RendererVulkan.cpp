@@ -34,29 +34,22 @@ void vk_test::RendererVulkan::Initialize(RendererVulkanCreateInfo& info) {
     // Create a descriptor pool for creating descriptor set in the application
     createDescriptorPool();
 
-    //// Create the swapchain
-    //if (!m_headless) {
-    //    nvvk::Swapchain::InitInfo swapChainInit{
-    //        .physicalDevice        = m_physicalDevice,
-    //        .device                = m_device,
-    //        .queue                 = m_queues[0],
-    //        .surface               = m_surface,
-    //        .cmdPool               = m_transientCmdPool,
-    //        .preferredVsyncOffMode = info.preferredVsyncOffMode,
-    //        .preferredVsyncOnMode  = info.preferredVsyncOnMode,
-    //    };
+    // Create the swapchain
+    Swapchain::InitInfo swapchain_init{
+        .physical_device          = m_PhysicalDevice,
+        .device                   = m_Device,
+        .queue                    = m_Queues[0],
+        .surface                  = m_Surface,
+        .command_pool             = m_TransientCmdPool,
+        .preferred_vsync_off_mode = info.preferred_vsync_off_mode,
+        .preferred_vsync_on_mode  = info.preferred_vsync_on_mode,
+    };
 
-    //    m_swapchain.init(swapChainInit)
-    //    m_swapchain.initResources(m_windowSize, m_vsyncWanted); // Update the window size to the actual size of the surface
+    m_Swapchain.init(swapchain_init);
+    m_Swapchain.initResources(m_WindowSize, false); // Update the window size to the actual size of the surface
 
-    //    // Create what is needed to submit the scene for each frame in-flight
-    //    createFrameSubmission(m_swapchain.getMaxFramesInFlight());
-    //}
-    //else {
-    // In headless mode, there's only 2 pipeline stages (CPU and GPU, no display),
-    // so we double instead of triple-buffer.
-    createFrameSubmission(2);
-    //}
+    // Create what is needed to submit the scene for each frame in-flight
+    createFrameSubmission(m_Swapchain.getMaxFramesInFlight());
 
     // Set up the resource free queue
     resetFreeQueue(getFrameCycleSize());
@@ -73,7 +66,7 @@ void vk_test::RendererVulkan::createTransientCommandPool() {
 
 void vk_test::RendererVulkan::createDescriptorPool() {
     const std::array<VkDescriptorPoolSize, 1> pool_sizes{
-        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, m_MaxTexturePool },
+        { { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, m_MaxTexturePool } },
     };
 
     const VkDescriptorPoolCreateInfo pool_info = {
