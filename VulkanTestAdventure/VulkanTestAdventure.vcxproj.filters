@@ -88,33 +88,6 @@
     <Filter Include="Code\Frozen\Backend %28 VKHpp, doesn%27t work %29\SwapchainManager">
       <UniqueIdentifier>{b9268c87-dd8c-4c4b-9f1b-bfff276cecf6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29">
-      <UniqueIdentifier>{777b3468-ec79-4dbc-8778-7749d1e79179}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\DeivceManager">
-      <UniqueIdentifier>{575ca845-b375-4daa-8711-8ccbb6b7dbbe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\QueueFamilyIndices">
-      <UniqueIdentifier>{f7d48b91-e1c1-4bcf-bde3-5f021e4a82ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\Renderer">
-      <UniqueIdentifier>{6ba5a9e4-fe60-463e-ac69-3d1d21a03c99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\SwapchainManager">
-      <UniqueIdentifier>{cbd45094-ff55-489c-919c-f4be675bd665}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\RenderPassManager">
-      <UniqueIdentifier>{4efa2307-16ad-4432-8a59-157ffae7964d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\PipelineManager">
-      <UniqueIdentifier>{9f4f2b4f-26fe-4f13-8f30-11abc83c76b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\GameObjects">
-      <UniqueIdentifier>{3cea17d0-b2ba-4252-a299-583c0f799ed3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Frozen\Backend %28 C-Style, work very well %29\RenderMesh">
-      <UniqueIdentifier>{10abfafd-9aff-4445-b4f5-3847fd908600}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Main\Renderer">
       <UniqueIdentifier>{c1745bba-b13b-468d-b5ca-b3ac2aff7544}</UniqueIdentifier>
     </Filter>
@@ -123,6 +96,39 @@
     </Filter>
     <Filter Include="Code\Main\Renderer\RendererVulkan">
       <UniqueIdentifier>{9aa99896-5b11-4733-8da6-49ea55b89cfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29">
+      <UniqueIdentifier>{777b3468-ec79-4dbc-8778-7749d1e79179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\DeivceManager">
+      <UniqueIdentifier>{575ca845-b375-4daa-8711-8ccbb6b7dbbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\QueueFamilyIndices">
+      <UniqueIdentifier>{f7d48b91-e1c1-4bcf-bde3-5f021e4a82ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\Renderer">
+      <UniqueIdentifier>{6ba5a9e4-fe60-463e-ac69-3d1d21a03c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\SwapchainManager">
+      <UniqueIdentifier>{cbd45094-ff55-489c-919c-f4be675bd665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\RenderPassManager">
+      <UniqueIdentifier>{4efa2307-16ad-4432-8a59-157ffae7964d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\PipelineManager">
+      <UniqueIdentifier>{9f4f2b4f-26fe-4f13-8f30-11abc83c76b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\GameObjects">
+      <UniqueIdentifier>{3cea17d0-b2ba-4252-a299-583c0f799ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\RenderMesh">
+      <UniqueIdentifier>{10abfafd-9aff-4445-b4f5-3847fd908600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Renderer\RendererVulkan\Renderer">
+      <UniqueIdentifier>{f8297d6c-1cd5-47b1-bca4-387c67c7bea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Renderer\RendererVulkan\Resources">
+      <UniqueIdentifier>{eda0d56b-519a-4549-9057-d95e152889b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +154,7 @@
       <Filter>Code\Main\Renderer\IRenderer</Filter>
     </ClCompile>
     <ClCompile Include="Code\RendererVulkan.cpp">
-      <Filter>Code\Main\Renderer\RendererVulkan</Filter>
+      <Filter>Code\Main\Renderer\RendererVulkan\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,7 +203,10 @@
       <Filter>Code\Main\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Code\RendererVulkan.hpp">
-      <Filter>Code\Main\Renderer\RendererVulkan</Filter>
+      <Filter>Code\Main\Renderer\RendererVulkan\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\resources.hpp">
+      <Filter>Code\Main\Renderer\RendererVulkan\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -297,52 +306,52 @@
       <Filter>Code\Frozen\YouTube %28 C-Style %29</Filter>
     </None>
     <None Include="Code\VKTest_DeviceManager.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\DeivceManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\DeivceManager</Filter>
     </None>
     <None Include="Code\VKTest_DeviceManager.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\DeivceManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\DeivceManager</Filter>
     </None>
     <None Include="Code\VKTest_GameObjects.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\GameObjects</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\GameObjects</Filter>
     </None>
     <None Include="Code\VKTest_GameObjects.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\GameObjects</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\GameObjects</Filter>
     </None>
     <None Include="Code\VKTest_PipelineManager.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\PipelineManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\PipelineManager</Filter>
     </None>
     <None Include="Code\VKTest_PipelineManager.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\PipelineManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\PipelineManager</Filter>
     </None>
     <None Include="Code\VKTest_QueueFamilyIndices.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\QueueFamilyIndices</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\QueueFamilyIndices</Filter>
     </None>
     <None Include="Code\VKTest_QueueFamilyIndices.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\QueueFamilyIndices</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\QueueFamilyIndices</Filter>
     </None>
     <None Include="Code\VKTest_Renderer.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\Renderer</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\Renderer</Filter>
     </None>
     <None Include="Code\VKTest_Renderer.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\Renderer</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\Renderer</Filter>
     </None>
     <None Include="Code\VKTest_RenderMesh.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\RenderMesh</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\RenderMesh</Filter>
     </None>
     <None Include="Code\VKTest_RenderMesh.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\RenderMesh</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\RenderMesh</Filter>
     </None>
     <None Include="Code\VKTest_RenderPassManager.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\RenderPassManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\RenderPassManager</Filter>
     </None>
     <None Include="Code\VKTest_RenderPassManager.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\RenderPassManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\RenderPassManager</Filter>
     </None>
     <None Include="Code\VKTest_SwapchainManager.cpp">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\SwapchainManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\SwapchainManager</Filter>
     </None>
     <None Include="Code\VKTest_SwapchainManager.h">
-      <Filter>Code\Frozen\Backend %28 C-Style, work very well %29\SwapchainManager</Filter>
+      <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\SwapchainManager</Filter>
     </None>
   </ItemGroup>
 </Project>
