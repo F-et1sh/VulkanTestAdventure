@@ -118,6 +118,9 @@
     <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\RenderMesh">
       <UniqueIdentifier>{10abfafd-9aff-4445-b4f5-3847fd908600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\ImGui">
+      <UniqueIdentifier>{5461b9f4-b7af-4966-8d2b-56d09f104aff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -137,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer.cpp">
+      <Filter>Code\Main\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="Code\Vertices.hpp">
       <Filter>Code\Main\Vertices</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Renderer.hpp">
+      <Filter>Code\Main\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

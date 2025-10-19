@@ -12,7 +12,7 @@ namespace vk_test {
         void Loop();
 
     private:
-        Window         m_Window;
-        RendererVulkan m_Renderer;
+        Window   m_Window;
+        Renderer m_Renderer;
     };
 } // namespace vk_test

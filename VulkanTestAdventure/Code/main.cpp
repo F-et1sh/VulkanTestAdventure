@@ -2,7 +2,7 @@
 #include "Application.hpp"
 
 constexpr inline static glm::vec2        WINDOW_RESOLUTION = glm::vec2(1920, 1080);
-constexpr inline static std::string_view WINDOW_TITLE      = "vk_test";
+constexpr inline static std::string_view WINDOW_TITLE      = "VKTest";
 constexpr inline static int              WINDOW_MONITOR    = -1; // not fullscreen
 
 constexpr inline static int SUCCESSFUL_EXIT = 0;

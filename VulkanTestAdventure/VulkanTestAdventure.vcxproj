@@ -197,6 +197,7 @@
     <None Include="Code\VKTest_RenderMesh.cpp" />
     <None Include="Code\VKTest_RenderPassManager.cpp" />
     <None Include="Code\VKTest_SwapchainManager.cpp" />
+    <ClCompile Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -259,6 +260,7 @@
     <None Include="Code\VKTest_RenderMesh.h" />
     <None Include="Code\VKTest_RenderPassManager.h" />
     <None Include="Code\VKTest_SwapchainManager.h" />
+    <ClInclude Include="Code\Renderer.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.hpp" />
