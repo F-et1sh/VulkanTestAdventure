@@ -91,12 +91,6 @@
     <Filter Include="Code\Main\Renderer">
       <UniqueIdentifier>{c1745bba-b13b-468d-b5ca-b3ac2aff7544}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Renderer\IRenderer">
-      <UniqueIdentifier>{86db3b42-8f88-451d-a25c-cbcfd20c6161}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Renderer\RendererVulkan">
-      <UniqueIdentifier>{9aa99896-5b11-4733-8da6-49ea55b89cfa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29">
       <UniqueIdentifier>{777b3468-ec79-4dbc-8778-7749d1e79179}</UniqueIdentifier>
     </Filter>
@@ -124,18 +118,6 @@
     <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29\RenderMesh">
       <UniqueIdentifier>{10abfafd-9aff-4445-b4f5-3847fd908600}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Renderer\RendererVulkan\Renderer">
-      <UniqueIdentifier>{f8297d6c-1cd5-47b1-bca4-387c67c7bea5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Renderer\RendererVulkan\Resources">
-      <UniqueIdentifier>{eda0d56b-519a-4549-9057-d95e152889b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Renderer\RendererVulkan\Swapchain">
-      <UniqueIdentifier>{317e7b0c-0513-4c27-aa17-4c85cc83c8b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\Main\Renderer\Barriers">
-      <UniqueIdentifier>{5c14540a-3a41-4560-811c-29de5405f186}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -155,18 +137,6 @@
     </ClCompile>
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\IRenderer.cpp">
-      <Filter>Code\Main\Renderer\IRenderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\RendererVulkan.cpp">
-      <Filter>Code\Main\Renderer\RendererVulkan\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Swapchain.cpp">
-      <Filter>Code\Main\Renderer\RendererVulkan\Swapchain</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\barriers.cpp">
-      <Filter>Code\Main\Renderer\Barriers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,24 +177,6 @@
     </ClInclude>
     <ClInclude Include="Code\Vertices.hpp">
       <Filter>Code\Main\Vertices</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\IRenderer.hpp">
-      <Filter>Code\Main\Renderer\IRenderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Renderer.hpp">
-      <Filter>Code\Main\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\RendererVulkan.hpp">
-      <Filter>Code\Main\Renderer\RendererVulkan\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\resources.hpp">
-      <Filter>Code\Main\Renderer\RendererVulkan\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Swapchain.hpp">
-      <Filter>Code\Main\Renderer\RendererVulkan\Swapchain</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\barriers.hpp">
-      <Filter>Code\Main\Renderer\Barriers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
