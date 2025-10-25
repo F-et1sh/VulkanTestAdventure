@@ -88,9 +88,6 @@
     <Filter Include="Code\Frozen\Backend %28 VKHpp, doesn%27t work %29\SwapchainManager">
       <UniqueIdentifier>{b9268c87-dd8c-4c4b-9f1b-bfff276cecf6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Renderer">
-      <UniqueIdentifier>{c1745bba-b13b-468d-b5ca-b3ac2aff7544}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Frozen\Backend %28 C-Style, works very well %29">
       <UniqueIdentifier>{777b3468-ec79-4dbc-8778-7749d1e79179}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,15 @@
     <Filter Include="Code\ImGui">
       <UniqueIdentifier>{5461b9f4-b7af-4966-8d2b-56d09f104aff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Resources">
+      <UniqueIdentifier>{2568e453-d90e-4af0-84f9-7fd7f8b8b43d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Context">
+      <UniqueIdentifier>{fb524cdb-cbb2-46e1-a85c-99ad38594e96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Frozen\OneFile Renderer %28 C-Style %29">
+      <UniqueIdentifier>{c1745bba-b13b-468d-b5ca-b3ac2aff7544}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -141,8 +147,11 @@
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Renderer.cpp">
-      <Filter>Code\Main\Renderer</Filter>
+    <ClCompile Include="Code\Resources.cpp">
+      <Filter>Code\Main\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Context.cpp">
+      <Filter>Code\Main\Context</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,8 +193,11 @@
     <ClInclude Include="Code\Vertices.hpp">
       <Filter>Code\Main\Vertices</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Renderer.hpp">
-      <Filter>Code\Main\Renderer</Filter>
+    <ClInclude Include="Code\Resources.hpp">
+      <Filter>Code\Main\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Context.hpp">
+      <Filter>Code\Main\Context</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +343,12 @@
     </None>
     <None Include="Code\VKTest_SwapchainManager.h">
       <Filter>Code\Frozen\Backend %28 C-Style, works very well %29\SwapchainManager</Filter>
+    </None>
+    <None Include="Code\Renderer.hpp">
+      <Filter>Code\Frozen\OneFile Renderer %28 C-Style %29</Filter>
+    </None>
+    <None Include="Code\Renderer.cpp">
+      <Filter>Code\Frozen\OneFile Renderer %28 C-Style %29</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -496,7 +496,7 @@ void vk_test::Renderer::createCommandPool() {
 void vk_test::Renderer::createVertexBuffer() {
     VkDeviceSize buffer_size = sizeof(VERTICES[0]) * VERTICES.size();
 
-    VkBuffer       staging_buffer = nullptr;
+    VkBuffer       staging_buffer        = nullptr;
     VkDeviceMemory staging_buffer_memory = nullptr;
     createBuffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging_buffer, staging_buffer_memory);
 
@@ -516,7 +516,7 @@ void vk_test::Renderer::createVertexBuffer() {
 void vk_test::Renderer::createIndexBuffer() {
     VkDeviceSize buffer_size = sizeof(INDICES[0]) * INDICES.size();
 
-    VkBuffer       staging_buffer = nullptr;
+    VkBuffer       staging_buffer        = nullptr;
     VkDeviceMemory staging_buffer_memory = nullptr;
     createBuffer(buffer_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, staging_buffer, staging_buffer_memory);
 
@@ -634,7 +634,7 @@ void vk_test::Renderer::recordCommandBuffer(VkCommandBuffer command_buffer, uint
     render_pass_info.renderArea.offset = { 0, 0 };
     render_pass_info.renderArea.extent = m_SwapchainExtent;
 
-    VkClearValue clear_color        = { { { 0.01F, 0.01F, 0.01F, 1.0F } } };
+    VkClearValue clear_color         = { { { 0.01F, 0.01F, 0.01F, 1.0F } } };
     render_pass_info.clearValueCount = 1;
     render_pass_info.pClearValues    = &clear_color;
 
@@ -657,7 +657,7 @@ void vk_test::Renderer::recordCommandBuffer(VkCommandBuffer command_buffer, uint
     vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 
     VkBuffer     vertex_buffers[] = { m_VertexBuffer };
-    VkDeviceSize offsets[]       = { 0 };
+    VkDeviceSize offsets[]        = { 0 };
     vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, offsets);
 
     vkCmdBindIndexBuffer(command_buffer, m_IndexBuffer, 0, VK_INDEX_TYPE_UINT16);
