@@ -2,58 +2,95 @@
 #include "Application.hpp"
 
 vk_test::Application::~Application() {
-    m_Context.Release();
+    vkDeviceWaitIdle(m_Device);
+
+    // Clean pending
+    //resetFreeQueue(0);
+
+    //m_Swapchain.Release();
+
+    // Frame info
+    for (size_t i = 0; i < m_FrameData.size(); i++) {
+        vkFreeCommandBuffers(m_Device, m_FrameData[i].command_pool, 1, &m_FrameData[i].command_buffer);
+        vkDestroyCommandPool(m_Device, m_FrameData[i].command_pool, nullptr);
+    }
+    vkDestroySemaphore(m_Device, m_FrameTimelineSemaphore, nullptr);
+
+    vkDestroyCommandPool(m_Device, m_TransientCmdPool, nullptr);
+    vkDestroyDescriptorPool(m_Device, m_DescriptorPool, nullptr);
+
+    vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 }
 
-void vk_test::Application::Initialize() {
-    // Setting up the Vulkan context, instance and device extensions
-    VkPhysicalDeviceShaderObjectFeaturesEXT          shader_object_features{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT };
-    VkPhysicalDeviceAccelerationStructureFeaturesKHR accel_feature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR };
-    VkPhysicalDeviceRayTracingPipelineFeaturesKHR    rt_pipeline_feature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR };
+void vk_test::Application::Initialize(ApplicationCreateInfo& info) {
+    m_Instance       = info.instance;
+    m_Device         = info.device;
+    m_PhysicalDevice = info.physical_device;
+    m_Queues         = info.queues;
+    m_MaxTexturePool = info.texture_pool_size;
 
-    ContextInitInfo vk_setup{
-        .instance_extensions = { VK_EXT_DEBUG_UTILS_EXTENSION_NAME },
-        .device_extensions   = {
-            { VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME },
-            { VK_EXT_SHADER_OBJECT_EXTENSION_NAME, &shader_object_features },
-            { VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, &accel_feature },     // To build acceleration structures
-            { VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME, &rt_pipeline_feature }, // To use vkCmdTraceRaysKHR
-            { VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME },                   // Required by ray tracing pipeline
-        },
-    };
+    // Set the default size and position of the window
+    //testAndSetWindowSizeAndPos({ info.windowSize.x, info.windowSize.y });
 
-    vk_setup.instance_extensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
-    vk_setup.instance_extensions.emplace_back(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
+    // Used for creating single-time command buffers
+    //createTransientCommandPool();
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    vkSetup.instance_extensions.emplace_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_XCB_KHR)
-    vkSetup.instance_extensions.emplace_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_XLIB_KHR)
-    vkSetup.instance_extensions.emplace_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_WAYLAND_KHR)
-    vkSetup.instance_extensions.emplace_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-    vkSetup.instance_extensions.emplace_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_IOS_MVK)
-    vkSetup.instance_extensions.emplace_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
-#endif
-#if defined(VK_USE_PLATFORM_MACOS_MVK)
-    vkSetup.instance_extensions.emplace_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
-#endif
+    // Create a descriptor pool for creating descriptor set in the application
+    //createDescriptorPool();
 
-    vk_setup.device_extensions.push_back({ VK_KHR_SWAPCHAIN_EXTENSION_NAME });
+    // Create the swapchain
+    //if (!m_headless) {
+    //    nvvk::Swapchain::InitInfo swapChainInit{
+    //        .physicalDevice        = m_physicalDevice,
+    //        .device                = m_device,
+    //        .queue                 = m_queues[0],
+    //        .surface               = m_surface,
+    //        .cmdPool               = m_transientCmdPool,
+    //        .preferredVsyncOffMode = info.preferredVsyncOffMode,
+    //        .preferredVsyncOnMode  = info.preferredVsyncOnMode,
+    //    };
+    //
+    //    NVVK_CHECK(m_swapchain.init(swapChainInit));
+    //    NVVK_CHECK(m_swapchain.initResources(m_windowSize, m_vsyncWanted)); // Update the window size to the actual size of the surface
+    //
+    //    // Create what is needed to submit the scene for each frame in-flight
+    //    createFrameSubmission(m_swapchain.getMaxFramesInFlight());
+    //}
+    //else {
+    //    // In headless mode, there's only 2 pipeline stages (CPU and GPU, no display),
+    //    // so we double instead of triple-buffer.
+    //    createFrameSubmission(2);
+    //}
 
-    m_Context.Initialize(vk_setup);
+    // Set up the resource free queue
+    //resetFreeQueue(getFrameCycleSize());
 }
 
 void vk_test::Application::Loop() {
     while (glfwWindowShouldClose(m_Window.getGLFWWindow()) == 0) {
+
+        //// Frame Resource Preparation
+        //if (prepareFrameResources()) {
+        //    // Free resources from previous frame
+        //    freeResourcesQueue();
+
+        //    // Prepare Frame Synchronization
+        //    prepareFrameToSignal(m_swapchain.getMaxFramesInFlight());
+
+        //    // Record Commands
+        //    VkCommandBuffer cmd = beginCommandRecording();
+        //    drawFrame(cmd);           // Call onUIRender() and onRender() for each element
+        //    renderToSwapchain(cmd);   // Render ImGui to swapchain
+        //    addSwapchainSemaphores(); // Setup synchronization
+        //    endFrame(cmd, m_swapchain.getMaxFramesInFlight());
+
+        //    // Present Frame
+        //    presentFrame(); // This can also trigger swapchain rebuild
+
+        //    // Advance Frame
+        //    advanceFrame(m_swapchain.getMaxFramesInFlight());
+        //}
+
         vk_test::Window::PollEvents();
     }
 }
