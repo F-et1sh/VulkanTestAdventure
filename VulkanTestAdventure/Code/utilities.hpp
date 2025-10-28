@@ -8,6 +8,8 @@
 
 #define VK_TEST_NODISCARD [[nodiscard]]
 
+#include "Commands.hpp"
+
 namespace vk_test {
     inline static void copy_file(const std::filesystem::path& from, const std::filesystem::path& to) {
         if (!std::filesystem::exists(to)) {

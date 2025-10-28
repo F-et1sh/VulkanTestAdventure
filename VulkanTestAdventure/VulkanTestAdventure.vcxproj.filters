@@ -127,6 +127,15 @@
     <Filter Include="Code\Frozen\OneFile Renderer %28 C-Style %29">
       <UniqueIdentifier>{c1745bba-b13b-468d-b5ca-b3ac2aff7544}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Swapchain">
+      <UniqueIdentifier>{bf263e19-89c6-41d8-84c6-04e799fe7cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Commands">
+      <UniqueIdentifier>{4c99c4bf-17f2-4fbc-acd6-c7f0e041353b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Barriers">
+      <UniqueIdentifier>{32ab972f-3ff0-4cbd-9640-e08e1d13a37c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -152,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="Code\Context.cpp">
       <Filter>Code\Main\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Swapchain.cpp">
+      <Filter>Code\Main\Swapchain</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Commands.cpp">
+      <Filter>Code\Main\Utilities\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\barriers.cpp">
+      <Filter>Code\Main\Utilities\Barriers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +216,15 @@
     </ClInclude>
     <ClInclude Include="Code\Context.hpp">
       <Filter>Code\Main\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Swapchain.hpp">
+      <Filter>Code\Main\Swapchain</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Commands.hpp">
+      <Filter>Code\Main\Utilities\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\barriers.hpp">
+      <Filter>Code\Main\Utilities\Barriers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

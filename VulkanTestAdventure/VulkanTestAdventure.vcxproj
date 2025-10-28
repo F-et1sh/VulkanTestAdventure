@@ -185,6 +185,8 @@
     <None Include="Code\VkHpp_Image.cpp" />
     <None Include="Code\VKTest_DeviceManager.cpp" />
     <None Include="Code\VKTest_GameObjects.cpp" />
+    <ClCompile Include="Code\barriers.cpp" />
+    <ClCompile Include="Code\Commands.cpp" />
     <ClCompile Include="Code\Context.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
@@ -200,6 +202,7 @@
     <None Include="Code\VKTest_SwapchainManager.cpp" />
     <None Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\Resources.cpp" />
+    <ClCompile Include="Code\Swapchain.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -251,6 +254,8 @@
     <None Include="Code\VkHpp_GPUResourceManager.h" />
     <None Include="Code\VKTest_DeviceManager.h" />
     <None Include="Code\VKTest_GameObjects.h" />
+    <ClInclude Include="Code\barriers.hpp" />
+    <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\PathManager.hpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />
@@ -265,6 +270,7 @@
     <None Include="Code\VKTest_SwapchainManager.h" />
     <None Include="Code\Renderer.hpp" />
     <ClInclude Include="Code\Resources.hpp" />
+    <ClInclude Include="Code\Swapchain.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.hpp" />

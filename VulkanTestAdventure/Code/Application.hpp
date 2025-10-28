@@ -2,6 +2,7 @@
 #include "Window.hpp"
 #include "Resources.hpp"
 #include "Context.hpp"
+#include "Swapchain.hpp"
 
 namespace vk_test {
     struct ApplicationCreateInfo {
@@ -52,7 +53,7 @@ namespace vk_test {
         uint32_t               m_MaxTexturePool{ 128 }; // Maximum number of textures in the descriptor pool
 
         // Frame resources and synchronization (Swapchain, Command buffers, Semaphores, Fences)
-        //nvvk::Swapchain m_Swapchain;
+        Swapchain m_Swapchain;
         struct FrameData {
             VkCommandPool   command_pool{};   // Command pool for recording commands for this frame
             VkCommandBuffer command_buffer{}; // Command buffer containing the frame's rendering commands
