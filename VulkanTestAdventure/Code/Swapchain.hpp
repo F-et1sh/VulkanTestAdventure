@@ -1,5 +1,6 @@
 #pragma once
 #include "Resources.hpp"
+#include "barriers.hpp"
 
 namespace vk_test {
     class Swapchain {
@@ -39,9 +40,9 @@ namespace vk_test {
         -*/
         void ReleaseResources();
 
-        void        requestRebuild() { m_NeedRebuild = true; }
-        bool        needRebuilding() const { return m_NeedRebuild; }
-        
+        void requestRebuild() { m_NeedRebuild = true; }
+        bool needRebuilding() const { return m_NeedRebuild; }
+
         VkImage     getImage() const { return m_Images[m_FrameImageIndex].image; }
         VkImageView getImageView() const { return m_Images[m_FrameImageIndex].image_view; }
         VkFormat    getImageFormat() const { return m_ImageFormat; }
@@ -66,7 +67,7 @@ namespace vk_test {
         };
 
         // We choose the format that is the most common, and that is supported by* the physical device.
-        static VkSurfaceFormat2KHR selectSwapSurfaceFormat(const std::vector<VkSurfaceFormat2KHR>& available_formats) ;
+        static VkSurfaceFormat2KHR selectSwapSurfaceFormat(const std::vector<VkSurfaceFormat2KHR>& available_formats);
 
         /*--
          * The present mode is chosen based on the vSync option
@@ -78,7 +79,7 @@ namespace vk_test {
                 when vSync is on.
          *   3. FIFO mode, since all swapchains must support it.
         -*/
-        VkPresentModeKHR selectSwapPresentMode(const std::vector<VkPresentModeKHR>& available_present_modes, bool v_sync = true) ;
+        VkPresentModeKHR selectSwapPresentMode(const std::vector<VkPresentModeKHR>& available_present_modes, bool v_sync = true);
 
     private:
         Swapchain(Swapchain&)                  = delete;  //
@@ -90,10 +91,10 @@ namespace vk_test {
         VkSwapchainKHR   m_Swapchain{};      // The swapchain
         VkFormat         m_ImageFormat{};    // The format of the swapchain images
         VkSurfaceKHR     m_Surface{};        // The surface to present images to
-        VkCommandPool    m_CommandPool{};     // The command pool for the swapchain
+        VkCommandPool    m_CommandPool{};    // The command pool for the swapchain
 
-        std::vector<Image>          m_Images;                   // The swapchain images and their views
-        std::vector<FrameResources> m_FrameResources;           // Synchronization primitives for each frame
+        std::vector<Image>          m_Images;                     // The swapchain images and their views
+        std::vector<FrameResources> m_FrameResources;             // Synchronization primitives for each frame
         uint32_t                    m_FrameResourceIndex = 0;     // Current frame index, cycles through frame resources
         uint32_t                    m_FrameImageIndex    = 0;     // Index of the swapchain image we're currently rendering to
         bool                        m_NeedRebuild        = false; // Flag indicating if the swapchain needs to be rebuilt

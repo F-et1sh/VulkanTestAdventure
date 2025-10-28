@@ -5,6 +5,8 @@
 #include "Swapchain.hpp"
 
 namespace vk_test {
+    constexpr inline static bool IS_VSYN_WANTED = true;
+
     struct ApplicationCreateInfo {
         // General
         std::string name{ "VulkanApp" }; // Application name
@@ -34,10 +36,21 @@ namespace vk_test {
     public:
         Application(const glm::vec2& window_resolution, const std::string& window_title, int window_monitor)
             : m_Window{ window_resolution, window_title, window_monitor } {}
-        ~Application();
+        ~Application() = default;
 
+        void Release();
         void Initialize(ApplicationCreateInfo& info);
         void Loop();
+
+        uint32_t getFrameCycleSize() const { return uint32_t(m_FrameData.size()); }
+
+    private:
+        void        testAndSetWindowSizeAndPos(const glm::uvec2& window_size);
+        void        createDescriptorPool();
+        void        createTransientCommandPool();
+        void        createFrameSubmission(uint32_t num_frames);
+        void        resetFreeQueue(uint32_t size);
+        static bool isWindowPosValid(const glm::ivec2& window_position);
 
     private:
         Window m_Window;
@@ -46,11 +59,11 @@ namespace vk_test {
         VkInstance             m_Instance{ VK_NULL_HANDLE };
         VkPhysicalDevice       m_PhysicalDevice{ VK_NULL_HANDLE };
         VkDevice               m_Device{ VK_NULL_HANDLE };
-        std::vector<QueueInfo> m_Queues{};              // All queues, first one should be a graphics queue
-        VkSurfaceKHR           m_Surface{};             // The window surface
-        VkCommandPool          m_TransientCmdPool{};    // The command pool
-        VkDescriptorPool       m_DescriptorPool{};      // Application descriptor pool
-        uint32_t               m_MaxTexturePool{ 128 }; // Maximum number of textures in the descriptor pool
+        std::vector<QueueInfo> m_Queues;                 // All queues, first one should be a graphics queue
+        VkSurfaceKHR           m_Surface{};              // The window surface
+        VkCommandPool          m_TransientCommandPool{}; // The command pool
+        VkDescriptorPool       m_DescriptorPool{};       // Application descriptor pool
+        uint32_t               m_MaxTexturePool{ 128 };  // Maximum number of textures in the descriptor pool
 
         // Frame resources and synchronization (Swapchain, Command buffers, Semaphores, Fences)
         Swapchain m_Swapchain;
@@ -59,7 +72,7 @@ namespace vk_test {
             VkCommandBuffer command_buffer{}; // Command buffer containing the frame's rendering commands
             uint64_t        frame_number{};   // Timeline value for synchronization (increases each frame)
         };
-        std::vector<FrameData> m_FrameData{};              // Collection of per-frame resources to support multiple frames in flight
+        std::vector<FrameData> m_FrameData;                // Collection of per-frame resources to support multiple frames in flight
         VkSemaphore            m_FrameTimelineSemaphore{}; // Timeline semaphore used to synchronize CPU submission with GPU completion
         uint32_t               m_FrameRingCurrent{ 0 };    // Current frame index in the ring buffer (cycles through available frames) : static for resource free queue
 
@@ -67,7 +80,13 @@ namespace vk_test {
         std::vector<VkSemaphoreSubmitInfo>     m_WaitSemaphores;   // Possible extra frame wait semaphores
         std::vector<VkSemaphoreSubmitInfo>     m_SignalSemaphores; // Possible extra frame signal semaphores
         std::vector<VkCommandBufferSubmitInfo> m_CommandBuffers;   // Possible extra frame command buffers
-        
-        std::vector<std::vector<std::function<void()>>> m_ResourceFreeQueue;  // Queue of functions to free resources
+
+        std::vector<std::vector<std::function<void()>>> m_ResourceFreeQueue; // Queue of functions to free resources
+
+        VkExtent2D m_ViewportExtent{ 0, 0 }; // Size of the viewport
+        VkExtent2D m_WindowExtent{ 0, 0 };   // Size of the window
+
+        glm::ivec2 m_WindowPosition{};
+        glm::uvec2 m_WindowSize{};
     };
 } // namespace vk_test

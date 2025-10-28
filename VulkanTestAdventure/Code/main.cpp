@@ -22,11 +22,51 @@ int main(int argc, char* argv[]) {
         return FAILED_EXIT;
     }
 
-    std::unique_ptr<vk_test::Application> app = std::make_unique<vk_test::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
+    std::unique_ptr<vk_test::Application> app     = std::make_unique<vk_test::Application>(WINDOW_RESOLUTION, WINDOW_TITLE.data(), WINDOW_MONITOR);
+    std::unique_ptr<vk_test::Context>     context = std::make_unique<vk_test::Context>();
 
     try {
-        app->Initialize();
+        vk_test::ApplicationCreateInfo application_create_info{};
+
+        // Setting up the Vulkan context, instance and device extensions
+        VkPhysicalDeviceShaderObjectFeaturesEXT          shader_object_features{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT };
+        VkPhysicalDeviceAccelerationStructureFeaturesKHR accel_feature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR };
+        VkPhysicalDeviceRayTracingPipelineFeaturesKHR    rt_pipeline_feature{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR };
+
+        vk_test::ContextInitInfo vk_setup{
+            .instance_extensions = { VK_EXT_DEBUG_UTILS_EXTENSION_NAME },
+            .device_extensions   = {
+                { VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME },
+                { VK_EXT_SHADER_OBJECT_EXTENSION_NAME, &shader_object_features },
+                { VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, &accel_feature },     // To build acceleration structures
+                { VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME, &rt_pipeline_feature }, // To use vkCmdTraceRaysKHR
+                { VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME },                   // Required by ray tracing pipeline
+            },
+        };
+
+        uint32_t     count{};
+        const char** ext = glfwGetRequiredInstanceExtensions(&count);
+        for (uint32_t i = 0; i < count; i++) {
+            vk_setup.instance_extensions.emplace_back(ext[i]);
+        }
+
+        if (!application_create_info.headless) {
+            vk_test::addSurfaceExtensions(vk_setup.instance_extensions, &vk_setup.device_extensions);
+        }
+
+        context->Initialize(vk_setup);
+
+        application_create_info.name            = "VulkanTest";
+        application_create_info.instance        = context->getInstance();
+        application_create_info.device          = context->getDevice();
+        application_create_info.physical_device = context->getPhysicalDevice();
+        application_create_info.queues          = context->getQueueInfos();
+
+        app->Initialize(application_create_info);
         app->Loop();
+        app->Release();
+
+        context->Release();
     }
     catch (const std::exception& e) {
         VK_TEST_SAY(e.what());

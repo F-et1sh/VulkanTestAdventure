@@ -228,7 +228,7 @@ VkResult vk_test::Context::createDevice() {
     volkLoadDevice(m_Device);
 
     for (auto& queue : m_QueueInfos) {
-        vkGetDeviceQueue(m_Device, queue.familyIndex, queue.queueIndex, &queue.queue);
+        vkGetDeviceQueue(m_Device, queue.family_index, queue.queue_index, &queue.queue);
     }
 
     return VK_SUCCESS;
@@ -250,7 +250,7 @@ bool vk_test::Context::findQueueFamilies() {
         for (uint32_t j = 0; j < queue_family_count; ++j) {
             // Check for an exact match and unused queue family
             // Avoid queue family with VK_QUEUE_GRAPHICS_BIT if not needed
-            if ((queue_families[j].queueFlags & m_DesiredQueues[i]) == m_DesiredQueues[i] && queue_family_usage[j] == 0 && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0u) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0u))) {
+            if ((queue_families[j].queueFlags & m_DesiredQueues[i]) == m_DesiredQueues[i] && queue_family_usage[j] == 0 && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0U) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0U))) {
                 m_QueueInfos.push_back({ j, queue_family_usage[j] });
                 queue_family_usage[j]++;
                 found = true;
@@ -262,7 +262,7 @@ bool vk_test::Context::findQueueFamilies() {
             for (uint32_t j = 0; j < queue_family_count; ++j) {
                 // Check for an exact match and allow reuse if queue count not exceeded
                 // Avoid queue family with VK_QUEUE_GRAPHICS_BIT if not needed
-                if ((queue_families[j].queueFlags & m_DesiredQueues[i]) == m_DesiredQueues[i] && queue_family_usage[j] < queue_families[j].queueCount && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0u) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0u))) {
+                if ((queue_families[j].queueFlags & m_DesiredQueues[i]) == m_DesiredQueues[i] && queue_family_usage[j] < queue_families[j].queueCount && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0U) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0U))) {
                     m_QueueInfos.push_back({ j, queue_family_usage[j] });
                     queue_family_usage[j]++;
                     found = true;
@@ -275,7 +275,7 @@ bool vk_test::Context::findQueueFamilies() {
             for (uint32_t j = 0; j < queue_family_count; ++j) {
                 // Check for a partial match and allow reuse if queue count not exceeded
                 // Avoid queue family with VK_QUEUE_GRAPHICS_BIT if not needed
-                if (((queue_families[j].queueFlags & m_DesiredQueues[i]) != 0u) && queue_family_usage[j] < queue_families[j].queueCount && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0u) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0u))) {
+                if (((queue_families[j].queueFlags & m_DesiredQueues[i]) != 0U) && queue_family_usage[j] < queue_families[j].queueCount && (((m_DesiredQueues[i] & VK_QUEUE_GRAPHICS_BIT) != 0U) || ((queue_families[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0U))) {
                     m_QueueInfos.push_back({ j, queue_family_usage[j] });
                     queue_family_usage[j]++;
                     found = true;
@@ -287,7 +287,7 @@ bool vk_test::Context::findQueueFamilies() {
         if (!found) {
             for (uint32_t j = 0; j < queue_family_count; ++j) {
                 // Check for a partial match and allow reuse if queue count not exceeded
-                if (((queue_families[j].queueFlags & m_DesiredQueues[i]) != 0u) && queue_family_usage[j] < queue_families[j].queueCount) {
+                if (((queue_families[j].queueFlags & m_DesiredQueues[i]) != 0U) && queue_family_usage[j] < queue_families[j].queueCount) {
                     m_QueueInfos.push_back({ j, queue_family_usage[j] });
                     queue_family_usage[j]++;
                     found = true;
@@ -336,7 +336,7 @@ bool vk_test::Context::filterAvailableExtensions(const std::vector<VkExtensionPr
         else {
             std::string version_info;
             if (desired_extension.spec_version != 0 || desired_extension.exact_spec_version) {
-                version_info = " (v." + std::to_string(spec_version) + " " + ((spec_version != 0u) ? "== " : ">= ") + std::to_string(desired_extension.spec_version) + ")";
+                version_info = " (v." + std::to_string(spec_version) + " " + ((spec_version != 0U) ? "== " : ">= ") + std::to_string(desired_extension.spec_version) + ")";
             }
             if (desired_extension.required) {
                 all_found = false;
@@ -355,4 +355,35 @@ VkResult vk_test::Context::getDeviceExtensions(VkPhysicalDevice physical_device,
     vkEnumerateDeviceExtensionProperties(physical_device, nullptr, &count, extension_properties.data());
     extension_properties.resize(std::min(extension_properties.size(), size_t(count)));
     return VK_SUCCESS;
+}
+
+void vk_test::addSurfaceExtensions(std::vector<const char*>& instance_extensions, std::vector<ExtensionInfo>* device_extensions) {
+    instance_extensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
+    instance_extensions.emplace_back(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
+
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+    instanceExtensions.emplace_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_XCB_KHR)
+    instanceExtensions.emplace_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_XLIB_KHR)
+    instanceExtensions.emplace_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_WAYLAND_KHR)
+    instanceExtensions.emplace_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_ANDROID_KHR)
+    instanceExtensions.emplace_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_IOS_MVK)
+    instanceExtensions.emplace_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
+#endif
+#if defined(VK_USE_PLATFORM_MACOS_MVK)
+    instanceExtensions.emplace_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
+#endif
+
+    if (device_extensions != nullptr) {
+        device_extensions->push_back({ VK_KHR_SWAPCHAIN_EXTENSION_NAME });
+    }
 }

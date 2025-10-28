@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Swapchain.hpp"
 
-#include "barriers.hpp"
-
 VkResult Swapchain::Initialize(const Swapchain::InitInfo& info) {
     m_PhysicalDevice = info.physical_device;
     m_Device         = info.device;
@@ -10,10 +8,12 @@ VkResult Swapchain::Initialize(const Swapchain::InitInfo& info) {
     m_Surface        = info.surface;
     m_CommandPool    = info.command_pool;
 
-    if (info.preferred_vsync_off_mode != VK_PRESENT_MODE_MAX_ENUM_KHR) { m_PreferredVsyncOffMode = info.preferred_vsync_off_mode;
-}
-    if (info.preferred_vsync_on_mode != VK_PRESENT_MODE_MAX_ENUM_KHR) { m_PreferredVsyncOnMode = info.preferred_vsync_on_mode;
-}
+    if (info.preferred_vsync_off_mode != VK_PRESENT_MODE_MAX_ENUM_KHR) {
+        m_PreferredVsyncOffMode = info.preferred_vsync_off_mode;
+    }
+    if (info.preferred_vsync_on_mode != VK_PRESENT_MODE_MAX_ENUM_KHR) {
+        m_PreferredVsyncOnMode = info.preferred_vsync_on_mode;
+    }
 
     VkBool32 supports_present = VK_FALSE;
     vkGetPhysicalDeviceSurfaceSupportKHR(info.physical_device, info.queue.family_index, info.surface, &supports_present);
@@ -146,14 +146,16 @@ void vk_test::Swapchain::ReleaseResources() {
         vkDestroySemaphore(m_Device, frame_res.render_finished_semaphore, nullptr);
     }
     m_FrameResources.clear();
-    for (auto& image : m_Images) { vkDestroyImageView(m_Device, image.image_view, nullptr);
-}
+    for (auto& image : m_Images) {
+        vkDestroyImageView(m_Device, image.image_view, nullptr);
+    }
     m_Images.clear();
 }
 
 void Swapchain::Release() {
-    if (m_Device != nullptr) { ReleaseResources();
-}
+    if (m_Device != nullptr) {
+        ReleaseResources();
+    }
     *this = {};
 }
 
@@ -190,15 +192,19 @@ VkPresentModeKHR vk_test::Swapchain::selectSwapPresentMode(const std::vector<VkP
     bool immediate_supported = false;
 
     for (VkPresentModeKHR mode : available_present_modes) {
-        if (v_sync && (mode == m_PreferredVsyncOnMode)) { return mode;
-}
-        if (!v_sync && (mode == m_PreferredVsyncOffMode)) { return mode;
-}
+        if (v_sync && (mode == m_PreferredVsyncOnMode)) {
+            return mode;
+        }
+        if (!v_sync && (mode == m_PreferredVsyncOffMode)) {
+            return mode;
+        }
 
-        if (mode == VK_PRESENT_MODE_MAILBOX_KHR) { mailbox_supported = true;
-}
-        if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR) { immediate_supported = true;
-}
+        if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            mailbox_supported = true;
+        }
+        if (mode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+            immediate_supported = true;
+        }
     }
 
     if (!v_sync && immediate_supported) {

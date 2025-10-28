@@ -47,6 +47,12 @@ namespace vk_test {
         void                   Release();
         [[nodiscard]] VkResult Initialize(const ContextInitInfo& context_init_info);
 
+        [[nodiscard]] VkInstance                    getInstance() const { return m_Instance; }
+        [[nodiscard]] VkDevice                      getDevice() const { return m_Device; }
+        [[nodiscard]] VkPhysicalDevice              getPhysicalDevice() const { return m_PhysicalDevice; }
+        [[nodiscard]] const QueueInfo&              getQueueInfo(uint32_t index) const { return m_QueueInfos[index]; }
+        [[nodiscard]] const std::vector<QueueInfo>& getQueueInfos() const { return m_QueueInfos; }
+
     private:
         // Those functions are used internally to create the Vulkan context, but could be used externally if needed.
         [[nodiscard]] VkResult createInstance();
@@ -84,5 +90,11 @@ namespace vk_test {
                                               const std::vector<ExtensionInfo>&         desired_extensions,
                                               std::vector<ExtensionInfo>&               filtered_extensions);
     };
+
+    //--------------------------------------------------------------------------
+    // This function adds the surface extensions needed for the platform.
+    // If `deviceExtensions` is provided, then it also adds the
+    // swapchain device extensions.
+    void addSurfaceExtensions(std::vector<const char*>& instance_extensions, std::vector<ExtensionInfo>* device_extensions = nullptr);
 
 } // namespace vk_test
