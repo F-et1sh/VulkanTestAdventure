@@ -7,6 +7,26 @@
 namespace vk_test {
     constexpr inline static bool IS_VSYN_WANTED = true;
 
+    // Forward declarations
+    class Application;
+
+    //-------------------------------------------------------------------------------------------------
+    // Interface for application elements
+    struct IAppElement {
+        // Interface
+        virtual void onAttach(Application* app) {}                            // Called once at start
+        virtual void onDetach() {}                                            // Called before destroying the application
+        virtual void onResize(VkCommandBuffer cmd, const VkExtent2D& size) {} // Called when the viewport size is changing
+        virtual void onUIRender() {}                                          // Called for anything related to UI
+        virtual void onUIMenu() {}                                            // This is the menubar to create
+        virtual void onPreRender() {}                                         // called post onUIRender and prior onRender (looped over all elements)
+        virtual void onRender(VkCommandBuffer cmd) {}                         // For anything to render within a frame
+        virtual void onFileDrop(const std::filesystem::path& filename) {}     // For when a file is dragged on top of the window
+        virtual void onLastHeadlessFrame() {};                                // Called at the end of the last frame in headless mode
+
+        virtual ~IAppElement() = default;
+    };
+
     struct ApplicationCreateInfo {
         // General
         std::string name{ "VulkanApp" }; // Application name

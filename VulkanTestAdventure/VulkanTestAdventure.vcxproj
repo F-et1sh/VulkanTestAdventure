@@ -270,6 +270,7 @@
     <None Include="Code\VKTest_SwapchainManager.h" />
     <None Include="Code\Renderer.hpp" />
     <ClInclude Include="Code\Resources.hpp" />
+    <ClInclude Include="Code\RtBase.hpp" />
     <ClInclude Include="Code\Swapchain.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
