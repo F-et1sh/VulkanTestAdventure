@@ -5,6 +5,45 @@ namespace vk_test {
     VK_DEFINE_HANDLE(VmaAllocation)
 
     //-----------------------------------------------------------------
+    // A buffer is a region of memory used to store data.
+    // It is used to store vertex data, index data, uniform data, and other types of data.
+    // There is a VkBuffer object that represents the buffer, and a VmaAllocation object that represents the memory allocation.
+    // The address is used to access the buffer in the shader.
+    //
+    struct Buffer {
+        VkBuffer        buffer{}; // Vulkan Buffer
+        VkDeviceSize    bufferSize{};
+        VkDeviceAddress address{}; // Address of the buffer in the shader
+        uint8_t*        mapping{};
+        VmaAllocation   allocation{}; // Memory associated with the buffer
+    };
+
+    //-----------------------------------------------------------------
+    // An acceleration structure is a region of memory used to store acceleration structure data.
+    // It is used to store acceleration structure data for ray tracing.
+    //-----------------------------------------------------------------
+    struct AccelerationStructure {
+        VkAccelerationStructureKHR accel{};
+        VkDeviceAddress            address{};
+        Buffer                     buffer; // Underlying buffer
+    };
+
+    // allows >= 4GB sizes
+    struct LargeAccelerationStructure {
+        VkAccelerationStructureKHR accel{};
+        VkDeviceAddress            address{};
+        LargeBuffer                buffer; // Underlying buffer
+    };
+
+    // Allows to represent >= 4 GB buffers using sparse bindings
+    struct LargeBuffer {
+        VkBuffer                   buffer{};
+        VkDeviceSize               bufferSize{};
+        VkDeviceAddress            address{};
+        std::vector<VmaAllocation> allocations;
+    };
+
+    //-----------------------------------------------------------------
     // An image is a region of memory used to store image data.
     // It is used to store texture data, framebuffer data, and other types of data.
     //-----------------------------------------------------------------

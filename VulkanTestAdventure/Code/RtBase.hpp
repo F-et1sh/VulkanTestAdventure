@@ -1,5 +1,6 @@
 #pragma once
 #include "Application.hpp"
+#include "ResourceAllocator.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------

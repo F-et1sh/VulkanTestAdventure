@@ -139,6 +139,9 @@
     <Filter Include="Code\Main\RtBase">
       <UniqueIdentifier>{e5387d76-da04-464c-8c64-6cd4a41cd2e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\ResourceAllocator">
+      <UniqueIdentifier>{5beb4d9b-154f-4173-ac89-f0501dd8c2d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="Code\barriers.cpp">
       <Filter>Code\Main\Utilities\Barriers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ResourceAllocator.cpp">
+      <Filter>Code\Main\ResourceAllocator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +237,9 @@
     </ClInclude>
     <ClInclude Include="Code\RtBase.hpp">
       <Filter>Code\Main\RtBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ResourceAllocator.hpp">
+      <Filter>Code\Main\ResourceAllocator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
