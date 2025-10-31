@@ -31,14 +31,14 @@ vk_test::ResourceAllocator::operator VmaAllocator() const {
     return m_allocator;
 }
 
-VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocatorInfo) {
+VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocator_info) {
     assert(m_allocator == nullptr);
 
     // #TODO : VK_EXT_memory_priority ? VMA_ALLOCATOR_CREATE_EXT_MEMORY_PRIORITY_BIT
 
-    allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT; // allow querying for the GPU address of a buffer
-    allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE4_BIT;
-    allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE5_BIT; // allow using VkBufferUsageFlags2CreateInfoKHR
+    allocator_info.flags |= VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT; // allow querying for the GPU address of a buffer
+    allocator_info.flags |= VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE4_BIT;
+    allocator_info.flags |= VMA_ALLOCATOR_CREATE_KHR_MAINTENANCE5_BIT; // allow using VkBufferUsageFlags2CreateInfoKHR
 
     VkPhysicalDeviceVulkan11Properties props11{
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES,
@@ -48,26 +48,27 @@ VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocatorInfo) 
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
         .pNext = &props11,
     };
-    vkGetPhysicalDeviceProperties2(allocatorInfo.physicalDevice, &props);
+    vkGetPhysicalDeviceProperties2(allocator_info.physicalDevice, &props);
     m_maxMemoryAllocationSize = props11.maxMemoryAllocationSize;
 
     VK_TEST_SAY("Max size : " << m_maxMemoryAllocationSize);
 
-    m_device         = allocatorInfo.device;
-    m_physicalDevice = allocatorInfo.physicalDevice;
+    m_device         = allocator_info.device;
+    m_physicalDevice = allocator_info.physicalDevice;
 
     // Because we use VMA_DYNAMIC_VULKAN_FUNCTIONS
     const VmaVulkanFunctions functions = {
         .vkGetInstanceProcAddr = vkGetInstanceProcAddr,
         .vkGetDeviceProcAddr   = vkGetDeviceProcAddr,
     };
-    allocatorInfo.pVulkanFunctions = &functions;
-    return vmaCreateAllocator(&allocatorInfo, &m_allocator);
+    allocator_info.pVulkanFunctions = &functions;
+    return vmaCreateAllocator(&allocator_info, &m_allocator);
 }
 
 void vk_test::ResourceAllocator::deinit() {
-    if (!m_allocator)
+    if (m_allocator == nullptr) {
         return;
+    }
 
     vmaDestroyAllocator(m_allocator);
     m_allocator      = nullptr;
@@ -95,40 +96,40 @@ void vk_test::ResourceAllocator::addLeakDetection(VmaAllocation allocation) cons
 VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&          buffer,
                                                   VkDeviceSize              size,
                                                   VkBufferUsageFlags2KHR    usage,
-                                                  VmaMemoryUsage            memoryUsage,
+                                                  VmaMemoryUsage            memory_usage,
                                                   VmaAllocationCreateFlags  flags,
-                                                  VkDeviceSize              minAlignment,
-                                                  std::span<const uint32_t> queueFamilies) const {
-    const VkBufferUsageFlags2CreateInfo bufferUsageFlags2CreateInfo{
+                                                  VkDeviceSize              min_alignment,
+                                                  std::span<const uint32_t> queue_families) const {
+    const VkBufferUsageFlags2CreateInfo buffer_usage_flags2_create_info{
         .sType = VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO,
         .usage = usage | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_2_TRANSFER_DST_BIT,
     };
 
-    const VkBufferCreateInfo bufferInfo{
+    const VkBufferCreateInfo buffer_info{
         .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        .pNext                 = &bufferUsageFlags2CreateInfo,
+        .pNext                 = &buffer_usage_flags2_create_info,
         .size                  = size,
         .usage                 = 0,
-        .sharingMode           = queueFamilies.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
-        .queueFamilyIndexCount = static_cast<uint32_t>(queueFamilies.size()),
-        .pQueueFamilyIndices   = queueFamilies.data(),
+        .sharingMode           = queue_families.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
+        .queueFamilyIndexCount = static_cast<uint32_t>(queue_families.size()),
+        .pQueueFamilyIndices   = queue_families.data(),
     };
 
-    VmaAllocationCreateInfo allocInfo = { .flags = flags, .usage = memoryUsage };
+    VmaAllocationCreateInfo alloc_info = { .flags = flags, .usage = memory_usage };
 
-    return createBuffer(buffer, bufferInfo, allocInfo, minAlignment);
+    return createBuffer(buffer, buffer_info, alloc_info, min_alignment);
 }
 
-VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&               resultBuffer,
-                                                  const VkBufferCreateInfo&      bufferInfo,
-                                                  const VmaAllocationCreateInfo& allocInfo,
-                                                  VkDeviceSize                   minAlignment) const {
-    resultBuffer = {};
+VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&               result_buffer,
+                                                  const VkBufferCreateInfo&      buffer_info,
+                                                  const VmaAllocationCreateInfo& alloc_info,
+                                                  VkDeviceSize                   min_alignment) const {
+    result_buffer = {};
 
     // Create the buffer
-    VmaAllocationInfo allocInfoOut{};
+    VmaAllocationInfo alloc_info_out{};
 
-    VkResult result = vmaCreateBufferWithAlignment(m_allocator, &bufferInfo, &allocInfo, minAlignment, &resultBuffer.buffer, &resultBuffer.allocation, &allocInfoOut);
+    VkResult result = vmaCreateBufferWithAlignment(m_allocator, &buffer_info, &alloc_info, min_alignment, &result_buffer.buffer, &result_buffer.allocation, &alloc_info_out);
 
     if (result != VK_SUCCESS) {
         // Handle allocation failure
@@ -136,14 +137,14 @@ VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&              
         return result;
     }
 
-    resultBuffer.bufferSize = bufferInfo.size;
-    resultBuffer.mapping    = static_cast<uint8_t*>(allocInfoOut.pMappedData);
+    result_buffer.bufferSize = buffer_info.size;
+    result_buffer.mapping    = static_cast<uint8_t*>(alloc_info_out.pMappedData);
 
     // Get the GPU address of the buffer
-    const VkBufferDeviceAddressInfo info = { .sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, .buffer = resultBuffer.buffer };
-    resultBuffer.address                 = vkGetBufferDeviceAddress(m_device, &info);
+    const VkBufferDeviceAddressInfo info = { .sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, .buffer = result_buffer.buffer };
+    result_buffer.address                = vkGetBufferDeviceAddress(m_device, &info);
 
-    addLeakDetection(resultBuffer.allocation);
+    addLeakDetection(result_buffer.allocation);
 
     return result;
 }
@@ -177,146 +178,145 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
 
         return VK_SUCCESS;
     }
-    else {
-        VkBufferCreateInfo createInfo = bufferInfo;
 
-        createInfo.flags |= VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
+    VkBufferCreateInfo createInfo = bufferInfo;
 
-        vkCreateBuffer(m_device, &createInfo, nullptr, &largeBuffer.buffer);
+    createInfo.flags |= VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
 
-        // Find memory requirements
-        VkMemoryRequirements2           memReqs{ VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2 };
-        VkMemoryDedicatedRequirements   dedicatedRegs{ VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS };
-        VkBufferMemoryRequirementsInfo2 bufferReqs{ VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2 };
+    vkCreateBuffer(m_device, &createInfo, nullptr, &largeBuffer.buffer);
 
-        memReqs.pNext     = &dedicatedRegs;
-        bufferReqs.buffer = largeBuffer.buffer;
+    // Find memory requirements
+    VkMemoryRequirements2           memReqs{ VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2 };
+    VkMemoryDedicatedRequirements   dedicatedRegs{ VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS };
+    VkBufferMemoryRequirementsInfo2 bufferReqs{ VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2 };
 
-        vkGetBufferMemoryRequirements2(m_device, &bufferReqs, &memReqs);
-        memReqs.memoryRequirements.alignment = std::max(minAlignment, memReqs.memoryRequirements.alignment);
+    memReqs.pNext     = &dedicatedRegs;
+    bufferReqs.buffer = largeBuffer.buffer;
 
-        // align maxChunkSize to required alignment
-        size_t pageAlignment = memReqs.memoryRequirements.alignment;
-        maxChunkSize         = (maxChunkSize + pageAlignment - 1) & ~(pageAlignment - 1);
+    vkGetBufferMemoryRequirements2(m_device, &bufferReqs, &memReqs);
+    memReqs.memoryRequirements.alignment = std::max(minAlignment, memReqs.memoryRequirements.alignment);
 
-        // get chunk count
-        size_t fullChunkCount  = bufferInfo.size / maxChunkSize;
-        size_t totalChunkCount = (bufferInfo.size + maxChunkSize - 1) / maxChunkSize;
+    // align maxChunkSize to required alignment
+    size_t pageAlignment = memReqs.memoryRequirements.alignment;
+    maxChunkSize         = (maxChunkSize + pageAlignment - 1) & ~(pageAlignment - 1);
 
-        largeBuffer.allocations.resize(totalChunkCount);
-        std::vector<VmaAllocationInfo> allocationInfos(totalChunkCount);
+    // get chunk count
+    size_t fullChunkCount  = bufferInfo.size / maxChunkSize;
+    size_t totalChunkCount = (bufferInfo.size + maxChunkSize - 1) / maxChunkSize;
 
-        // full chunks first
-        memReqs.memoryRequirements.size = maxChunkSize;
-        VkResult result                 = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, fullChunkCount, largeBuffer.allocations.data(), allocationInfos.data());
-        if (result != VK_SUCCESS) {
-            vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-            largeBuffer = {};
-            return result;
-        }
+    largeBuffer.allocations.resize(totalChunkCount);
+    std::vector<VmaAllocationInfo> allocationInfos(totalChunkCount);
 
-        // tail chunk last
-        if (fullChunkCount != totalChunkCount) {
-            memReqs.memoryRequirements.size = createInfo.size - fullChunkCount * maxChunkSize;
-            memReqs.memoryRequirements.size = (memReqs.memoryRequirements.size + pageAlignment - 1) & ~(pageAlignment - 1);
-
-            result = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, 1, largeBuffer.allocations.data() + fullChunkCount, allocationInfos.data() + fullChunkCount);
-            if (result != VK_SUCCESS) {
-                vmaFreeMemoryPages(m_allocator, fullChunkCount, largeBuffer.allocations.data());
-                vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-                largeBuffer = {};
-                return result;
-            }
-        }
-
-        std::vector<VkSparseMemoryBind> sparseBinds(totalChunkCount);
-
-        for (uint32_t i = 0; i < totalChunkCount; i++) {
-            VkSparseMemoryBind& sparseBind = sparseBinds[i];
-            sparseBind.flags               = 0;
-            sparseBind.memory              = allocationInfos[i].deviceMemory;
-            sparseBind.memoryOffset        = allocationInfos[i].offset;
-            sparseBind.resourceOffset      = i * maxChunkSize;
-            sparseBind.size                = std::min(maxChunkSize, createInfo.size - i * maxChunkSize);
-            sparseBind.size                = (sparseBind.size + pageAlignment - 1) & ~(pageAlignment - 1);
-
-            addLeakDetection(largeBuffer.allocations[i]);
-        }
-
-        VkSparseBufferMemoryBindInfo sparseBufferMemoryBindInfo{};
-        sparseBufferMemoryBindInfo.buffer    = largeBuffer.buffer;
-        sparseBufferMemoryBindInfo.bindCount = uint32_t(sparseBinds.size());
-        sparseBufferMemoryBindInfo.pBinds    = sparseBinds.data();
-
-        VkBindSparseInfo bindSparseInfo{ VK_STRUCTURE_TYPE_BIND_SPARSE_INFO };
-        bindSparseInfo.bufferBindCount = 1;
-        bindSparseInfo.pBufferBinds    = &sparseBufferMemoryBindInfo;
-
-        result = vkQueueBindSparse(sparseBindingQueue, 1, &bindSparseInfo, sparseBindingFence);
-        if (result != VK_SUCCESS) {
-            vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-            vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
-            largeBuffer = {};
-            return result;
-        }
-
-        if (!sparseBindingFence) {
-            result = vkQueueWaitIdle(sparseBindingQueue);
-            if (result != VK_SUCCESS) {
-                if (result != VK_ERROR_DEVICE_LOST) {
-                    vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-                    vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
-                    largeBuffer = {};
-                }
-                return result;
-            }
-        }
-
-        // Get the GPU address of the buffer
-        const VkBufferDeviceAddressInfo info = {
-            .sType  = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO,
-            .buffer = largeBuffer.buffer,
-        };
-        largeBuffer.address    = vkGetBufferDeviceAddress(m_device, &info);
-        largeBuffer.bufferSize = createInfo.size;
-
-        return VK_SUCCESS;
+    // full chunks first
+    memReqs.memoryRequirements.size = maxChunkSize;
+    VkResult result                 = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, fullChunkCount, largeBuffer.allocations.data(), allocationInfos.data());
+    if (result != VK_SUCCESS) {
+        vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
+        largeBuffer = {};
+        return result;
     }
+
+    // tail chunk last
+    if (fullChunkCount != totalChunkCount) {
+        memReqs.memoryRequirements.size = createInfo.size - fullChunkCount * maxChunkSize;
+        memReqs.memoryRequirements.size = (memReqs.memoryRequirements.size + pageAlignment - 1) & ~(pageAlignment - 1);
+
+        result = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, 1, largeBuffer.allocations.data() + fullChunkCount, allocationInfos.data() + fullChunkCount);
+        if (result != VK_SUCCESS) {
+            vmaFreeMemoryPages(m_allocator, fullChunkCount, largeBuffer.allocations.data());
+            vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
+            largeBuffer = {};
+            return result;
+        }
+    }
+
+    std::vector<VkSparseMemoryBind> sparseBinds(totalChunkCount);
+
+    for (uint32_t i = 0; i < totalChunkCount; i++) {
+        VkSparseMemoryBind& sparseBind = sparseBinds[i];
+        sparseBind.flags               = 0;
+        sparseBind.memory              = allocationInfos[i].deviceMemory;
+        sparseBind.memoryOffset        = allocationInfos[i].offset;
+        sparseBind.resourceOffset      = i * maxChunkSize;
+        sparseBind.size                = std::min(maxChunkSize, createInfo.size - i * maxChunkSize);
+        sparseBind.size                = (sparseBind.size + pageAlignment - 1) & ~(pageAlignment - 1);
+
+        addLeakDetection(largeBuffer.allocations[i]);
+    }
+
+    VkSparseBufferMemoryBindInfo sparseBufferMemoryBindInfo{};
+    sparseBufferMemoryBindInfo.buffer    = largeBuffer.buffer;
+    sparseBufferMemoryBindInfo.bindCount = uint32_t(sparseBinds.size());
+    sparseBufferMemoryBindInfo.pBinds    = sparseBinds.data();
+
+    VkBindSparseInfo bindSparseInfo{ VK_STRUCTURE_TYPE_BIND_SPARSE_INFO };
+    bindSparseInfo.bufferBindCount = 1;
+    bindSparseInfo.pBufferBinds    = &sparseBufferMemoryBindInfo;
+
+    result = vkQueueBindSparse(sparseBindingQueue, 1, &bindSparseInfo, sparseBindingFence);
+    if (result != VK_SUCCESS) {
+        vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
+        vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
+        largeBuffer = {};
+        return result;
+    }
+
+    if (!sparseBindingFence) {
+        result = vkQueueWaitIdle(sparseBindingQueue);
+        if (result != VK_SUCCESS) {
+            if (result != VK_ERROR_DEVICE_LOST) {
+                vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
+                vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
+                largeBuffer = {};
+            }
+            return result;
+        }
+    }
+
+    // Get the GPU address of the buffer
+    const VkBufferDeviceAddressInfo info = {
+        .sType  = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO,
+        .buffer = largeBuffer.buffer,
+    };
+    largeBuffer.address    = vkGetBufferDeviceAddress(m_device, &info);
+    largeBuffer.bufferSize = createInfo.size;
+
+    return VK_SUCCESS;
 }
 
-VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&              largeBuffer,
+VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&              large_buffer,
                                                        VkDeviceSize              size,
                                                        VkBufferUsageFlags2KHR    usage,
-                                                       VkQueue                   sparseBindingQueue,
-                                                       VkFence                   sparseBindingFence /*= VK_NULL_HANDLE*/,
-                                                       VkDeviceSize              maxChunkSize /*= DEFAULT_LARGE_CHUNK_SIZE*/,
-                                                       VmaMemoryUsage            memoryUsage /*= VMA_MEMORY_USAGE_AUTO*/,
+                                                       VkQueue                   sparse_binding_queue,
+                                                       VkFence                   sparse_binding_fence /*= VK_NULL_HANDLE*/,
+                                                       VkDeviceSize              max_chunk_size /*= DEFAULT_LARGE_CHUNK_SIZE*/,
+                                                       VmaMemoryUsage            memory_usage /*= VMA_MEMORY_USAGE_AUTO*/,
                                                        VmaAllocationCreateFlags  flags /*= {}*/,
-                                                       VkDeviceSize              minAlignment /*= 0*/,
-                                                       std::span<const uint32_t> queueFamilies /*= {}*/) const {
-    const VkBufferUsageFlags2CreateInfo bufferUsageFlags2CreateInfo{
+                                                       VkDeviceSize              min_alignment /*= 0*/,
+                                                       std::span<const uint32_t> queue_families /*= {}*/) const {
+    const VkBufferUsageFlags2CreateInfo buffer_usage_flags2_create_info{
         .sType = VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO,
         .usage = usage | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_2_TRANSFER_DST_BIT,
     };
 
-    const VkBufferCreateInfo bufferInfo{
+    const VkBufferCreateInfo buffer_info{
         .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        .pNext                 = &bufferUsageFlags2CreateInfo,
+        .pNext                 = &buffer_usage_flags2_create_info,
         .size                  = size,
         .usage                 = 0,
-        .sharingMode           = queueFamilies.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
-        .queueFamilyIndexCount = static_cast<uint32_t>(queueFamilies.size()),
-        .pQueueFamilyIndices   = queueFamilies.data(),
+        .sharingMode           = queue_families.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
+        .queueFamilyIndexCount = static_cast<uint32_t>(queue_families.size()),
+        .pQueueFamilyIndices   = queue_families.data(),
     };
 
-    VmaAllocationCreateInfo allocInfo       = { .flags = flags, .usage = memoryUsage };
-    uint32_t                memoryTypeIndex = 0;
-    vmaFindMemoryTypeIndexForBufferInfo(m_allocator, &bufferInfo, &allocInfo, &memoryTypeIndex);
+    VmaAllocationCreateInfo alloc_info        = { .flags = flags, .usage = memory_usage };
+    uint32_t                memory_type_index = 0;
+    vmaFindMemoryTypeIndexForBufferInfo(m_allocator, &buffer_info, &alloc_info, &memory_type_index);
 
-    allocInfo.usage          = VMA_MEMORY_USAGE_UNKNOWN;
-    allocInfo.memoryTypeBits = 1 << memoryTypeIndex;
+    alloc_info.usage          = VMA_MEMORY_USAGE_UNKNOWN;
+    alloc_info.memoryTypeBits = 1 << memory_type_index;
 
-    return createLargeBuffer(largeBuffer, bufferInfo, allocInfo, sparseBindingQueue, sparseBindingFence, maxChunkSize, minAlignment);
+    return createLargeBuffer(large_buffer, buffer_info, alloc_info, sparse_binding_queue, sparse_binding_fence, max_chunk_size, min_alignment);
 }
 
 void vk_test::ResourceAllocator::destroyLargeBuffer(LargeBuffer& buffer) const {
@@ -325,21 +325,21 @@ void vk_test::ResourceAllocator::destroyLargeBuffer(LargeBuffer& buffer) const {
     buffer = {};
 }
 
-VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const VkImageCreateInfo& imageInfo, const VmaAllocationCreateInfo& allocInfo) const {
+VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const VkImageCreateInfo& image_info, const VmaAllocationCreateInfo& vma_info) const {
     image = {};
 
-    VmaAllocationInfo allocInfoOut{};
-    VkResult          result = vmaCreateImage(m_allocator, &imageInfo, &allocInfo, &image.image, &image.allocation, &allocInfoOut);
+    VmaAllocationInfo alloc_info_out{};
+    VkResult          result = vmaCreateImage(m_allocator, &image_info, &vma_info, &image.image, &image.allocation, &alloc_info_out);
 
     if (result != VK_SUCCESS) {
         // Handle allocation failure
         VK_TEST_SAY("Failed to create image\n");
     }
 
-    image.extent                 = imageInfo.extent;
-    image.mipLevels              = imageInfo.mipLevels;
-    image.arrayLayers            = imageInfo.arrayLayers;
-    image.format                 = imageInfo.format;
+    image.extent                 = image_info.extent;
+    image.mipLevels              = image_info.mipLevels;
+    image.arrayLayers            = image_info.arrayLayers;
+    image.format                 = image_info.format;
     image.descriptor.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
     addLeakDetection(image.allocation);
@@ -347,36 +347,36 @@ VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const Vk
     return result;
 }
 
-VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const VkImageCreateInfo& imageInfo) const {
-    const VmaAllocationCreateInfo allocInfo{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
+VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const VkImageCreateInfo& image_info) const {
+    const VmaAllocationCreateInfo alloc_info{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
 
-    return createImage(image, imageInfo, allocInfo);
+    return createImage(image, image_info, alloc_info);
 }
 
-VkResult vk_test::ResourceAllocator::createImage(Image& image, const VkImageCreateInfo& imageInfo, const VkImageViewCreateInfo& imageViewInfo) const {
-    const VmaAllocationCreateInfo allocInfo{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
+VkResult vk_test::ResourceAllocator::createImage(Image& image, const VkImageCreateInfo& image_info, const VkImageViewCreateInfo& image_view_info) const {
+    const VmaAllocationCreateInfo alloc_info{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
 
-    return createImage(image, imageInfo, imageViewInfo, allocInfo);
+    return createImage(image, image_info, image_view_info, alloc_info);
 }
 
 VkResult vk_test::ResourceAllocator::createImage(Image&                         image,
-                                                 const VkImageCreateInfo&       _imageInfo,
-                                                 const VkImageViewCreateInfo&   _imageViewInfo,
-                                                 const VmaAllocationCreateInfo& vmaInfo) const {
+                                                 const VkImageCreateInfo&       image_info,
+                                                 const VkImageViewCreateInfo&   image_view_info,
+                                                 const VmaAllocationCreateInfo& vma_info) const {
     VkResult result{};
     // Create image in GPU memory
-    VkImageCreateInfo imageInfo = _imageInfo;
-    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT; // We will copy data to this image
-    result = createImage(image, imageInfo, vmaInfo);
+    VkImageCreateInfo copy_image_info = image_info;
+    copy_image_info.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT; // We will copy data to this image
+    result = createImage(image, copy_image_info, vma_info);
     if (result != VK_SUCCESS) {
         return result;
     }
 
     // Create image view
-    VkImageViewCreateInfo viewInfo = _imageViewInfo;
-    viewInfo.image                 = image.image;
-    viewInfo.format                = _imageInfo.format;
-    vkCreateImageView(m_device, &viewInfo, nullptr, &image.descriptor.imageView);
+    VkImageViewCreateInfo view_info = image_view_info;
+    view_info.image                 = image.image;
+    view_info.format                = image_info.format;
+    vkCreateImageView(m_device, &view_info, nullptr, &image.descriptor.imageView);
 
     return VK_SUCCESS;
 }
@@ -387,59 +387,59 @@ void vk_test::ResourceAllocator::destroyImage(Image& image) const {
     image = {};
 }
 
-VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStructure&             resultAccel,
-                                                        const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                                        const VmaAllocationCreateInfo&              vmaInfo,
-                                                        std::span<const uint32_t>                   queueFamilies) const {
-    resultAccel                                      = {};
-    VkAccelerationStructureCreateInfoKHR accelStruct = accInfo;
+VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStructure&             result_accel,
+                                                        const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                                        const VmaAllocationCreateInfo&              vma_info,
+                                                        std::span<const uint32_t>                   queue_families) const {
+    result_accel                                      = {};
+    VkAccelerationStructureCreateInfoKHR accel_struct = acc_info;
 
-    const VkBufferUsageFlags2CreateInfo bufferUsageFlags2CreateInfo{
+    const VkBufferUsageFlags2CreateInfo buffer_usage_flags2_create_info{
         .sType = VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO,
         .usage = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT,
     };
 
-    const VkBufferCreateInfo bufferInfo{
+    const VkBufferCreateInfo buffer_info{
         .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        .pNext                 = &bufferUsageFlags2CreateInfo,
-        .size                  = accelStruct.size,
+        .pNext                 = &buffer_usage_flags2_create_info,
+        .size                  = accel_struct.size,
         .usage                 = 0,
-        .sharingMode           = queueFamilies.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
-        .queueFamilyIndexCount = static_cast<uint32_t>(queueFamilies.size()),
-        .pQueueFamilyIndices   = queueFamilies.data(),
+        .sharingMode           = queue_families.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
+        .queueFamilyIndexCount = static_cast<uint32_t>(queue_families.size()),
+        .pQueueFamilyIndices   = queue_families.data(),
     };
 
     // Step 1: Create the buffer to hold the acceleration structure
-    VkResult result = createBuffer(resultAccel.buffer, bufferInfo, vmaInfo);
+    VkResult result = createBuffer(result_accel.buffer, buffer_info, vma_info);
 
     if (result != VK_SUCCESS) {
         return result;
     }
 
     // Step 2: Create the acceleration structure with the buffer
-    accelStruct.buffer = resultAccel.buffer.buffer;
-    result             = vkCreateAccelerationStructureKHR(m_device, &accelStruct, nullptr, &resultAccel.accel);
+    accel_struct.buffer = result_accel.buffer.buffer;
+    result              = vkCreateAccelerationStructureKHR(m_device, &accel_struct, nullptr, &result_accel.accel);
 
     if (result != VK_SUCCESS) {
-        destroyBuffer(resultAccel.buffer);
+        destroyBuffer(result_accel.buffer);
         VK_TEST_SAY("Failed to create acceleration structure");
         return result;
     }
 
     {
         VkAccelerationStructureDeviceAddressInfoKHR info{ .sType                 = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
-                                                          .accelerationStructure = resultAccel.accel };
-        resultAccel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
+                                                          .accelerationStructure = result_accel.accel };
+        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
     }
 
     return result;
 }
 
 VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStructure&             accel,
-                                                        const VkAccelerationStructureCreateInfoKHR& inAccInfo) const {
-    const VmaAllocationCreateInfo allocInfo{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
+                                                        const VkAccelerationStructureCreateInfoKHR& acc_info) const {
+    const VmaAllocationCreateInfo alloc_info{ .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
 
-    return createAcceleration(accel, inAccInfo, allocInfo);
+    return createAcceleration(accel, acc_info, alloc_info);
 }
 
 void vk_test::ResourceAllocator::destroyAcceleration(vk_test::AccelerationStructure& accel) const {
@@ -448,66 +448,66 @@ void vk_test::ResourceAllocator::destroyAcceleration(vk_test::AccelerationStruct
     accel = {};
 }
 
-VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationStructure&                 resultAccel,
-                                                             const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                                             const VmaAllocationCreateInfo&              vmaInfo,
-                                                             VkQueue                                     sparseBindingQueue,
-                                                             VkFence                                     sparseBindingFence,
-                                                             VkDeviceSize                                maxChunkSize,
-                                                             std::span<const uint32_t>                   queueFamilies) const {
-    resultAccel                                      = {};
-    VkAccelerationStructureCreateInfoKHR accelStruct = accInfo;
+VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationStructure&                 result_accel,
+                                                             const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                                             const VmaAllocationCreateInfo&              vma_info,
+                                                             VkQueue                                     sparse_binding_queue,
+                                                             VkFence                                     sparse_binding_fence,
+                                                             VkDeviceSize                                max_chunk_size,
+                                                             std::span<const uint32_t>                   queue_families) const {
+    result_accel                                      = {};
+    VkAccelerationStructureCreateInfoKHR accel_struct = acc_info;
 
-    const VkBufferUsageFlags2CreateInfo bufferUsageFlags2CreateInfo{
+    const VkBufferUsageFlags2CreateInfo buffer_usage_flags2_create_info{
         .sType = VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO,
         .usage = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT_KHR,
     };
 
-    const VkBufferCreateInfo bufferInfo{
+    const VkBufferCreateInfo buffer_info{
         .sType                 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-        .pNext                 = &bufferUsageFlags2CreateInfo,
+        .pNext                 = &buffer_usage_flags2_create_info,
         .flags                 = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
-        .size                  = accelStruct.size,
+        .size                  = accel_struct.size,
         .usage                 = 0,
-        .sharingMode           = queueFamilies.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
-        .queueFamilyIndexCount = static_cast<uint32_t>(queueFamilies.size()),
-        .pQueueFamilyIndices   = queueFamilies.data(),
+        .sharingMode           = queue_families.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
+        .queueFamilyIndexCount = static_cast<uint32_t>(queue_families.size()),
+        .pQueueFamilyIndices   = queue_families.data(),
     };
 
     // Step 1: Create the buffer to hold the acceleration structure
-    VkResult result = createLargeBuffer(resultAccel.buffer, bufferInfo, vmaInfo, sparseBindingQueue, sparseBindingFence, maxChunkSize);
+    VkResult result = createLargeBuffer(result_accel.buffer, buffer_info, vma_info, sparse_binding_queue, sparse_binding_fence, max_chunk_size);
 
     if (result != VK_SUCCESS) {
         return result;
     }
 
     // Step 2: Create the acceleration structure with the buffer
-    accelStruct.buffer = resultAccel.buffer.buffer;
-    result             = vkCreateAccelerationStructureKHR(m_device, &accelStruct, nullptr, &resultAccel.accel);
+    accel_struct.buffer = result_accel.buffer.buffer;
+    result              = vkCreateAccelerationStructureKHR(m_device, &accel_struct, nullptr, &result_accel.accel);
 
     if (result != VK_SUCCESS) {
-        destroyLargeBuffer(resultAccel.buffer);
+        destroyLargeBuffer(result_accel.buffer);
         VK_TEST_SAY("Failed to create acceleration structure");
         return result;
     }
 
     {
         VkAccelerationStructureDeviceAddressInfoKHR info{ .sType                 = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
-                                                          .accelerationStructure = resultAccel.accel };
-        resultAccel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
+                                                          .accelerationStructure = result_accel.accel };
+        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
     }
 
     return result;
 }
 
 VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationStructure&                 accel,
-                                                             const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                                             VkQueue                                     sparseBindingQueue,
-                                                             VkFence                                     sparseBindingFence,
-                                                             VkDeviceSize                                maxChunkSize) const {
-    VmaAllocationCreateInfo allocInfo = { .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
+                                                             const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                                             VkQueue                                     sparse_binding_queue,
+                                                             VkFence                                     sparse_binding_fence,
+                                                             VkDeviceSize                                max_chunk_size) const {
+    VmaAllocationCreateInfo alloc_info = { .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE };
 
-    return createLargeAcceleration(accel, accInfo, allocInfo, sparseBindingQueue, sparseBindingFence, maxChunkSize);
+    return createLargeAcceleration(accel, acc_info, alloc_info, sparse_binding_queue, sparse_binding_fence, max_chunk_size);
 }
 
 void vk_test::ResourceAllocator::destroyLargeAcceleration(LargeAccelerationStructure& accel) const {
@@ -522,9 +522,9 @@ void vk_test::ResourceAllocator::setLeakID(uint32_t id) {
 }
 
 VkDeviceMemory vk_test::ResourceAllocator::getDeviceMemory(VmaAllocation allocation) const {
-    VmaAllocationInfo allocationInfo;
-    vmaGetAllocationInfo(*this, allocation, &allocationInfo);
-    return allocationInfo.deviceMemory;
+    VmaAllocationInfo allocation_info;
+    vmaGetAllocationInfo(*this, allocation, &allocation_info);
+    return allocation_info.deviceMemory;
 }
 
 VkResult vk_test::ResourceAllocator::flushBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
@@ -539,24 +539,22 @@ VkResult vk_test::ResourceAllocator::invalidateBuffer(const vk_test::Buffer& buf
 
 VkResult vk_test::ResourceAllocator::autoFlushBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
-    VkMemoryPropertyFlags memFlags{};
-    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &memFlags);
-    if (!(memFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+    VkMemoryPropertyFlags mem_flags{};
+    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &mem_flags);
+    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0u) {
         return vmaFlushAllocation(m_allocator, buffer.allocation, offset, size);
     }
-    else {
-        return VK_SUCCESS;
-    }
+
+    return VK_SUCCESS;
 }
 
 VkResult vk_test::ResourceAllocator::autoInvalidateBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
-    VkMemoryPropertyFlags memFlags{};
-    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &memFlags);
-    if (!(memFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+    VkMemoryPropertyFlags mem_flags{};
+    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &mem_flags);
+    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0u) {
         return vmaInvalidateAllocation(m_allocator, buffer.allocation, offset, size);
     }
-    else {
-        return VK_SUCCESS;
-    }
+
+    return VK_SUCCESS;
 }

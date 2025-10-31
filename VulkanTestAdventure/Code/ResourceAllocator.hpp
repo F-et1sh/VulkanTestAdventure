@@ -9,7 +9,7 @@ namespace vk_test {
 
     class ResourceAllocator {
     public:
-        static constexpr VkDeviceSize DEFAULT_LARGE_CHUNK_SIZE = VkDeviceSize(2) * 1024ull * 1024ull * 1024ull;
+        static constexpr VkDeviceSize DEFAULT_LARGE_CHUNK_SIZE = VkDeviceSize(2) * 1024ULL * 1024ULL * 1024ULL;
 
         ResourceAllocator()                                    = default;
         ResourceAllocator(const ResourceAllocator&)            = delete;
@@ -21,7 +21,7 @@ namespace vk_test {
         operator VmaAllocator() const;
 
         // Initialization of VMA allocator.
-        VkResult init(VmaAllocatorCreateInfo allocatorInfo);
+        VkResult init(VmaAllocatorCreateInfo allocator_info);
 
         // De-initialization of VMA allocator.
         void deinit();
@@ -45,16 +45,16 @@ namespace vk_test {
         VkResult createBuffer(Buffer&                   buffer,
                               VkDeviceSize              size,
                               VkBufferUsageFlags2KHR    usage,
-                              VmaMemoryUsage            memoryUsage   = VMA_MEMORY_USAGE_AUTO,
+                              VmaMemoryUsage            memory_usage   = VMA_MEMORY_USAGE_AUTO,
                               VmaAllocationCreateFlags  flags         = {},
-                              VkDeviceSize              minAlignment  = 0,
-                              std::span<const uint32_t> queueFamilies = {}) const;
+                              VkDeviceSize              min_alignment  = 0,
+                              std::span<const uint32_t> queue_families = {}) const;
 
         // This allows more fine control
         VkResult createBuffer(Buffer&                        buffer,
-                              const VkBufferCreateInfo&      bufferInfo,
-                              const VmaAllocationCreateInfo& allocInfo,
-                              VkDeviceSize                   minAlignment = 0) const;
+                              const VkBufferCreateInfo&      buffer_info,
+                              const VmaAllocationCreateInfo& alloc_info,
+                              VkDeviceSize                   min_alignment = 0) const;
 
         // Destroy the VkBuffer
         void destroyBuffer(Buffer& buffer) const;
@@ -67,50 +67,50 @@ namespace vk_test {
         VkResult createLargeBuffer(LargeBuffer&              buffer,
                                    VkDeviceSize              size,
                                    VkBufferUsageFlags2KHR    usage,
-                                   VkQueue                   sparseBindingQueue,
-                                   VkFence                   sparseBindingFence = VK_NULL_HANDLE,
-                                   VkDeviceSize              maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VmaMemoryUsage            memoryUsage        = VMA_MEMORY_USAGE_AUTO,
+                                   VkQueue                   sparse_binding_queue,
+                                   VkFence                   sparse_binding_fence = VK_NULL_HANDLE,
+                                   VkDeviceSize              max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
+                                   VmaMemoryUsage            memory_usage        = VMA_MEMORY_USAGE_AUTO,
                                    VmaAllocationCreateFlags  flags              = {},
-                                   VkDeviceSize              minAlignment       = 0,
-                                   std::span<const uint32_t> queueFamilies      = {}) const;
+                                   VkDeviceSize              min_alignment       = 0,
+                                   std::span<const uint32_t> queue_families      = {}) const;
 
         VkResult createLargeBuffer(LargeBuffer&                   buffer,
-                                   const VkBufferCreateInfo&      bufferInfo,
-                                   const VmaAllocationCreateInfo& allocInfo,
-                                   VkQueue                        sparseBindingQueue,
-                                   VkFence                        sparseBindingFence = VK_NULL_HANDLE,
-                                   VkDeviceSize                   maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VkDeviceSize                   minAlignment       = 0) const;
+                                   const VkBufferCreateInfo&      buffer_info,
+                                   const VmaAllocationCreateInfo& alloc_info,
+                                   VkQueue                        sparse_binding_queue,
+                                   VkFence                        sparse_binding_fence = VK_NULL_HANDLE,
+                                   VkDeviceSize                   max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
+                                   VkDeviceSize                   min_alignment       = 0) const;
 
         void destroyLargeBuffer(LargeBuffer& buffer) const;
 
         // Creates VkImage in device memory
-        VkResult createImage(Image& image, const VkImageCreateInfo& imageInfo) const;
+        VkResult createImage(Image& image, const VkImageCreateInfo& image_info) const;
 
         // Creates VkImage and VkImageView in device memory
-        VkResult createImage(Image& image, const VkImageCreateInfo& imageInfo, const VkImageViewCreateInfo& imageViewInfo) const;
+        VkResult createImage(Image& image, const VkImageCreateInfo& image_info, const VkImageViewCreateInfo& image_view_info) const;
 
         // Creates VkImage with provided allocation information
-        VkResult createImage(Image& image, const VkImageCreateInfo& imageInfo, const VmaAllocationCreateInfo& vmaInfo) const;
+        VkResult createImage(Image& image, const VkImageCreateInfo& image_info, const VmaAllocationCreateInfo& vma_info) const;
 
         // Creates VkImage and VkImageView with provided allocation information
         VkResult createImage(Image&                         image,
-                             const VkImageCreateInfo&       imageInfo,
-                             const VkImageViewCreateInfo&   imageViewInfo,
-                             const VmaAllocationCreateInfo& vmaInfo) const;
+                             const VkImageCreateInfo&       image_info,
+                             const VkImageViewCreateInfo&   image_view_info,
+                             const VmaAllocationCreateInfo& vma_info) const;
 
         // Destroys VkImage and VkImageView
         void destroyImage(Image& image) const;
 
         // AcclerationStructure
 
-        VkResult createAcceleration(AccelerationStructure& accel, const VkAccelerationStructureCreateInfoKHR& accInfo) const;
+        VkResult createAcceleration(AccelerationStructure& accel, const VkAccelerationStructureCreateInfoKHR& acc_info) const;
 
         VkResult createAcceleration(AccelerationStructure&                      accel,
-                                    const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                    const VmaAllocationCreateInfo&              vmaInfo,
-                                    std::span<const uint32_t>                   queueFamilies = {}) const;
+                                    const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                    const VmaAllocationCreateInfo&              vma_info,
+                                    std::span<const uint32_t>                   queue_families = {}) const;
 
         void destroyAcceleration(AccelerationStructure& accel) const;
 
@@ -120,18 +120,18 @@ namespace vk_test {
         // operation
 
         VkResult createLargeAcceleration(LargeAccelerationStructure&                 accel,
-                                         const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                         VkQueue                                     sparseBindingQueue,
-                                         VkFence                                     sparseBindingFence = VK_NULL_HANDLE,
-                                         VkDeviceSize                                maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE) const;
+                                         const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                         VkQueue                                     sparse_binding_queue,
+                                         VkFence                                     sparse_binding_fence = VK_NULL_HANDLE,
+                                         VkDeviceSize                                max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE) const;
 
         VkResult createLargeAcceleration(LargeAccelerationStructure&                 accel,
-                                         const VkAccelerationStructureCreateInfoKHR& accInfo,
-                                         const VmaAllocationCreateInfo&              vmaInfo,
-                                         VkQueue                                     sparseBindingQueue,
-                                         VkFence                                     sparseBindingFence = VK_NULL_HANDLE,
-                                         VkDeviceSize                                maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE,
-                                         std::span<const uint32_t>                   queueFamilies      = {}) const;
+                                         const VkAccelerationStructureCreateInfoKHR& acc_info,
+                                         const VmaAllocationCreateInfo&              vma_info,
+                                         VkQueue                                     sparse_binding_queue,
+                                         VkFence                                     sparse_binding_fence = VK_NULL_HANDLE,
+                                         VkDeviceSize                                max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
+                                         std::span<const uint32_t>                   queue_families      = {}) const;
 
         void destroyLargeAcceleration(LargeAccelerationStructure& accel) const;
 

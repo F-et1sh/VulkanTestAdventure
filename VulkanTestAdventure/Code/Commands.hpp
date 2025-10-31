@@ -3,7 +3,7 @@
 namespace vk_test {
     // Helper to create a transient command pool
     // Transient command pools are meant to be used for short-lived commands.
-    VkCommandPool createTransientCommandPool(VkDevice device, uint32_t queueFamilyIndex);
+    VkCommandPool createTransientCommandPool(VkDevice device, uint32_t queue_family_index);
 
     // Simple helper for the creation of a temporary command buffer, use to record the commands to upload data, or transition images.
     // Submit the temporary command buffer, wait until the command is finished, and clean up.

@@ -32,7 +32,7 @@ namespace vk_test {
     struct LargeAccelerationStructure {
         VkAccelerationStructureKHR accel{};
         VkDeviceAddress            address{};
-        LargeBuffer                buffer; // Underlying buffer
+        LargeBuffer                buffer{}; // Underlying buffer
     };
 
     // Allows to represent >= 4 GB buffers using sparse bindings
