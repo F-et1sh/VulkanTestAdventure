@@ -268,7 +268,7 @@ namespace vk_test {
         return buffer_barrier;
     }
 
-    void cmdBufferMemoryBarrier(VkCommandBuffer commandBuffer, const BufferMemoryBarrierParams& params);
+    void cmdBufferMemoryBarrier(VkCommandBuffer command_buffer, const BufferMemoryBarrierParams& params);
 
     [[nodiscard]] constexpr VkMemoryBarrier2 makeMemoryBarrier(VkPipelineStageFlags2 src_stage_mask,
                                                                VkPipelineStageFlags2 dst_stage_mask,
@@ -286,10 +286,10 @@ namespace vk_test {
     }
 
     void cmdMemoryBarrier(VkCommandBuffer       cmd,
-                          VkPipelineStageFlags2 srcStageMask,
-                          VkPipelineStageFlags2 dstStageMask,
-                          VkAccessFlags2        srcAccessMask = INFER_BARRIER_PARAMS, // Default to infer if not provided
-                          VkAccessFlags2        dstAccessMask = INFER_BARRIER_PARAMS  // Default to infer if not provided
+                          VkPipelineStageFlags2 src_stage_mask,
+                          VkPipelineStageFlags2 dst_stage_mask,
+                          VkAccessFlags2        src_access_mask = INFER_BARRIER_PARAMS, // Default to infer if not provided
+                          VkAccessFlags2        dst_access_mask = INFER_BARRIER_PARAMS  // Default to infer if not provided
     );
 
     class BarrierContainer {
@@ -299,13 +299,13 @@ namespace vk_test {
         std::vector<VkImageMemoryBarrier2>  imageBarriers;
 
         // Submits all barriers. Does not clear vectors.
-        void cmdPipelineBarrier(VkCommandBuffer cmd, VkDependencyFlags dependencyFlags);
+        void cmdPipelineBarrier(VkCommandBuffer cmd, VkDependencyFlags dependency_flags);
 
         // Overwrites imageBarrier::image with `image.image`.
         // Detects if imageBarrier.newLayout is actually new, skips if not; note that
         // this skip can cause synchronization issues if `image` has just been
         // written and is about to be read or written with the same layout.
-        void appendOptionalLayoutTransition(Image& image, VkImageMemoryBarrier2 imageBarrier);
+        void appendOptionalLayoutTransition(Image& image, VkImageMemoryBarrier2 image_barrier);
 
         // Clears all vectors.
         void clear();

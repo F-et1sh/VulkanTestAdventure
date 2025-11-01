@@ -21,6 +21,8 @@
 #include <unordered_map>
 #include <cassert>
 #include <tuple>
+#include <memory>
+#include <atomic>
 
 // Volk for Vulkan
 #include <Volk/volk.h>

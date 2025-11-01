@@ -1,38 +1,38 @@
 #include "pch.h"
-#include "ResourceAllocator.hpp"
+#include "resource_allocator.hpp"
 
 vk_test::ResourceAllocator::ResourceAllocator(ResourceAllocator&& other) noexcept {
-    std::swap(m_allocator, other.m_allocator);
-    std::swap(m_device, other.m_device);
-    std::swap(m_physicalDevice, other.m_physicalDevice);
-    std::swap(m_leakID, other.m_leakID);
-    std::swap(m_maxMemoryAllocationSize, other.m_maxMemoryAllocationSize);
+    std::swap(m_Allocator, other.m_Allocator);
+    std::swap(m_Device, other.m_Device);
+    std::swap(m_PhysicalDevice, other.m_PhysicalDevice);
+    std::swap(m_LeakID, other.m_LeakID);
+    std::swap(m_MaxMemoryAllocationSize, other.m_MaxMemoryAllocationSize);
 }
 
 vk_test::ResourceAllocator& vk_test::ResourceAllocator::operator=(ResourceAllocator&& other) noexcept {
     if (this != &other) {
-        assert(m_allocator == nullptr && "Missing deinit()");
+        assert(m_Allocator == nullptr && "Missing deinit()");
 
-        std::swap(m_allocator, other.m_allocator);
-        std::swap(m_device, other.m_device);
-        std::swap(m_physicalDevice, other.m_physicalDevice);
-        std::swap(m_leakID, other.m_leakID);
-        std::swap(m_maxMemoryAllocationSize, other.m_maxMemoryAllocationSize);
+        std::swap(m_Allocator, other.m_Allocator);
+        std::swap(m_Device, other.m_Device);
+        std::swap(m_PhysicalDevice, other.m_PhysicalDevice);
+        std::swap(m_LeakID, other.m_LeakID);
+        std::swap(m_MaxMemoryAllocationSize, other.m_MaxMemoryAllocationSize);
     }
 
     return *this;
 }
 
 vk_test::ResourceAllocator::~ResourceAllocator() {
-    assert(m_allocator == nullptr && "Missing deinit()");
+    assert(m_Allocator == nullptr && "Missing deinit()");
 }
 
 vk_test::ResourceAllocator::operator VmaAllocator() const {
-    return m_allocator;
+    return m_Allocator;
 }
 
 VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocator_info) {
-    assert(m_allocator == nullptr);
+    assert(m_Allocator == nullptr);
 
     // #TODO : VK_EXT_memory_priority ? VMA_ALLOCATOR_CREATE_EXT_MEMORY_PRIORITY_BIT
 
@@ -49,12 +49,12 @@ VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocator_info)
         .pNext = &props11,
     };
     vkGetPhysicalDeviceProperties2(allocator_info.physicalDevice, &props);
-    m_maxMemoryAllocationSize = props11.maxMemoryAllocationSize;
+    m_MaxMemoryAllocationSize = props11.maxMemoryAllocationSize;
 
-    VK_TEST_SAY("Max size : " << m_maxMemoryAllocationSize);
+    VK_TEST_SAY("Max size : " << m_MaxMemoryAllocationSize);
 
-    m_device         = allocator_info.device;
-    m_physicalDevice = allocator_info.physicalDevice;
+    m_Device         = allocator_info.device;
+    m_PhysicalDevice = allocator_info.physicalDevice;
 
     // Because we use VMA_DYNAMIC_VULKAN_FUNCTIONS
     const VmaVulkanFunctions functions = {
@@ -62,23 +62,23 @@ VkResult vk_test::ResourceAllocator::init(VmaAllocatorCreateInfo allocator_info)
         .vkGetDeviceProcAddr   = vkGetDeviceProcAddr,
     };
     allocator_info.pVulkanFunctions = &functions;
-    return vmaCreateAllocator(&allocator_info, &m_allocator);
+    return vmaCreateAllocator(&allocator_info, &m_Allocator);
 }
 
 void vk_test::ResourceAllocator::deinit() {
-    if (m_allocator == nullptr) {
+    if (m_Allocator == nullptr) {
         return;
     }
 
-    vmaDestroyAllocator(m_allocator);
-    m_allocator      = nullptr;
-    m_device         = nullptr;
-    m_physicalDevice = nullptr;
-    m_leakID         = ~0;
+    vmaDestroyAllocator(m_Allocator);
+    m_Allocator      = nullptr;
+    m_Device         = nullptr;
+    m_PhysicalDevice = nullptr;
+    m_LeakID         = ~0;
 }
 
 void vk_test::ResourceAllocator::addLeakDetection(VmaAllocation allocation) const {
-    /*if(m_leakID == m_allocationCounter)
+    /*if(m_LeakID == m_allocationCounter)
   {
 #ifdef _WIN32
     if(IsDebuggerPresent())
@@ -90,7 +90,7 @@ void vk_test::ResourceAllocator::addLeakDetection(VmaAllocation allocation) cons
 #endif
   }
   std::string nvvkAllocID = fmt::format("nvvkAllocID: {}", m_allocationCounter++);
-  vmaSetAllocationName(m_allocator, allocation, nvvkAllocID.c_str());*/
+  vmaSetAllocationName(m_Allocator, allocation, nvvkAllocID.c_str());*/
 }
 
 VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&          buffer,
@@ -129,7 +129,7 @@ VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&              
     // Create the buffer
     VmaAllocationInfo alloc_info_out{};
 
-    VkResult result = vmaCreateBufferWithAlignment(m_allocator, &buffer_info, &alloc_info, min_alignment, &result_buffer.buffer, &result_buffer.allocation, &alloc_info_out);
+    VkResult result = vmaCreateBufferWithAlignment(m_Allocator, &buffer_info, &alloc_info, min_alignment, &result_buffer.buffer, &result_buffer.allocation, &alloc_info_out);
 
     if (result != VK_SUCCESS) {
         // Handle allocation failure
@@ -142,7 +142,7 @@ VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&              
 
     // Get the GPU address of the buffer
     const VkBufferDeviceAddressInfo info = { .sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, .buffer = result_buffer.buffer };
-    result_buffer.address                = vkGetBufferDeviceAddress(m_device, &info);
+    result_buffer.address                = vkGetBufferDeviceAddress(m_Device, &info);
 
     addLeakDetection(result_buffer.allocation);
 
@@ -150,124 +150,124 @@ VkResult vk_test::ResourceAllocator::createBuffer(vk_test::Buffer&              
 }
 
 void vk_test::ResourceAllocator::destroyBuffer(vk_test::Buffer& buffer) const {
-    vmaDestroyBuffer(m_allocator, buffer.buffer, buffer.allocation);
+    vmaDestroyBuffer(m_Allocator, buffer.buffer, buffer.allocation);
     buffer = {};
 }
 
-VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&                   largeBuffer,
-                                                       const VkBufferCreateInfo&      bufferInfo,
-                                                       const VmaAllocationCreateInfo& allocInfo,
-                                                       VkQueue                        sparseBindingQueue,
-                                                       VkFence                        sparseBindingFence,
-                                                       VkDeviceSize                   maxChunkSize,
-                                                       VkDeviceSize                   minAlignment) const {
-    assert(sparseBindingQueue);
+VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&                   large_buffer,
+                                                       const VkBufferCreateInfo&      buffer_info,
+                                                       const VmaAllocationCreateInfo& alloc_info,
+                                                       VkQueue                        sparse_binding_queue,
+                                                       VkFence                        sparse_binding_fence,
+                                                       VkDeviceSize                   max_chunk_size,
+                                                       VkDeviceSize                   min_alignment) const {
+    assert(sparse_binding_queue);
 
-    largeBuffer = {};
+    large_buffer = {};
 
-    maxChunkSize = std::min(m_maxMemoryAllocationSize, maxChunkSize);
+    max_chunk_size = std::min(m_MaxMemoryAllocationSize, max_chunk_size);
 
-    if (bufferInfo.size <= maxChunkSize) {
+    if (buffer_info.size <= max_chunk_size) {
         Buffer buffer;
-        createBuffer(buffer, bufferInfo, allocInfo, minAlignment);
+        createBuffer(buffer, buffer_info, alloc_info, min_alignment);
 
-        largeBuffer.buffer      = buffer.buffer;
-        largeBuffer.bufferSize  = buffer.bufferSize;
-        largeBuffer.address     = buffer.address;
-        largeBuffer.allocations = { buffer.allocation };
+        large_buffer.buffer      = buffer.buffer;
+        large_buffer.bufferSize  = buffer.bufferSize;
+        large_buffer.address     = buffer.address;
+        large_buffer.allocations = { buffer.allocation };
 
         return VK_SUCCESS;
     }
 
-    VkBufferCreateInfo createInfo = bufferInfo;
+    VkBufferCreateInfo create_info = buffer_info;
 
-    createInfo.flags |= VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
+    create_info.flags |= VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
 
-    vkCreateBuffer(m_device, &createInfo, nullptr, &largeBuffer.buffer);
+    vkCreateBuffer(m_Device, &create_info, nullptr, &large_buffer.buffer);
 
     // Find memory requirements
-    VkMemoryRequirements2           memReqs{ VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2 };
-    VkMemoryDedicatedRequirements   dedicatedRegs{ VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS };
-    VkBufferMemoryRequirementsInfo2 bufferReqs{ VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2 };
+    VkMemoryRequirements2           mem_reqs{ VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2 };
+    VkMemoryDedicatedRequirements   dedicated_regs{ VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS };
+    VkBufferMemoryRequirementsInfo2 buffer_reqs{ VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2 };
 
-    memReqs.pNext     = &dedicatedRegs;
-    bufferReqs.buffer = largeBuffer.buffer;
+    mem_reqs.pNext     = &dedicated_regs;
+    buffer_reqs.buffer = large_buffer.buffer;
 
-    vkGetBufferMemoryRequirements2(m_device, &bufferReqs, &memReqs);
-    memReqs.memoryRequirements.alignment = std::max(minAlignment, memReqs.memoryRequirements.alignment);
+    vkGetBufferMemoryRequirements2(m_Device, &buffer_reqs, &mem_reqs);
+    mem_reqs.memoryRequirements.alignment = std::max(min_alignment, mem_reqs.memoryRequirements.alignment);
 
     // align maxChunkSize to required alignment
-    size_t pageAlignment = memReqs.memoryRequirements.alignment;
-    maxChunkSize         = (maxChunkSize + pageAlignment - 1) & ~(pageAlignment - 1);
+    size_t page_alignment = mem_reqs.memoryRequirements.alignment;
+    max_chunk_size         = (max_chunk_size + page_alignment - 1) & ~(page_alignment - 1);
 
     // get chunk count
-    size_t fullChunkCount  = bufferInfo.size / maxChunkSize;
-    size_t totalChunkCount = (bufferInfo.size + maxChunkSize - 1) / maxChunkSize;
+    size_t full_chunk_count  = buffer_info.size / max_chunk_size;
+    size_t total_chunk_count = (buffer_info.size + max_chunk_size - 1) / max_chunk_size;
 
-    largeBuffer.allocations.resize(totalChunkCount);
-    std::vector<VmaAllocationInfo> allocationInfos(totalChunkCount);
+    large_buffer.allocations.resize(total_chunk_count);
+    std::vector<VmaAllocationInfo> allocation_infos(total_chunk_count);
 
     // full chunks first
-    memReqs.memoryRequirements.size = maxChunkSize;
-    VkResult result                 = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, fullChunkCount, largeBuffer.allocations.data(), allocationInfos.data());
+    mem_reqs.memoryRequirements.size = max_chunk_size;
+    VkResult result                 = vmaAllocateMemoryPages(m_Allocator, &mem_reqs.memoryRequirements, &alloc_info, full_chunk_count, large_buffer.allocations.data(), allocation_infos.data());
     if (result != VK_SUCCESS) {
-        vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-        largeBuffer = {};
+        vkDestroyBuffer(m_Device, large_buffer.buffer, nullptr);
+        large_buffer = {};
         return result;
     }
 
     // tail chunk last
-    if (fullChunkCount != totalChunkCount) {
-        memReqs.memoryRequirements.size = createInfo.size - fullChunkCount * maxChunkSize;
-        memReqs.memoryRequirements.size = (memReqs.memoryRequirements.size + pageAlignment - 1) & ~(pageAlignment - 1);
+    if (full_chunk_count != total_chunk_count) {
+        mem_reqs.memoryRequirements.size = create_info.size - full_chunk_count * max_chunk_size;
+        mem_reqs.memoryRequirements.size = (mem_reqs.memoryRequirements.size + page_alignment - 1) & ~(page_alignment - 1);
 
-        result = vmaAllocateMemoryPages(m_allocator, &memReqs.memoryRequirements, &allocInfo, 1, largeBuffer.allocations.data() + fullChunkCount, allocationInfos.data() + fullChunkCount);
+        result = vmaAllocateMemoryPages(m_Allocator, &mem_reqs.memoryRequirements, &alloc_info, 1, large_buffer.allocations.data() + full_chunk_count, allocation_infos.data() + full_chunk_count);
         if (result != VK_SUCCESS) {
-            vmaFreeMemoryPages(m_allocator, fullChunkCount, largeBuffer.allocations.data());
-            vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-            largeBuffer = {};
+            vmaFreeMemoryPages(m_Allocator, full_chunk_count, large_buffer.allocations.data());
+            vkDestroyBuffer(m_Device, large_buffer.buffer, nullptr);
+            large_buffer = {};
             return result;
         }
     }
 
-    std::vector<VkSparseMemoryBind> sparseBinds(totalChunkCount);
+    std::vector<VkSparseMemoryBind> sparse_binds(total_chunk_count);
 
-    for (uint32_t i = 0; i < totalChunkCount; i++) {
-        VkSparseMemoryBind& sparseBind = sparseBinds[i];
-        sparseBind.flags               = 0;
-        sparseBind.memory              = allocationInfos[i].deviceMemory;
-        sparseBind.memoryOffset        = allocationInfos[i].offset;
-        sparseBind.resourceOffset      = i * maxChunkSize;
-        sparseBind.size                = std::min(maxChunkSize, createInfo.size - i * maxChunkSize);
-        sparseBind.size                = (sparseBind.size + pageAlignment - 1) & ~(pageAlignment - 1);
+    for (uint32_t i = 0; i < total_chunk_count; i++) {
+        VkSparseMemoryBind& sparse_bind = sparse_binds[i];
+        sparse_bind.flags               = 0;
+        sparse_bind.memory              = allocation_infos[i].deviceMemory;
+        sparse_bind.memoryOffset        = allocation_infos[i].offset;
+        sparse_bind.resourceOffset      = i * max_chunk_size;
+        sparse_bind.size                = std::min(max_chunk_size, create_info.size - (i * max_chunk_size));
+        sparse_bind.size                = (sparse_bind.size + page_alignment - 1) & ~(page_alignment - 1);
 
-        addLeakDetection(largeBuffer.allocations[i]);
+        addLeakDetection(large_buffer.allocations[i]);
     }
 
-    VkSparseBufferMemoryBindInfo sparseBufferMemoryBindInfo{};
-    sparseBufferMemoryBindInfo.buffer    = largeBuffer.buffer;
-    sparseBufferMemoryBindInfo.bindCount = uint32_t(sparseBinds.size());
-    sparseBufferMemoryBindInfo.pBinds    = sparseBinds.data();
+    VkSparseBufferMemoryBindInfo sparse_buffer_memory_bind_info{};
+    sparse_buffer_memory_bind_info.buffer    = large_buffer.buffer;
+    sparse_buffer_memory_bind_info.bindCount = uint32_t(sparse_binds.size());
+    sparse_buffer_memory_bind_info.pBinds    = sparse_binds.data();
 
-    VkBindSparseInfo bindSparseInfo{ VK_STRUCTURE_TYPE_BIND_SPARSE_INFO };
-    bindSparseInfo.bufferBindCount = 1;
-    bindSparseInfo.pBufferBinds    = &sparseBufferMemoryBindInfo;
+    VkBindSparseInfo bind_sparse_info{ VK_STRUCTURE_TYPE_BIND_SPARSE_INFO };
+    bind_sparse_info.bufferBindCount = 1;
+    bind_sparse_info.pBufferBinds    = &sparse_buffer_memory_bind_info;
 
-    result = vkQueueBindSparse(sparseBindingQueue, 1, &bindSparseInfo, sparseBindingFence);
+    result = vkQueueBindSparse(sparse_binding_queue, 1, &bind_sparse_info, sparse_binding_fence);
     if (result != VK_SUCCESS) {
-        vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-        vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
-        largeBuffer = {};
+        vkDestroyBuffer(m_Device, large_buffer.buffer, nullptr);
+        vmaFreeMemoryPages(m_Allocator, large_buffer.allocations.size(), large_buffer.allocations.data());
+        large_buffer = {};
         return result;
     }
 
-    if (!sparseBindingFence) {
-        result = vkQueueWaitIdle(sparseBindingQueue);
+    if (sparse_binding_fence == nullptr) {
+        result = vkQueueWaitIdle(sparse_binding_queue);
         if (result != VK_SUCCESS) {
             if (result != VK_ERROR_DEVICE_LOST) {
-                vkDestroyBuffer(m_device, largeBuffer.buffer, nullptr);
-                vmaFreeMemoryPages(m_allocator, largeBuffer.allocations.size(), largeBuffer.allocations.data());
-                largeBuffer = {};
+                vkDestroyBuffer(m_Device, large_buffer.buffer, nullptr);
+                vmaFreeMemoryPages(m_Allocator, large_buffer.allocations.size(), large_buffer.allocations.data());
+                large_buffer = {};
             }
             return result;
         }
@@ -276,10 +276,10 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
     // Get the GPU address of the buffer
     const VkBufferDeviceAddressInfo info = {
         .sType  = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO,
-        .buffer = largeBuffer.buffer,
+        .buffer = large_buffer.buffer,
     };
-    largeBuffer.address    = vkGetBufferDeviceAddress(m_device, &info);
-    largeBuffer.bufferSize = createInfo.size;
+    large_buffer.address    = vkGetBufferDeviceAddress(m_Device, &info);
+    large_buffer.bufferSize = create_info.size;
 
     return VK_SUCCESS;
 }
@@ -311,7 +311,7 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
 
     VmaAllocationCreateInfo alloc_info        = { .flags = flags, .usage = memory_usage };
     uint32_t                memory_type_index = 0;
-    vmaFindMemoryTypeIndexForBufferInfo(m_allocator, &buffer_info, &alloc_info, &memory_type_index);
+    vmaFindMemoryTypeIndexForBufferInfo(m_Allocator, &buffer_info, &alloc_info, &memory_type_index);
 
     alloc_info.usage          = VMA_MEMORY_USAGE_UNKNOWN;
     alloc_info.memoryTypeBits = 1 << memory_type_index;
@@ -320,8 +320,8 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
 }
 
 void vk_test::ResourceAllocator::destroyLargeBuffer(LargeBuffer& buffer) const {
-    vkDestroyBuffer(m_device, buffer.buffer, nullptr);
-    vmaFreeMemoryPages(m_allocator, buffer.allocations.size(), buffer.allocations.data());
+    vkDestroyBuffer(m_Device, buffer.buffer, nullptr);
+    vmaFreeMemoryPages(m_Allocator, buffer.allocations.size(), buffer.allocations.data());
     buffer = {};
 }
 
@@ -329,7 +329,7 @@ VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const Vk
     image = {};
 
     VmaAllocationInfo alloc_info_out{};
-    VkResult          result = vmaCreateImage(m_allocator, &image_info, &vma_info, &image.image, &image.allocation, &alloc_info_out);
+    VkResult          result = vmaCreateImage(m_Allocator, &image_info, &vma_info, &image.image, &image.allocation, &alloc_info_out);
 
     if (result != VK_SUCCESS) {
         // Handle allocation failure
@@ -376,14 +376,14 @@ VkResult vk_test::ResourceAllocator::createImage(Image&                         
     VkImageViewCreateInfo view_info = image_view_info;
     view_info.image                 = image.image;
     view_info.format                = image_info.format;
-    vkCreateImageView(m_device, &view_info, nullptr, &image.descriptor.imageView);
+    vkCreateImageView(m_Device, &view_info, nullptr, &image.descriptor.imageView);
 
     return VK_SUCCESS;
 }
 
 void vk_test::ResourceAllocator::destroyImage(Image& image) const {
-    vkDestroyImageView(m_device, image.descriptor.imageView, nullptr);
-    vmaDestroyImage(m_allocator, image.image, image.allocation);
+    vkDestroyImageView(m_Device, image.descriptor.imageView, nullptr);
+    vmaDestroyImage(m_Allocator, image.image, image.allocation);
     image = {};
 }
 
@@ -418,7 +418,7 @@ VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStr
 
     // Step 2: Create the acceleration structure with the buffer
     accel_struct.buffer = result_accel.buffer.buffer;
-    result              = vkCreateAccelerationStructureKHR(m_device, &accel_struct, nullptr, &result_accel.accel);
+    result              = vkCreateAccelerationStructureKHR(m_Device, &accel_struct, nullptr, &result_accel.accel);
 
     if (result != VK_SUCCESS) {
         destroyBuffer(result_accel.buffer);
@@ -429,7 +429,7 @@ VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStr
     {
         VkAccelerationStructureDeviceAddressInfoKHR info{ .sType                 = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
                                                           .accelerationStructure = result_accel.accel };
-        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
+        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_Device, &info);
     }
 
     return result;
@@ -444,7 +444,7 @@ VkResult vk_test::ResourceAllocator::createAcceleration(vk_test::AccelerationStr
 
 void vk_test::ResourceAllocator::destroyAcceleration(vk_test::AccelerationStructure& accel) const {
     destroyBuffer(accel.buffer);
-    vkDestroyAccelerationStructureKHR(m_device, accel.accel, nullptr);
+    vkDestroyAccelerationStructureKHR(m_Device, accel.accel, nullptr);
     accel = {};
 }
 
@@ -483,7 +483,7 @@ VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationSt
 
     // Step 2: Create the acceleration structure with the buffer
     accel_struct.buffer = result_accel.buffer.buffer;
-    result              = vkCreateAccelerationStructureKHR(m_device, &accel_struct, nullptr, &result_accel.accel);
+    result              = vkCreateAccelerationStructureKHR(m_Device, &accel_struct, nullptr, &result_accel.accel);
 
     if (result != VK_SUCCESS) {
         destroyLargeBuffer(result_accel.buffer);
@@ -494,7 +494,7 @@ VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationSt
     {
         VkAccelerationStructureDeviceAddressInfoKHR info{ .sType                 = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
                                                           .accelerationStructure = result_accel.accel };
-        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_device, &info);
+        result_accel.address = vkGetAccelerationStructureDeviceAddressKHR(m_Device, &info);
     }
 
     return result;
@@ -511,14 +511,14 @@ VkResult vk_test::ResourceAllocator::createLargeAcceleration(LargeAccelerationSt
 }
 
 void vk_test::ResourceAllocator::destroyLargeAcceleration(LargeAccelerationStructure& accel) const {
-    vkDestroyAccelerationStructureKHR(m_device, accel.accel, nullptr);
+    vkDestroyAccelerationStructureKHR(m_Device, accel.accel, nullptr);
     destroyLargeBuffer(accel.buffer);
 
     accel = {};
 }
 
 void vk_test::ResourceAllocator::setLeakID(uint32_t id) {
-    m_leakID = id;
+    m_LeakID = id;
 }
 
 VkDeviceMemory vk_test::ResourceAllocator::getDeviceMemory(VmaAllocation allocation) const {
@@ -529,20 +529,20 @@ VkDeviceMemory vk_test::ResourceAllocator::getDeviceMemory(VmaAllocation allocat
 
 VkResult vk_test::ResourceAllocator::flushBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
-    return vmaFlushAllocation(m_allocator, buffer.allocation, offset, size);
+    return vmaFlushAllocation(m_Allocator, buffer.allocation, offset, size);
 }
 
 VkResult vk_test::ResourceAllocator::invalidateBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
-    return vmaInvalidateAllocation(m_allocator, buffer.allocation, offset, size);
+    return vmaInvalidateAllocation(m_Allocator, buffer.allocation, offset, size);
 }
 
 VkResult vk_test::ResourceAllocator::autoFlushBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
     VkMemoryPropertyFlags mem_flags{};
-    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &mem_flags);
-    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0u) {
-        return vmaFlushAllocation(m_allocator, buffer.allocation, offset, size);
+    vmaGetAllocationMemoryProperties(m_Allocator, buffer.allocation, &mem_flags);
+    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0U) {
+        return vmaFlushAllocation(m_Allocator, buffer.allocation, offset, size);
     }
 
     return VK_SUCCESS;
@@ -551,9 +551,9 @@ VkResult vk_test::ResourceAllocator::autoFlushBuffer(const vk_test::Buffer& buff
 VkResult vk_test::ResourceAllocator::autoInvalidateBuffer(const vk_test::Buffer& buffer, VkDeviceSize offset /*= 0*/, VkDeviceSize size /*= VK_WHOLE_SIZE*/) {
     assert(buffer.mapping);
     VkMemoryPropertyFlags mem_flags{};
-    vmaGetAllocationMemoryProperties(m_allocator, buffer.allocation, &mem_flags);
-    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0u) {
-        return vmaInvalidateAllocation(m_allocator, buffer.allocation, offset, size);
+    vmaGetAllocationMemoryProperties(m_Allocator, buffer.allocation, &mem_flags);
+    if ((mem_flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == 0U) {
+        return vmaInvalidateAllocation(m_Allocator, buffer.allocation, offset, size);
     }
 
     return VK_SUCCESS;

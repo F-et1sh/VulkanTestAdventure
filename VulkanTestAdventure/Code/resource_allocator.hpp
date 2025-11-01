@@ -26,9 +26,9 @@ namespace vk_test {
         // De-initialization of VMA allocator.
         void deinit();
 
-        VkDevice         getDevice() const { return m_device; }
-        VkPhysicalDevice getPhysicalDevice() const { return m_physicalDevice; }
-        VkDeviceSize     getMaxMemoryAllocationSize() const { return m_maxMemoryAllocationSize; }
+        VkDevice         getDevice() const { return m_Device; }
+        VkPhysicalDevice getPhysicalDevice() const { return m_PhysicalDevice; }
+        VkDeviceSize     getMaxMemoryAllocationSize() const { return m_MaxMemoryAllocationSize; }
 
         //////////////////////////////////////////////////////////////////////////
 
@@ -76,12 +76,12 @@ namespace vk_test {
                                    std::span<const uint32_t> queue_families      = {}) const;
 
         VkResult createLargeBuffer(LargeBuffer&                   buffer,
-                                   const VkBufferCreateInfo&      buffer_info,
-                                   const VmaAllocationCreateInfo& alloc_info,
-                                   VkQueue                        sparse_binding_queue,
-                                   VkFence                        sparse_binding_fence = VK_NULL_HANDLE,
-                                   VkDeviceSize                   max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VkDeviceSize                   min_alignment       = 0) const;
+                                   const VkBufferCreateInfo&      bufferInfo,
+                                   const VmaAllocationCreateInfo& allocInfo,
+                                   VkQueue                        sparseBindingQueue,
+                                   VkFence                        sparseBindingFence = VK_NULL_HANDLE,
+                                   VkDeviceSize                   maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE,
+                                   VkDeviceSize                   minAlignment       = 0) const;
 
         void destroyLargeBuffer(LargeBuffer& buffer) const;
 
@@ -167,15 +167,15 @@ namespace vk_test {
         void addLeakDetection(VmaAllocation allocation) const;
 
     private:
-        VmaAllocator     m_allocator{};
-        VkDevice         m_device{};
-        VkPhysicalDevice m_physicalDevice{};
-        VkDeviceSize     m_maxMemoryAllocationSize = 0;
+        VmaAllocator     m_Allocator{};
+        VkDevice         m_Device{};
+        VkPhysicalDevice m_PhysicalDevice{};
+        VkDeviceSize     m_MaxMemoryAllocationSize = 0;
 
         // Each vma allocation is named using a global monotonic counter
-        mutable std::atomic_uint32_t m_allocationCounter = 0;
+        mutable std::atomic_uint32_t m_AllocationCounter = 0;
         // Throws breakpoint/signal when a resource using "nvvkAllocID: <id>" name was
         // created. Only works if `m_allocationCounter` is used deterministically.
-        uint32_t m_leakID = ~0U;
+        uint32_t m_LeakID = ~0U;
     };
 } // namespace vk_test

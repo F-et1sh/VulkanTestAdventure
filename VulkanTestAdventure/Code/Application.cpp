@@ -207,23 +207,23 @@ void vk_test::Application::testAndSetWindowSizeAndPos(const glm::uvec2& window_s
             m_WindowSize.y          = static_cast<int>(mode->height * 0.8F);
         }
         // Center the window
-        int monX;
-        int monY;
-        glfwGetMonitorPos(glfwGetPrimaryMonitor(), &monX, &monY);
+        int mon_x = 0;
+        int mon_y = 0;
+        glfwGetMonitorPos(glfwGetPrimaryMonitor(), &mon_x, &mon_y);
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        m_WindowPosition.x      = monX + (mode->width - m_WindowSize.x) / 2;
-        m_WindowPosition.y      = monY + (mode->height - m_WindowSize.y) / 2;
+        m_WindowPosition.x      = mon_x + (mode->width - m_WindowSize.x) / 2;
+        m_WindowPosition.y      = mon_y + (mode->height - m_WindowSize.y) / 2;
     }
     else {
         // If m_winPos was retrieved, check if it is valid
         if (!isWindowPosValid(m_WindowPosition) || center_window) {
             // Center the window
-            int monX;
-            int monY;
-            glfwGetMonitorPos(glfwGetPrimaryMonitor(), &monX, &monY);
+            int mon_x = 0;
+            int mon_y = 0;
+            glfwGetMonitorPos(glfwGetPrimaryMonitor(), &mon_x, &mon_y);
             const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            m_WindowPosition.x      = monX + (mode->width - m_WindowSize.x) / 2;
-            m_WindowPosition.y      = monY + (mode->height - m_WindowSize.y) / 2;
+            m_WindowPosition.x      = mon_x + (mode->width - m_WindowSize.x) / 2;
+            m_WindowPosition.y      = mon_y + (mode->height - m_WindowSize.y) / 2;
         }
     }
 
@@ -240,16 +240,16 @@ bool vk_test::Application::isWindowPosValid(const glm::ivec2& window_position) {
         GLFWmonitor*       monitor = monitors[i];
         const GLFWvidmode* mode    = glfwGetVideoMode(monitor);
 
-        int monX;
-        int monY;
-        glfwGetMonitorPos(monitor, &monX, &monY);
+        int mon_x = 0;
+        int mon_y = 0;
+        glfwGetMonitorPos(monitor, &mon_x, &mon_y);
 
         // Check if window position is within this monitor's bounds
         // Add some margin to account for window decorations
-        if (window_position.x >= monX &&
-            window_position.x < monX + mode->width &&
-            window_position.y >= monY &&
-            window_position.y < monY + mode->height) {
+        if (window_position.x >= mon_x &&
+            window_position.x < mon_x + mode->width &&
+            window_position.y >= mon_y &&
+            window_position.y < mon_y + mode->height) {
             return true;
         }
     }

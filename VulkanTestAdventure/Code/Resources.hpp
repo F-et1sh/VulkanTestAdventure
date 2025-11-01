@@ -28,6 +28,14 @@ namespace vk_test {
         Buffer                     buffer; // Underlying buffer
     };
 
+    // Allows to represent >= 4 GB buffers using sparse bindings
+    struct LargeBuffer {
+        VkBuffer                   buffer{};
+        VkDeviceSize               bufferSize{};
+        VkDeviceAddress            address{};
+        std::vector<VmaAllocation> allocations;
+    };
+
     // allows >= 4GB sizes
     struct LargeAccelerationStructure {
         VkAccelerationStructureKHR accel{};
@@ -35,12 +43,10 @@ namespace vk_test {
         LargeBuffer                buffer{}; // Underlying buffer
     };
 
-    // Allows to represent >= 4 GB buffers using sparse bindings
-    struct LargeBuffer {
-        VkBuffer                   buffer{};
-        VkDeviceSize               bufferSize{};
-        VkDeviceAddress            address{};
-        std::vector<VmaAllocation> allocations;
+    // information about a range within a buffer
+    struct BufferRange : VkDescriptorBufferInfo {
+        VkDeviceAddress address{}; // must contain offset already
+        uint8_t*        mapping{}; // must contain offset already
     };
 
     //-----------------------------------------------------------------
