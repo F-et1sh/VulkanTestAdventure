@@ -76,12 +76,12 @@ namespace vk_test {
                                    std::span<const uint32_t> queue_families      = {}) const;
 
         VkResult createLargeBuffer(LargeBuffer&                   buffer,
-                                   const VkBufferCreateInfo&      bufferInfo,
-                                   const VmaAllocationCreateInfo& allocInfo,
-                                   VkQueue                        sparseBindingQueue,
-                                   VkFence                        sparseBindingFence = VK_NULL_HANDLE,
-                                   VkDeviceSize                   maxChunkSize       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VkDeviceSize                   minAlignment       = 0) const;
+                                   const VkBufferCreateInfo&      buffer_info,
+                                   const VmaAllocationCreateInfo& alloc_info,
+                                   VkQueue                        sparse_binding_queue,
+                                   VkFence                        sparse_binding_fence = VK_NULL_HANDLE,
+                                   VkDeviceSize                   max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
+                                   VkDeviceSize                   min_alignment       = 0) const;
 
         void destroyLargeBuffer(LargeBuffer& buffer) const;
 

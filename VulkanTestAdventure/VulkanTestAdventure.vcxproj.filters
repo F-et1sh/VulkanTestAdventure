@@ -154,6 +154,9 @@
     <Filter Include="Code\Main\Hash">
       <UniqueIdentifier>{73ebf20d-a426-42bd-b9ac-63c1e3ff2ce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\GBuffer">
+      <UniqueIdentifier>{1e00bd8d-40b9-4d9a-8d4c-ab1f864b89e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -200,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="Code\sampler_pool.cpp">
       <Filter>Code\Main\SamplerPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\gbuffers.cpp">
+      <Filter>Code\Main\GBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -276,6 +282,9 @@
     </ClInclude>
     <ClInclude Include="Code\hash_operations.hpp">
       <Filter>Code\Main\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\gbuffers.hpp">
+      <Filter>Code\Main\GBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

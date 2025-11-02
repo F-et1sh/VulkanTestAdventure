@@ -3,6 +3,7 @@
 #include "resource_allocator.hpp"
 #include "staging.hpp"
 #include "sampler_pool.hpp"
+#include "gbuffers.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -203,7 +204,7 @@ namespace vk_test {
         //---------------------------------------------------------------------------------------------------------------
         // When the viewport is resized, the GBuffer must be resized
         // - Called when the Window "viewport is resized
-        void onResize(VkCommandBuffer cmd, const VkExtent2D& size) { NVVK_CHECK(m_gBuffers.update(cmd, size)); }
+        void onResize(VkCommandBuffer cmd, const VkExtent2D& size) { m_gBuffers.update(cmd, size); }
 
         //---------------------------------------------------------------------------------------------------------------
         // Rendering the scene
@@ -990,11 +991,11 @@ namespace vk_test {
 
     private:
         // Application and core components
-        Application*           m_app{};             // The application framework
-        ResourceAllocator      m_allocator{};       // Resource allocator for Vulkan resources, used for buffers and images
-        StagingUploader        m_stagingUploader{}; // Utility to upload data to the GPU, used for staging buffers and images
-        SamplerPool            m_samplerPool{};     // Texture sampler pool, used to acquire texture samplers for images
-        GBuffer                m_gBuffers{};        // The G-Buffer
+        Application*           m_App{};             // The application framework
+        ResourceAllocator      m_Allocator{};       // Resource allocator for Vulkan resources, used for buffers and images
+        StagingUploader        m_StagingUploader{}; // Utility to upload data to the GPU, used for staging buffers and images
+        SamplerPool            m_SamplerPool{};     // Texture sampler pool, used to acquire texture samplers for images
+        GBuffer                m_GBuffers{};        // The G-Buffer
         nvslang::SlangCompiler m_slangCompiler{};   // The Slang compiler used to compile the shaders
 
         // Camera manipulator

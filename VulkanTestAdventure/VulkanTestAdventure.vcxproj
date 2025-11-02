@@ -188,6 +188,7 @@
     <ClCompile Include="Code\barriers.cpp" />
     <ClCompile Include="Code\Commands.cpp" />
     <ClCompile Include="Code\Context.cpp" />
+    <ClCompile Include="Code\gbuffers.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="Code\barriers.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
+    <ClInclude Include="Code\gbuffers.hpp" />
     <ClInclude Include="Code\hash_combine.hpp" />
     <ClInclude Include="Code\hash_operations.hpp" />
     <ClInclude Include="Code\PathManager.hpp" />
