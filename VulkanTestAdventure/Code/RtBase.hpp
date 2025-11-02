@@ -1,6 +1,8 @@
 #pragma once
 #include "Application.hpp"
-#include "ResourceAllocator.hpp"
+#include "resource_allocator.hpp"
+#include "staging.hpp"
+#include "sampler_pool.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------

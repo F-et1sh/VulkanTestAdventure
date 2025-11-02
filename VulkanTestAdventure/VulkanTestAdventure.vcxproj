@@ -203,6 +203,7 @@
     <None Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\resource_allocator.cpp" />
     <ClCompile Include="Code\Resources.cpp" />
+    <ClCompile Include="Code\sampler_pool.cpp" />
     <ClCompile Include="Code\semaphore.cpp" />
     <ClCompile Include="Code\staging.cpp" />
     <ClCompile Include="Code\Swapchain.cpp" />
@@ -260,6 +261,8 @@
     <ClInclude Include="Code\barriers.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
+    <ClInclude Include="Code\hash_combine.hpp" />
+    <ClInclude Include="Code\hash_operations.hpp" />
     <ClInclude Include="Code\PathManager.hpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />
     <None Include="Code\VkHpp_Renderer.h" />
@@ -275,6 +278,7 @@
     <ClInclude Include="Code\resource_allocator.hpp" />
     <ClInclude Include="Code\Resources.hpp" />
     <ClInclude Include="Code\RtBase.hpp" />
+    <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />
     <ClInclude Include="Code\staging.hpp" />
     <ClInclude Include="Code\Swapchain.hpp" />
