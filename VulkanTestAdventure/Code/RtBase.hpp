@@ -6,6 +6,7 @@
 #include "gbuffers.hpp"
 #include "slang.hpp"
 #include "camera_manipulator.hpp"
+#include "graphics_pipeline.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -1004,7 +1005,7 @@ namespace vk_test {
         std::shared_ptr<vk_test::CameraManipulator> m_CameraManip{ std::make_shared<vk_test::CameraManipulator>() };
 
         // Pipeline
-        GraphicsPipelineState m_dynamicPipeline;         // The dynamic pipeline state used to set the graphics pipeline state, like viewport, scissor, and depth test
+        GraphicsPipelineState m_DynamicPipeline;         // The dynamic pipeline state used to set the graphics pipeline state, like viewport, scissor, and depth test
         DescriptorPack        m_descPack;                // The descriptor bindings used to create the descriptor set layout and descriptor sets
         VkPipelineLayout      m_graphicPipelineLayout{}; // The pipeline layout use with graphics pipeline
 

@@ -169,6 +169,9 @@
     <Filter Include="Code\Main\Camera">
       <UniqueIdentifier>{fcd00770-3b69-4d18-80c5-f733c32a8da7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Pipeline">
+      <UniqueIdentifier>{09aaf0cb-92be-476b-ba44-91dc5da375c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -230,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="Code\camera_manipulator.cpp">
       <Filter>Code\Main\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\graphics_pipeline.cpp">
+      <Filter>Code\Main\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +327,9 @@
     </ClInclude>
     <ClInclude Include="Code\camera_manipulator.hpp">
       <Filter>Code\Main\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\graphics_pipeline.hpp">
+      <Filter>Code\Main\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

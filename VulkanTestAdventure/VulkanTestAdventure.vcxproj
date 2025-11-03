@@ -191,6 +191,7 @@
     <ClCompile Include="Code\Context.cpp" />
     <ClCompile Include="Code\file_operations.cpp" />
     <ClCompile Include="Code\gbuffers.cpp" />
+    <ClCompile Include="Code\graphics_pipeline.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
     <ClInclude Include="Code\gbuffers.hpp" />
+    <ClInclude Include="Code\graphics_pipeline.hpp" />
     <ClInclude Include="Code\hash_combine.hpp" />
     <ClInclude Include="Code\hash_operations.hpp" />
     <ClInclude Include="Code\PathManager.hpp" />
