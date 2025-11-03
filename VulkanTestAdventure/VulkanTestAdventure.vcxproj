@@ -186,6 +186,7 @@
     <None Include="Code\VKTest_DeviceManager.cpp" />
     <None Include="Code\VKTest_GameObjects.cpp" />
     <ClCompile Include="Code\barriers.cpp" />
+    <ClCompile Include="Code\camera_manipulator.cpp" />
     <ClCompile Include="Code\Commands.cpp" />
     <ClCompile Include="Code\Context.cpp" />
     <ClCompile Include="Code\file_operations.cpp" />
@@ -263,6 +264,7 @@
     <None Include="Code\VKTest_DeviceManager.h" />
     <None Include="Code\VKTest_GameObjects.h" />
     <ClInclude Include="Code\barriers.hpp" />
+    <ClInclude Include="Code\camera_manipulator.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />

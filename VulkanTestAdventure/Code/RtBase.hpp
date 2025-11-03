@@ -5,6 +5,7 @@
 #include "sampler_pool.hpp"
 #include "gbuffers.hpp"
 #include "slang.hpp"
+#include "camera_manipulator.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -1000,7 +1001,7 @@ namespace vk_test {
         SlangCompiler     m_SlangCompiler{};   // The Slang compiler used to compile the shaders
 
         // Camera manipulator
-        std::shared_ptr<nvutils::CameraManipulator> m_cameraManip{ std::make_shared<nvutils::CameraManipulator>() };
+        std::shared_ptr<vk_test::CameraManipulator> m_CameraManip{ std::make_shared<vk_test::CameraManipulator>() };
 
         // Pipeline
         GraphicsPipelineState m_dynamicPipeline;         // The dynamic pipeline state used to set the graphics pipeline state, like viewport, scissor, and depth test

@@ -23,6 +23,8 @@
 #include <tuple>
 #include <memory>
 #include <atomic>
+#include <chrono>
+#include <cmath>
 
 // Volk for Vulkan
 #include <Volk/volk.h>

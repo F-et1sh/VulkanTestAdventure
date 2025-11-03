@@ -166,6 +166,9 @@
     <Filter Include="Code\Main\Utilities\FileOperations">
       <UniqueIdentifier>{cbe49f5b-6cec-481f-8b66-481694d8defe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Camera">
+      <UniqueIdentifier>{fcd00770-3b69-4d18-80c5-f733c32a8da7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -224,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="Code\file_operations.cpp">
       <Filter>Code\Main\Utilities\FileOperations</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\camera_manipulator.cpp">
+      <Filter>Code\Main\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -312,6 +318,9 @@
     </ClInclude>
     <ClInclude Include="Code\file_operations.hpp">
       <Filter>Code\Main\Utilities\FileOperations</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\camera_manipulator.hpp">
+      <Filter>Code\Main\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
