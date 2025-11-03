@@ -207,7 +207,7 @@
     <ClCompile Include="Code\Resources.cpp" />
     <ClCompile Include="Code\sampler_pool.cpp" />
     <ClCompile Include="Code\semaphore.cpp" />
-    <ClCompile Include="Code\Slang.cpp" />
+    <ClCompile Include="Code\slang.cpp" />
     <ClCompile Include="Code\spirv.cpp" />
     <ClCompile Include="Code\staging.cpp" />
     <ClCompile Include="Code\Swapchain.cpp" />
@@ -286,7 +286,7 @@
     <ClInclude Include="Code\RtBase.hpp" />
     <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />
-    <ClInclude Include="Code\Slang.hpp" />
+    <ClInclude Include="Code\slang.hpp" />
     <ClInclude Include="Code\spirv.hpp" />
     <ClInclude Include="Code\staging.hpp" />
     <ClInclude Include="Code\Swapchain.hpp" />

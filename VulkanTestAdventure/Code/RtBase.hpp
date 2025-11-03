@@ -4,6 +4,7 @@
 #include "staging.hpp"
 #include "sampler_pool.hpp"
 #include "gbuffers.hpp"
+#include "slang.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -991,12 +992,12 @@ namespace vk_test {
 
     private:
         // Application and core components
-        Application*           m_App{};             // The application framework
-        ResourceAllocator      m_Allocator{};       // Resource allocator for Vulkan resources, used for buffers and images
-        StagingUploader        m_StagingUploader{}; // Utility to upload data to the GPU, used for staging buffers and images
-        SamplerPool            m_SamplerPool{};     // Texture sampler pool, used to acquire texture samplers for images
-        GBuffer                m_GBuffers{};        // The G-Buffer
-        nvslang::SlangCompiler m_slangCompiler{};   // The Slang compiler used to compile the shaders
+        Application*      m_App{};             // The application framework
+        ResourceAllocator m_Allocator{};       // Resource allocator for Vulkan resources, used for buffers and images
+        StagingUploader   m_StagingUploader{}; // Utility to upload data to the GPU, used for staging buffers and images
+        SamplerPool       m_SamplerPool{};     // Texture sampler pool, used to acquire texture samplers for images
+        GBuffer           m_GBuffers{};        // The G-Buffer
+        SlangCompiler     m_SlangCompiler{};   // The Slang compiler used to compile the shaders
 
         // Camera manipulator
         std::shared_ptr<nvutils::CameraManipulator> m_cameraManip{ std::make_shared<nvutils::CameraManipulator>() };

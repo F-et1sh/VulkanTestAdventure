@@ -216,7 +216,7 @@
     <ClCompile Include="Code\gbuffers.cpp">
       <Filter>Code\Main\GBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Slang.cpp">
+    <ClCompile Include="Code\slang.cpp">
       <Filter>Code\Main\Slang</Filter>
     </ClCompile>
     <ClCompile Include="Code\spirv.cpp">
@@ -304,7 +304,7 @@
     <ClInclude Include="Code\gbuffers.hpp">
       <Filter>Code\Main\GBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Slang.hpp">
+    <ClInclude Include="Code\slang.hpp">
       <Filter>Code\Main\Slang</Filter>
     </ClInclude>
     <ClInclude Include="Code\spirv.hpp">
