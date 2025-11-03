@@ -151,11 +151,20 @@
     <Filter Include="Code\Main\SamplerPool">
       <UniqueIdentifier>{6bb82691-464d-4a8e-a231-7f61f498c1bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Hash">
-      <UniqueIdentifier>{73ebf20d-a426-42bd-b9ac-63c1e3ff2ce5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Main\GBuffer">
       <UniqueIdentifier>{1e00bd8d-40b9-4d9a-8d4c-ab1f864b89e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Slang">
+      <UniqueIdentifier>{a38d939d-999f-4351-91b2-fbd99dea527f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Hash">
+      <UniqueIdentifier>{73ebf20d-a426-42bd-b9ac-63c1e3ff2ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Spirv">
+      <UniqueIdentifier>{5eef1a36-d3a8-4d9b-abb4-9f9f9b1500cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\FileOperations">
+      <UniqueIdentifier>{cbe49f5b-6cec-481f-8b66-481694d8defe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +215,15 @@
     </ClCompile>
     <ClCompile Include="Code\gbuffers.cpp">
       <Filter>Code\Main\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Slang.cpp">
+      <Filter>Code\Main\Slang</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\spirv.cpp">
+      <Filter>Code\Main\Utilities\Spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\file_operations.cpp">
+      <Filter>Code\Main\Utilities\FileOperations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,13 +296,22 @@
       <Filter>Code\Main\SamplerPool</Filter>
     </ClInclude>
     <ClInclude Include="Code\hash_combine.hpp">
-      <Filter>Code\Main\Hash</Filter>
+      <Filter>Code\Main\Utilities\Hash</Filter>
     </ClInclude>
     <ClInclude Include="Code\hash_operations.hpp">
-      <Filter>Code\Main\Hash</Filter>
+      <Filter>Code\Main\Utilities\Hash</Filter>
     </ClInclude>
     <ClInclude Include="Code\gbuffers.hpp">
       <Filter>Code\Main\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Slang.hpp">
+      <Filter>Code\Main\Slang</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\spirv.hpp">
+      <Filter>Code\Main\Utilities\Spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\file_operations.hpp">
+      <Filter>Code\Main\Utilities\FileOperations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
