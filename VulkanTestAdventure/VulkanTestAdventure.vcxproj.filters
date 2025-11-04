@@ -172,6 +172,9 @@
     <Filter Include="Code\Main\Pipeline">
       <UniqueIdentifier>{09aaf0cb-92be-476b-ba44-91dc5da375c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Descriptors">
+      <UniqueIdentifier>{504932c2-cbed-4f0b-b78a-659591cd7172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -236,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="Code\graphics_pipeline.cpp">
       <Filter>Code\Main\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\descriptors.cpp">
+      <Filter>Code\Main\Descriptors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,6 +336,9 @@
     </ClInclude>
     <ClInclude Include="Code\graphics_pipeline.hpp">
       <Filter>Code\Main\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\descriptors.hpp">
+      <Filter>Code\Main\Descriptors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

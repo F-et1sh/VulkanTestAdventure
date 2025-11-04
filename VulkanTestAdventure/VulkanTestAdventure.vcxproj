@@ -189,6 +189,7 @@
     <ClCompile Include="Code\camera_manipulator.cpp" />
     <ClCompile Include="Code\Commands.cpp" />
     <ClCompile Include="Code\Context.cpp" />
+    <ClCompile Include="Code\descriptors.cpp" />
     <ClCompile Include="Code\file_operations.cpp" />
     <ClCompile Include="Code\gbuffers.cpp" />
     <ClCompile Include="Code\graphics_pipeline.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="Code\camera_manipulator.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
+    <ClInclude Include="Code\descriptors.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
     <ClInclude Include="Code\gbuffers.hpp" />
     <ClInclude Include="Code\graphics_pipeline.hpp" />

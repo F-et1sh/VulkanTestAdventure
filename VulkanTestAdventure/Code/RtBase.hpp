@@ -7,6 +7,7 @@
 #include "slang.hpp"
 #include "camera_manipulator.hpp"
 #include "graphics_pipeline.hpp"
+#include "descriptors.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
