@@ -175,6 +175,15 @@
     <Filter Include="Code\Main\Descriptors">
       <UniqueIdentifier>{504932c2-cbed-4f0b-b78a-659591cd7172}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Utilities\GLTF">
+      <UniqueIdentifier>{438453db-9910-4bb8-b692-7577a2cae3e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\BoundingBox">
+      <UniqueIdentifier>{2ee82d2d-6525-4aac-bff5-6d44ad41ca82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Primitives">
+      <UniqueIdentifier>{dc6caa54-a182-4715-b16f-649e6ccb79e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -242,6 +251,12 @@
     </ClCompile>
     <ClCompile Include="Code\descriptors.cpp">
       <Filter>Code\Main\Descriptors</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\gltf_utils.cpp">
+      <Filter>Code\Main\Utilities\GLTF</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\primitives.cpp">
+      <Filter>Code\Main\Utilities\Primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +354,15 @@
     </ClInclude>
     <ClInclude Include="Code\descriptors.hpp">
       <Filter>Code\Main\Descriptors</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\gltf_utils.hpp">
+      <Filter>Code\Main\Utilities\GLTF</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\bounding_box.hpp">
+      <Filter>Code\Main\Utilities\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\primitives.hpp">
+      <Filter>Code\Main\Utilities\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

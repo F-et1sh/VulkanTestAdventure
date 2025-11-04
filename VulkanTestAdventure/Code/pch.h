@@ -25,6 +25,12 @@
 #include <atomic>
 #include <chrono>
 #include <cmath>
+#include <array>
+#include <unordered_set>
+#include <random>
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 // Volk for Vulkan
 #include <Volk/volk.h>
@@ -51,6 +57,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 // Utilities
 #include "utilities.hpp"

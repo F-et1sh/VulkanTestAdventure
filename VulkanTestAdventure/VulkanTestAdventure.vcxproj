@@ -192,6 +192,7 @@
     <ClCompile Include="Code\descriptors.cpp" />
     <ClCompile Include="Code\file_operations.cpp" />
     <ClCompile Include="Code\gbuffers.cpp" />
+    <ClCompile Include="Code\gltf_utils.cpp" />
     <ClCompile Include="Code\graphics_pipeline.cpp" />
     <ClCompile Include="Code\PathManager.cpp" />
     <None Include="Code\VkHpp_PipelineManager.cpp" />
@@ -206,6 +207,7 @@
     <None Include="Code\VKTest_RenderPassManager.cpp" />
     <None Include="Code\VKTest_SwapchainManager.cpp" />
     <None Include="Code\Renderer.cpp" />
+    <ClCompile Include="Code\primitives.cpp" />
     <ClCompile Include="Code\resource_allocator.cpp" />
     <ClCompile Include="Code\Resources.cpp" />
     <ClCompile Include="Code\sampler_pool.cpp" />
@@ -266,12 +268,14 @@
     <None Include="Code\VKTest_DeviceManager.h" />
     <None Include="Code\VKTest_GameObjects.h" />
     <ClInclude Include="Code\barriers.hpp" />
+    <ClInclude Include="Code\bounding_box.hpp" />
     <ClInclude Include="Code\camera_manipulator.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\descriptors.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
     <ClInclude Include="Code\gbuffers.hpp" />
+    <ClInclude Include="Code\gltf_utils.hpp" />
     <ClInclude Include="Code\graphics_pipeline.hpp" />
     <ClInclude Include="Code\hash_combine.hpp" />
     <ClInclude Include="Code\hash_operations.hpp" />
@@ -287,6 +291,7 @@
     <None Include="Code\VKTest_RenderPassManager.h" />
     <None Include="Code\VKTest_SwapchainManager.h" />
     <None Include="Code\Renderer.hpp" />
+    <ClInclude Include="Code\primitives.hpp" />
     <ClInclude Include="Code\resource_allocator.hpp" />
     <ClInclude Include="Code\Resources.hpp" />
     <ClInclude Include="Code\RtBase.hpp" />
