@@ -39,7 +39,7 @@ namespace vk_test {
     -*/
     struct GBufferInitInfo {
         vk_test::ResourceAllocator* allocator{};                           // Allocator for the images
-        std::vector<VkFormat>       color_formats;                       // Array of formats for each color attachment (as many GBuffers as formats)
+        std::vector<VkFormat>       color_formats;                         // Array of formats for each color attachment (as many GBuffers as formats)
         VkFormat                    depth_format{ VK_FORMAT_UNDEFINED };   // Depth buffer (VK_FORMAT_UNDEFINED for no depth)
         VkSampleCountFlagBits       sample_count{ VK_SAMPLE_COUNT_1_BIT }; // MSAA sample count (default: no MSAA)
         VkSampler                   image_sampler{};                       // Linear sampler for displaying the images (ImGui)
@@ -128,14 +128,14 @@ namespace vk_test {
         // This separation makes it easier to cleanup and recreate resources
         struct Resources {
             std::vector<vk_test::Image>  g_buffer_color;     // Color attachments
-            vk_test::Image               g_buffer_depth{};     // Optional depth attachment
+            vk_test::Image               g_buffer_depth{};   // Optional depth attachment
             std::vector<VkImageView>     ui_image_views;     // Special views for ImGui (alpha=1)
             std::vector<VkDescriptorSet> ui_descriptor_sets; // ImGui descriptor sets
-        } m_Resources;                                             // All Vulkan resources
+        } m_Resources;                                       // All Vulkan resources
 
         VkExtent2D m_Size{}; // Width and height of the buffers
 
-        GBufferInitInfo       m_Info{};       // Configuration
+        GBufferInitInfo       m_Info{};             // Configuration
         VkDescriptorSetLayout m_DescriptorLayout{}; // Layout for the ImGui descriptors
     };
 

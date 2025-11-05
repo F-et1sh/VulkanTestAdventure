@@ -79,11 +79,11 @@ namespace vk_test {
         int       mesh{ -1 };
 
         glm::mat4 localMatrix() const {
-            glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
-            glm::mat4 rotationMatrix    = glm::mat4_cast(rotation);
-            glm::mat4 scaleMatrix       = glm::scale(glm::mat4(1.0f), scale);
-            glm::mat4 combinedMatrix    = translationMatrix * rotationMatrix * scaleMatrix * matrix;
-            return combinedMatrix;
+            glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0F), translation);
+            glm::mat4 rotation_matrix    = glm::mat4_cast(rotation);
+            glm::mat4 scale_matrix       = glm::scale(glm::mat4(1.0F), scale);
+            glm::mat4 combined_matrix    = translation_matrix * rotation_matrix * scale_matrix * matrix;
+            return combined_matrix;
         }
     };
 
@@ -95,14 +95,14 @@ namespace vk_test {
     PrimitiveMesh createSphereUv(float radius = 0.5F, int sectors = 20, int stacks = 20);
     PrimitiveMesh createConeMesh(float radius = 0.5F, float height = 1.0F, int segments = 16);
     PrimitiveMesh createSphereMesh(float radius = 0.5F, int subdivisions = 3);
-    PrimitiveMesh createTorusMesh(float majorRadius = 0.5F, float minorRadius = 0.25F, int majorSegments = 32, int minorSegments = 16);
+    PrimitiveMesh createTorusMesh(float major_radius = 0.5F, float minor_radius = 0.25F, int major_segments = 32, int minor_segments = 16);
 
-    std::vector<Node> mengerSpongeNodes(int level = 3, float probability = -1.f, int seed = 1);
+    std::vector<Node> mengerSpongeNodes(int level = 3, float probability = -1.F, int seed = 1);
     std::vector<Node> sunflower(int seeds = 3000);
 
     // Utilities
-    PrimitiveMesh mergeNodes(const std::vector<Node>& nodes, const std::vector<PrimitiveMesh> meshes);
-    PrimitiveMesh removeDuplicateVertices(const PrimitiveMesh& mesh, bool testNormal = true, bool testUv = true);
+    PrimitiveMesh mergeNodes(const std::vector<Node>& nodes, std::vector<PrimitiveMesh> meshes);
+    PrimitiveMesh removeDuplicateVertices(const PrimitiveMesh& mesh, bool test_normal = true, bool test_uv = true);
     PrimitiveMesh wobblePrimitive(const PrimitiveMesh& mesh, float amplitude = 0.05F);
 
 } // namespace vk_test

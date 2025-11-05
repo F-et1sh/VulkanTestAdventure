@@ -101,7 +101,7 @@ namespace vk_test {
     void CameraManipulator::orbit(glm::vec2 displacement, bool invert /*= false*/) {
         if (displacement == glm::vec2(0.F, 0.F)) {
             return;
-}
+        }
 
         // Full width will do a full turn
         displacement *= glm::two_pi<float>();
@@ -113,8 +113,8 @@ namespace vk_test {
         // Get the length of sight
         glm::vec3 center_to_eye(position - origin);
         float     radius = glm::length(center_to_eye);
-        center_to_eye      = glm::normalize(center_to_eye);
-        glm::vec3 axe_z   = center_to_eye;
+        center_to_eye    = glm::normalize(center_to_eye);
+        glm::vec3 axe_z  = center_to_eye;
 
         // Find the rotation around the UP axis (Y)
         glm::mat4 rot_y = glm::rotate(glm::mat4(1), -displacement.x, m_Current.up);
@@ -131,7 +131,7 @@ namespace vk_test {
 
         if (glm::sign(rotation_vec.x) == glm::sign(center_to_eye.x)) {
             center_to_eye = rotation_vec;
-}
+        }
 
         // Make the vector as long as it was originally
         center_to_eye *= radius;
@@ -152,12 +152,12 @@ namespace vk_test {
     //
     void CameraManipulator::dolly(glm::vec2 displacement, bool keep_center_fixed /*= false*/) {
         glm::vec3 direction_vec = m_Current.ctr - m_Current.eye;
-        float     length       = static_cast<float>(glm::length(direction_vec));
+        float     length        = static_cast<float>(glm::length(direction_vec));
 
         // We are at the point of interest, do nothing!
         if (length < 0.000001F) {
             return;
-}
+        }
 
         // Use the larger movement.
         float larger_displacement = fabs(displacement.x) > fabs(displacement.y) ? displacement.x : -displacement.y;
@@ -165,7 +165,7 @@ namespace vk_test {
         // Don't move over the point of interest.
         if (larger_displacement >= 1.0F) {
             return;
-}
+        }
 
         direction_vec *= larger_displacement;
 
@@ -173,9 +173,10 @@ namespace vk_test {
         if (m_Mode == Walk) {
             if (m_Current.up.y > m_Current.up.z) {
                 direction_vec.y = 0;
-            } else {
+            }
+            else {
                 direction_vec.z = 0;
-}
+            }
         }
 
         m_Current.eye += direction_vec;
@@ -198,7 +199,7 @@ namespace vk_test {
         // Camera moving to new position
         if (m_AnimDone) {
             return;
-}
+        }
 
         float t = std::min(elapse / float(m_Duration), 1.0F);
         // Evaluate polynomial (smoother step from Perlin)
@@ -228,10 +229,10 @@ namespace vk_test {
         camera.eye = matrix[3];
 
         auto rot_mat = glm::mat3(matrix);
-        camera.ctr  = { 0, 0, -center_distance };
-        camera.ctr  = camera.eye + (rot_mat * camera.ctr);
-        camera.up   = { 0, 1, 0 };
-        camera.fov  = m_Current.fov;
+        camera.ctr   = { 0, 0, -center_distance };
+        camera.ctr   = camera.eye + (rot_mat * camera.ctr);
+        camera.up    = { 0, 1, 0 };
+        camera.fov   = m_Current.fov;
 
         m_AnimDone = instant_set;
 
@@ -294,13 +295,14 @@ namespace vk_test {
             if (m_Mode == Walk) {
                 if (m_Current.up.y > m_Current.up.z) {
                     keyboard_movement_vector.y = 0;
-                } else {
+                }
+                else {
                     keyboard_movement_vector.z = 0;
-}
+                }
             }
         }
         else if (action == Pan) {
-            auto right_vector       = glm::cross(direction_vector, m_Current.up);
+            auto right_vector        = glm::cross(direction_vector, m_Current.up);
             keyboard_movement_vector = right_vector * delta.x + m_Current.up * delta.y;
         }
 
@@ -329,23 +331,27 @@ namespace vk_test {
         if (inputs.lmb) {
             if (((inputs.ctrl) && (inputs.shift)) || inputs.alt) {
                 cur_action = m_Mode == Examine ? LookAround : Orbit;
-            } else if (inputs.shift) {
+            }
+            else if (inputs.shift) {
                 cur_action = Dolly;
-            } else if (inputs.ctrl) {
+            }
+            else if (inputs.ctrl) {
                 cur_action = Pan;
-            } else {
+            }
+            else {
                 cur_action = m_Mode == Examine ? Orbit : LookAround;
-}
+            }
         }
         else if (inputs.mmb) {
             cur_action = Pan;
-        } else if (inputs.rmb) {
+        }
+        else if (inputs.rmb) {
             cur_action = Dolly;
-}
+        }
 
         if (cur_action != NoAction) {
             motion(screen_displacement, cur_action);
-}
+        }
 
         return cur_action;
     }
@@ -476,7 +482,7 @@ namespace vk_test {
         else // Using the bounding sphere
         {
             const float radius = glm::length(box_half_size);
-            ideal_distance      = std::max(radius / xfov, radius / yfov);
+            ideal_distance     = std::max(radius / xfov, radius / yfov);
         }
 
         // Calculate the new camera position based on the ideal distance
@@ -503,8 +509,9 @@ namespace vk_test {
     }
 
     bool CameraManipulator::Camera::setFromString(const std::string& text) {
-        if (text.empty()) { return false;
-}
+        if (text.empty()) {
+            return false;
+        }
 
         std::array<float, 12> val{};
         int                   result = VK_TEST_SAFE_SSCANF(text.c_str(), "{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}, {%f}, {%f, %f}", val.data(), &val[1], &val[2], &val[3], &val[4], &val[5], &val[6], &val[7], &val[8], &val[9], &val[10], &val[11]);
@@ -515,10 +522,10 @@ namespace vk_test {
             up  = glm::vec3{ val[6], val[7], val[8] };
             if (result >= 10) {
                 fov = val[9];
-}
+            }
             if (result >= 11) {
                 clip = glm::vec2{ val[10], val[11] };
-}
+            }
 
             return true;
         }

@@ -59,18 +59,18 @@ void vk_test::SamplerPool::deinit() {
 }
 
 VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSamplerCreateInfo& create_info) {
-    SamplerState samplerState;
-    samplerState.create_info = create_info;
+    SamplerState sampler_state;
+    sampler_state.create_info = create_info;
 
     // add supported extensions
     const VkBaseInStructure* ext = (const VkBaseInStructure*) create_info.pNext;
-    while (ext) {
+    while (ext != nullptr) {
         switch (ext->sType) {
             case VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO:
-                samplerState.reduction = *(const VkSamplerReductionModeCreateInfo*) ext;
+                sampler_state.reduction = *(const VkSamplerReductionModeCreateInfo*) ext;
                 break;
             case VK_STRUCTURE_TYPE_SAMPLER_YCBCR_CONVERSION_CREATE_INFO:
-                samplerState.ycbr = *(const VkSamplerYcbcrConversionCreateInfo*) ext;
+                sampler_state.ycbr = *(const VkSamplerYcbcrConversionCreateInfo*) ext;
                 break;
             default:
                 assert(0 && "unsupported sampler extension");
@@ -78,14 +78,14 @@ VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSample
         ext = ext->pNext;
     }
     // always remove pointers for comparison lookup
-    samplerState.create_info.pNext = nullptr;
-    samplerState.reduction.pNext   = nullptr;
-    samplerState.ycbr.pNext        = nullptr;
+    sampler_state.create_info.pNext = nullptr;
+    sampler_state.reduction.pNext   = nullptr;
+    sampler_state.ycbr.pNext        = nullptr;
 
     assert(m_device && "Initialization was missing");
 
     std::lock_guard<std::mutex> lock(m_Mutex);
-    if (auto it = m_SamplerMap.find(samplerState); it != m_SamplerMap.end()) {
+    if (auto it = m_SamplerMap.find(sampler_state); it != m_SamplerMap.end()) {
         // If found, increment reference count and return existing sampler
         it->second.reference_count++;
         sampler = it->second.sampler;
@@ -94,31 +94,32 @@ VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSample
 
     // Otherwise, create a new sampler
     vkCreateSampler(m_device, &create_info, nullptr, &sampler);
-    m_SamplerMap[samplerState] = { sampler, 1 };
-    m_SamplerToState[sampler]  = samplerState;
+    m_SamplerMap[sampler_state] = { sampler, 1 };
+    m_SamplerToState[sampler]   = sampler_state;
     return VK_SUCCESS;
 }
 
 void vk_test::SamplerPool::releaseSampler(VkSampler sampler) {
     std::lock_guard<std::mutex> lock(m_Mutex);
-    if (sampler == VK_NULL_HANDLE)
+    if (sampler == VK_NULL_HANDLE) {
         return;
+    }
 
-    auto stateIt = m_SamplerToState.find(sampler);
-    if (stateIt == m_SamplerToState.end()) {
+    auto state_it = m_SamplerToState.find(sampler);
+    if (state_it == m_SamplerToState.end()) {
         // Sampler not found - this shouldn't happen in correct usage
         assert(false && "Attempting to release unknown sampler");
         return;
     }
 
-    auto samplerIt = m_SamplerMap.find(stateIt->second);
-    assert(samplerIt != m_SamplerMap.end() && "Inconsistent sampler pool state");
+    auto sampler_it = m_SamplerMap.find(state_it->second);
+    assert(sampler_it != m_SamplerMap.end() && "Inconsistent sampler pool state");
 
-    samplerIt->second.reference_count--;
-    if (samplerIt->second.reference_count == 0) {
+    sampler_it->second.reference_count--;
+    if (sampler_it->second.reference_count == 0) {
         vkDestroySampler(m_device, sampler, nullptr);
-        m_SamplerMap.erase(samplerIt);
-        m_SamplerToState.erase(stateIt);
+        m_SamplerMap.erase(sampler_it);
+        m_SamplerToState.erase(state_it);
     }
 }
 
@@ -127,15 +128,15 @@ void vk_test::SamplerPool::releaseSampler(VkSampler sampler) {
 //--------------------------------------------------------------------------------------------------
 static void usage_SamplerPool() {
     VkDevice             device = nullptr; // EX: get the device from the app (m_app->getDevice())
-    vk_test::SamplerPool samplerPool;
-    samplerPool.init(device);
+    vk_test::SamplerPool sampler_pool;
+    sampler_pool.init(device);
 
     VkSamplerCreateInfo create_info = {}; // EX: create a sampler create info or use the default one (DEFAULT_VkSamplerCreateInfo)
-    VkSampler           sampler;
-    samplerPool.acquireSampler(sampler, create_info);
+    VkSampler           sampler     = nullptr;
+    sampler_pool.acquireSampler(sampler, create_info);
 
     // Use the sampler
     // ...
 
-    samplerPool.releaseSampler(sampler);
+    sampler_pool.releaseSampler(sampler);
 }

@@ -89,15 +89,14 @@ namespace vk_test {
 
         VkSemaphore getSemaphore() const { return m_semaphore; }
         uint64_t    getTimelineValue() const {
-            if (m_fixedValue != 0u) {
+            if (m_fixedValue != 0U) {
                 return m_fixedValue;
             }
             if (m_dynamicValue) {
                 return m_dynamicValue->load();
             }
-            else {
-                return 0;
-            }
+
+            return 0;
         }
 
         // this function can be called only once and is only legal for

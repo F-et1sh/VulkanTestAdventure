@@ -39,11 +39,11 @@ namespace vk_test {
     -------------------------------------------------------------------------------------------------*/
     struct Bbox {
         Bbox() = default;
-        Bbox(glm::vec3 _min, glm::vec3 _max)
-            : m_min(_min), m_max(_max) {
+        Bbox(glm::vec3 min, glm::vec3 max)
+            : m_min(min), m_max(max) {
         }
         Bbox(const std::vector<glm::vec3>& corners) {
-            for (auto& c : corners) {
+            for (const auto& c : corners) {
                 insert(c);
             }
         }
@@ -58,48 +58,48 @@ namespace vk_test {
             insert(b.m_max);
         }
 
-        inline Bbox& operator+=(float v) {
+        Bbox& operator+=(float v) {
             m_min -= v;
             m_max += v;
             return *this;
         }
 
-        inline bool isEmpty() const {
+        bool isEmpty() const {
             return m_min == glm::vec3{ std::numeric_limits<float>::max() } || m_max == glm::vec3{ std::numeric_limits<float>::lowest() };
         }
 
-        inline uint32_t rank() const {
+        uint32_t rank() const {
             uint32_t result{ 0 };
-            result += m_min.x < m_max.x;
-            result += m_min.y < m_max.y;
-            result += m_min.z < m_max.z;
+            result += static_cast<uint32_t>(m_min.x < m_max.x);
+            result += static_cast<uint32_t>(m_min.y < m_max.y);
+            result += static_cast<uint32_t>(m_min.z < m_max.z);
             return result;
         }
-        inline bool      isPoint() const { return m_min == m_max; }
-        inline bool      isLine() const { return rank() == 1u; }
-        inline bool      isPlane() const { return rank() == 2u; }
-        inline bool      isVolume() const { return rank() == 3u; }
-        inline glm::vec3 min() const { return m_min; }
-        inline glm::vec3 max() const { return m_max; }
-        inline glm::vec3 extents() { return m_max - m_min; }
-        inline glm::vec3 center() const { return (m_min + m_max) * 0.5f; }
-        inline float     radius() const { return glm::length(m_max - m_min) * 0.5f; }
+        bool      isPoint() const { return m_min == m_max; }
+        bool      isLine() const { return rank() == 1U; }
+        bool      isPlane() const { return rank() == 2U; }
+        bool      isVolume() const { return rank() == 3U; }
+        glm::vec3 min() const { return m_min; }
+        glm::vec3 max() const { return m_max; }
+        glm::vec3 extents() { return m_max - m_min; }
+        glm::vec3 center() const { return (m_min + m_max) * 0.5F; }
+        float     radius() const { return glm::length(m_max - m_min) * 0.5F; }
 
-        Bbox transform(glm::mat4 mat) {
+        Bbox transform(glm::mat4 mat) const {
             // Make sure this is a 3D transformation + translation:
             auto        r       = glm::row(mat, 3);
-            const float epsilon = 1e-6f;
-            assert(fabs(r.x) < epsilon && fabs(r.y) < epsilon && fabs(r.z) < epsilon && fabs(r.w - 1.0f) < epsilon);
+            const float epsilon = 1e-6F;
+            assert(fabs(r.x) < epsilon && fabs(r.y) < epsilon && fabs(r.z) < epsilon && fabs(r.w - 1.0F) < epsilon);
 
             std::vector<glm::vec3> corners(8);
-            corners[0] = glm::vec3(mat * glm::vec4(m_min.x, m_min.y, m_min.z, 1.f));
-            corners[1] = glm::vec3(mat * glm::vec4(m_min.x, m_min.y, m_max.z, 1.f));
-            corners[2] = glm::vec3(mat * glm::vec4(m_min.x, m_max.y, m_min.z, 1.f));
-            corners[3] = glm::vec3(mat * glm::vec4(m_min.x, m_max.y, m_max.z, 1.f));
-            corners[4] = glm::vec3(mat * glm::vec4(m_max.x, m_min.y, m_min.z, 1.f));
-            corners[5] = glm::vec3(mat * glm::vec4(m_max.x, m_min.y, m_max.z, 1.f));
-            corners[6] = glm::vec3(mat * glm::vec4(m_max.x, m_max.y, m_min.z, 1.f));
-            corners[7] = glm::vec3(mat * glm::vec4(m_max.x, m_max.y, m_max.z, 1.f));
+            corners[0] = glm::vec3(mat * glm::vec4(m_min.x, m_min.y, m_min.z, 1.F));
+            corners[1] = glm::vec3(mat * glm::vec4(m_min.x, m_min.y, m_max.z, 1.F));
+            corners[2] = glm::vec3(mat * glm::vec4(m_min.x, m_max.y, m_min.z, 1.F));
+            corners[3] = glm::vec3(mat * glm::vec4(m_min.x, m_max.y, m_max.z, 1.F));
+            corners[4] = glm::vec3(mat * glm::vec4(m_max.x, m_min.y, m_min.z, 1.F));
+            corners[5] = glm::vec3(mat * glm::vec4(m_max.x, m_min.y, m_max.z, 1.F));
+            corners[6] = glm::vec3(mat * glm::vec4(m_max.x, m_max.y, m_min.z, 1.F));
+            corners[7] = glm::vec3(mat * glm::vec4(m_max.x, m_max.y, m_max.z, 1.F));
 
             Bbox result(corners);
             return result;

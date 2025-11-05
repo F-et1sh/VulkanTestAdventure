@@ -22,6 +22,7 @@
 #include <cassert>
 #include <tuple>
 #include <memory>
+#include <mutex>
 #include <atomic>
 #include <chrono>
 #include <cmath>

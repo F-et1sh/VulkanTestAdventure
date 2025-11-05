@@ -43,13 +43,13 @@ std::filesystem::path vk_test::dumpSpirvName(const std::filesystem::path& filena
 void vk_test::dumpSpirv(const std::filesystem::path& filename, const uint32_t* spirv_data, size_t spirv_size) {
     std::ofstream file(filename, std::ios::binary);
     if (!file) {
-        VK_TEST_SAY("Failed to open file for writing : \n", vk_test::utf8FromPath(filename).c_str());
+        VK_TEST_SAY("Failed to open file for writing : " << vk_test::utf8FromPath(filename).c_str());
         return;
     }
 
     file.write(reinterpret_cast<const char*>(spirv_data), spirv_size);
     if (!file) {
-        VK_TEST_SAY("Failed to write SPIR-V data to file : \n", vk_test::utf8FromPath(filename).c_str());
+        VK_TEST_SAY("Failed to write SPIR-V data to file : " << vk_test::utf8FromPath(filename).c_str());
     }
 }
 

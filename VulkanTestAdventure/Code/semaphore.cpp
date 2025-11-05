@@ -25,7 +25,7 @@ namespace vk_test {
     void SemaphoreState::fixate() {
         if (m_fixedValue == 0 && m_dynamicValue) {
             m_fixedValue = m_dynamicValue->load();
-            if (m_fixedValue != 0u) {
+            if (m_fixedValue != 0U) {
                 // a dynamicValue can only transition away from zero
                 // once, after that it can be treated like a
                 // fixedValue, therefore it's safe to release the
@@ -37,9 +37,9 @@ namespace vk_test {
 
     VkResult SemaphoreState::wait(VkDevice device, uint64_t timeout) const {
         uint64_t timeline_value = getTimelineValue();
-        if (timeline_value == 0u) {
+        if (timeline_value == 0U) {
             return VK_ERROR_INITIALIZATION_FAILED;
-}
+        }
 
         VkSemaphoreWaitInfo wait_info{
             .sType          = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
@@ -59,15 +59,15 @@ namespace vk_test {
 
     bool SemaphoreState::testSignaled(VkDevice device) const {
         uint64_t timeline_value = getTimelineValue();
-        if (timeline_value == 0u) {
+        if (timeline_value == 0U) {
             return false;
-}
+        }
 
         uint64_t current_value = 0;
-        VkResult r = vkGetSemaphoreCounterValue(device, m_semaphore, &current_value);
+        VkResult r             = vkGetSemaphoreCounterValue(device, m_semaphore, &current_value);
         if (r == VK_SUCCESS) {
             return current_value >= (timeline_value);
-}
+        }
         return false;
     }
 
@@ -78,9 +78,9 @@ namespace vk_test {
 
     VkResult createTimelineSemaphore(VkDevice device, uint64_t initial_value, VkSemaphore& semaphore) {
         VkSemaphoreTypeCreateInfo timeline_semaphore_create_info{ .sType         = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO,
-                                                               .pNext         = nullptr,
-                                                               .semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE,
-                                                               .initialValue  = initial_value };
+                                                                  .pNext         = nullptr,
+                                                                  .semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE,
+                                                                  .initialValue  = initial_value };
         VkSemaphoreCreateInfo     semaphore_create_info{
                 .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, .pNext = &timeline_semaphore_create_info, .flags = 0
         };

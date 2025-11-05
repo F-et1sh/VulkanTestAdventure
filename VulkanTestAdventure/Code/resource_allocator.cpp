@@ -198,7 +198,7 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
 
     // align maxChunkSize to required alignment
     size_t page_alignment = mem_reqs.memoryRequirements.alignment;
-    max_chunk_size         = (max_chunk_size + page_alignment - 1) & ~(page_alignment - 1);
+    max_chunk_size        = (max_chunk_size + page_alignment - 1) & ~(page_alignment - 1);
 
     // get chunk count
     size_t full_chunk_count  = buffer_info.size / max_chunk_size;
@@ -209,7 +209,7 @@ VkResult vk_test::ResourceAllocator::createLargeBuffer(LargeBuffer&             
 
     // full chunks first
     mem_reqs.memoryRequirements.size = max_chunk_size;
-    VkResult result                 = vmaAllocateMemoryPages(m_Allocator, &mem_reqs.memoryRequirements, &alloc_info, full_chunk_count, large_buffer.allocations.data(), allocation_infos.data());
+    VkResult result                  = vmaAllocateMemoryPages(m_Allocator, &mem_reqs.memoryRequirements, &alloc_info, full_chunk_count, large_buffer.allocations.data(), allocation_infos.data());
     if (result != VK_SUCCESS) {
         vkDestroyBuffer(m_Device, large_buffer.buffer, nullptr);
         large_buffer = {};

@@ -179,6 +179,7 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Code\sky_io.h.slang" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
     <None Include="Code\VkHpp_GPUResourceManager.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="Code\graphics_pipeline.hpp" />
     <ClInclude Include="Code\hash_combine.hpp" />
     <ClInclude Include="Code\hash_operations.hpp" />
+    <ClInclude Include="Code\io_gltf.h" />
     <ClInclude Include="Code\PathManager.hpp" />
     <None Include="Code\VkHpp_QueueFamilyIndices.h" />
     <None Include="Code\VkHpp_Renderer.h" />
@@ -298,6 +300,7 @@
     <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />
     <ClInclude Include="Code\slang.hpp" />
+    <ClInclude Include="Code\slang_types.h" />
     <ClInclude Include="Code\spirv.hpp" />
     <ClInclude Include="Code\staging.hpp" />
     <ClInclude Include="Code\Swapchain.hpp" />

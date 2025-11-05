@@ -234,100 +234,98 @@ namespace vk_test {
     }
 
     VkResult StagingUploader::appendBufferMapping(const vk_test::Buffer& buffer,
-                                                  VkDeviceSize           bufferOffset,
-                                                  VkDeviceSize           dataSize,
-                                                  void*&                 uploadMapping,
+                                                  VkDeviceSize           buffer_offset,
+                                                  VkDeviceSize           data_size,
+                                                  void*&                 upload_mapping,
                                                   const SemaphoreState&  semaphore_state) {
-        uploadMapping = nullptr;
+        upload_mapping = nullptr;
 
         // allow empty without throwing error
-        if (dataSize == 0) {
+        if (data_size == 0) {
             return VK_SUCCESS;
         }
 
-        if (dataSize == VK_WHOLE_SIZE) {
-            dataSize = buffer.bufferSize;
+        if (data_size == VK_WHOLE_SIZE) {
+            data_size = buffer.bufferSize;
         }
 
         assert(buffer.buffer);
-        assert(bufferOffset + dataSize <= buffer.bufferSize);
+        assert(buffer_offset + data_size <= buffer.bufferSize);
 
         if (buffer.mapping != nullptr) {
-            uploadMapping = buffer.mapping + bufferOffset;
+            upload_mapping = buffer.mapping + buffer_offset;
 
             return VK_SUCCESS;
         }
-        
-            BufferRange stagingSpace;
-            acquireStagingSpace(stagingSpace, dataSize, nullptr, semaphore_state);
 
-            uploadMapping = stagingSpace.mapping;
+        BufferRange staging_space;
+        acquireStagingSpace(staging_space, data_size, nullptr, semaphore_state);
 
-            VkBufferCopy2 copyRegionInfo{
-                .sType     = VK_STRUCTURE_TYPE_BUFFER_COPY_2,
-                .srcOffset = stagingSpace.offset,
-                .dstOffset = bufferOffset,
-                .size      = dataSize,
-            };
+        upload_mapping = staging_space.mapping;
 
-            VkCopyBufferInfo2 copyBufferInfo{
-                .sType       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2,
-                .srcBuffer   = stagingSpace.buffer,
-                .dstBuffer   = buffer.buffer,
-                .regionCount = 1,
-                .pRegions    = nullptr, // set when calling `cmdUploadAppended`
-            };
+        VkBufferCopy2 copy_region_info{
+            .sType     = VK_STRUCTURE_TYPE_BUFFER_COPY_2,
+            .srcOffset = staging_space.offset,
+            .dstOffset = buffer_offset,
+            .size      = data_size,
+        };
 
-            m_Batch.staging_size += dataSize;
-            m_Batch.copy_buffer_regions.emplace_back(copyRegionInfo);
-            m_Batch.copy_buffer_infos.emplace_back(copyBufferInfo);
+        VkCopyBufferInfo2 copy_buffer_info{
+            .sType       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2,
+            .srcBuffer   = staging_space.buffer,
+            .dstBuffer   = buffer.buffer,
+            .regionCount = 1,
+            .pRegions    = nullptr, // set when calling `cmdUploadAppended`
+        };
 
-            return VK_SUCCESS;
-       
+        m_Batch.staging_size += data_size;
+        m_Batch.copy_buffer_regions.emplace_back(copy_region_info);
+        m_Batch.copy_buffer_infos.emplace_back(copy_buffer_info);
+
+        return VK_SUCCESS;
     }
 
-    VkResult StagingUploader::appendBufferRangeMapping(const vk_test::BufferRange& bufferRange, void*& uploadMapping, const SemaphoreState& semaphore_state) {
-        uploadMapping = nullptr;
+    VkResult StagingUploader::appendBufferRangeMapping(const vk_test::BufferRange& buffer_range, void*& upload_mapping, const SemaphoreState& semaphore_state) {
+        upload_mapping = nullptr;
 
         // allow empty without throwing error
-        if (bufferRange.range == 0) {
+        if (buffer_range.range == 0) {
             return VK_SUCCESS;
         }
 
-        assert(bufferRange.buffer);
+        assert(buffer_range.buffer);
 
-        if (bufferRange.mapping != nullptr) {
-            uploadMapping = bufferRange.mapping;
+        if (buffer_range.mapping != nullptr) {
+            upload_mapping = buffer_range.mapping;
 
             return VK_SUCCESS;
         }
-        
-            BufferRange stagingSpace;
-            acquireStagingSpace(stagingSpace, bufferRange.range, nullptr, semaphore_state);
 
-            uploadMapping = stagingSpace.mapping;
+        BufferRange staging_space;
+        acquireStagingSpace(staging_space, buffer_range.range, nullptr, semaphore_state);
 
-            VkBufferCopy2 copyRegionInfo{
-                .sType     = VK_STRUCTURE_TYPE_BUFFER_COPY_2,
-                .srcOffset = stagingSpace.offset,
-                .dstOffset = bufferRange.offset,
-                .size      = bufferRange.range,
-            };
+        upload_mapping = staging_space.mapping;
 
-            VkCopyBufferInfo2 copyBufferInfo{
-                .sType       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2,
-                .srcBuffer   = stagingSpace.buffer,
-                .dstBuffer   = bufferRange.buffer,
-                .regionCount = 1,
-                .pRegions    = nullptr, // set when calling `cmdUploadAppended`
-            };
+        VkBufferCopy2 copy_region_info{
+            .sType     = VK_STRUCTURE_TYPE_BUFFER_COPY_2,
+            .srcOffset = staging_space.offset,
+            .dstOffset = buffer_range.offset,
+            .size      = buffer_range.range,
+        };
 
-            m_Batch.staging_size += bufferRange.range;
-            m_Batch.copy_buffer_regions.emplace_back(copyRegionInfo);
-            m_Batch.copy_buffer_infos.emplace_back(copyBufferInfo);
+        VkCopyBufferInfo2 copy_buffer_info{
+            .sType       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2,
+            .srcBuffer   = staging_space.buffer,
+            .dstBuffer   = buffer_range.buffer,
+            .regionCount = 1,
+            .pRegions    = nullptr, // set when calling `cmdUploadAppended`
+        };
 
-            return VK_SUCCESS;
-       
+        m_Batch.staging_size += buffer_range.range;
+        m_Batch.copy_buffer_regions.emplace_back(copy_region_info);
+        m_Batch.copy_buffer_infos.emplace_back(copy_buffer_info);
+
+        return VK_SUCCESS;
     }
 
     VkResult StagingUploader::appendImage(vk_test::Image& image, size_t data_size, const void* data, VkImageLayout new_layout, const SemaphoreState& semaphore_state) {
@@ -454,7 +452,7 @@ namespace vk_test {
     }
 
     bool StagingUploader::checkAppendedSize(size_t limit_in_bytes, size_t added_size) const {
-        return (m_Batch.staging_size != 0u) && (m_Batch.staging_size + added_size) > limit_in_bytes;
+        return (m_Batch.staging_size != 0U) && (m_Batch.staging_size + added_size) > limit_in_bytes;
     }
 
     void StagingUploader::cmdUploadAppended(VkCommandBuffer cmd) {
@@ -548,9 +546,9 @@ static void usage_StagingUploader() {
         resource_allocator.createBuffer(buffer, 256, VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT, VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE, VMA_ALLOCATION_CREATE_MAPPED_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT);
 
         // Upload data
-        std::vector<float> data     = { 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F, 7.0F, 8.0F, 9.0F, 10.0F };
+        std::vector<float> data      = { 1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F, 7.0F, 8.0F, 9.0F, 10.0F };
         size_t             data_size = data.size() * sizeof(float);
-        uint32_t           offset   = 0;
+        uint32_t           offset    = 0;
 
         // The stagingUploader will detect if the buffer was mappable directly then copy there directly,
         // otherwise copy through a temporary staging buffer.
@@ -648,7 +646,7 @@ static void usage_StagingUploader() {
             else {
                 // or get a pointer
                 float* mapping_pointer = nullptr;
-                result                = staging_uploader.appendBufferMapping(my_buffer, 0, std::span(my_data).size_bytes(), mapping_pointer, semaphore_state);
+                result                 = staging_uploader.appendBufferMapping(my_buffer, 0, std::span(my_data).size_bytes(), mapping_pointer, semaphore_state);
                 // manually fill the pointer with sequential writes
             }
 

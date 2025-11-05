@@ -8,6 +8,7 @@
 #include "camera_manipulator.hpp"
 #include "graphics_pipeline.hpp"
 #include "descriptors.hpp"
+#include "gltf_utils.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -1015,7 +1016,7 @@ namespace vk_test {
         VkShaderEXT m_fragmentShader{}; // The fragment shader used to render the scene
 
         // Scene information buffer (UBO)
-        GltfSceneResource  m_sceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
+        GltfSceneResource  m_SceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
         std::vector<Image> m_textures{};      // Textures used in the scene
 
         SkySimple                m_skySimple{};                                 // Sky rendering

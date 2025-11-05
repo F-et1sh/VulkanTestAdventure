@@ -31,7 +31,7 @@ namespace vk_test {
         vkCmdSetLineWidth(cmd, rasterizationState.lineWidth);
         vkCmdSetLineStippleEnableEXT(cmd, rasterizationLineState.stippledLineEnable);
         vkCmdSetLineRasterizationModeEXT(cmd, rasterizationLineState.lineRasterizationMode);
-        if (rasterizationLineState.stippledLineEnable != 0u) {
+        if (rasterizationLineState.stippledLineEnable != 0U) {
             vkCmdSetLineStipple(cmd, rasterizationLineState.lineStippleFactor, rasterizationLineState.lineStipplePattern);
         }
 
@@ -40,13 +40,13 @@ namespace vk_test {
         vkCmdSetCullMode(cmd, rasterizationState.cullMode);
         vkCmdSetFrontFace(cmd, rasterizationState.frontFace);
         vkCmdSetDepthBiasEnable(cmd, rasterizationState.depthBiasEnable);
-        if (rasterizationState.depthBiasEnable != 0u) {
+        if (rasterizationState.depthBiasEnable != 0U) {
             vkCmdSetDepthBias(cmd, rasterizationState.depthBiasConstantFactor, rasterizationState.depthBiasClamp, rasterizationState.depthBiasSlopeFactor);
         }
         vkCmdSetDepthClampEnableEXT(cmd, rasterizationState.depthClampEnable);
 
         vkCmdSetDepthTestEnable(cmd, depthStencilState.depthTestEnable);
-        if (depthStencilState.depthTestEnable != 0u) {
+        if (depthStencilState.depthTestEnable != 0U) {
             vkCmdSetDepthBounds(cmd, depthStencilState.minDepthBounds, depthStencilState.maxDepthBounds);
             vkCmdSetDepthBoundsTestEnable(cmd, depthStencilState.depthBoundsTestEnable);
             vkCmdSetDepthCompareOp(cmd, depthStencilState.depthCompareOp);
@@ -54,7 +54,7 @@ namespace vk_test {
         }
 
         vkCmdSetStencilTestEnable(cmd, depthStencilState.stencilTestEnable);
-        if (depthStencilState.stencilTestEnable != 0u) {
+        if (depthStencilState.stencilTestEnable != 0U) {
             vkCmdSetStencilCompareMask(cmd, VK_STENCIL_FACE_FRONT_BIT, depthStencilState.front.compareMask);
             vkCmdSetStencilCompareMask(cmd, VK_STENCIL_FACE_BACK_BIT, depthStencilState.back.compareMask);
             vkCmdSetStencilWriteMask(cmd, VK_STENCIL_FACE_FRONT_BIT, depthStencilState.front.writeMask);
@@ -73,14 +73,14 @@ namespace vk_test {
         vkCmdSetAlphaToCoverageEnableEXT(cmd, multisampleState.alphaToCoverageEnable);
         vkCmdSetAlphaToOneEnableEXT(cmd, multisampleState.alphaToOneEnable);
 
-        if ((!vertexBindings.empty() != 0u) && (!vertexAttributes.empty() != 0u)) {
+        if ((static_cast<unsigned int>(!vertexBindings.empty()) != 0U) && (static_cast<unsigned int>(!vertexAttributes.empty()) != 0U)) {
             vkCmdSetVertexInputEXT(cmd, static_cast<uint32_t>(vertexBindings.size()), vertexBindings.data(), static_cast<uint32_t>(vertexAttributes.size()), vertexAttributes.data());
         }
 
         assert(colorWriteMasks.size() == colorBlendEquations.size() && colorWriteMasks.size() == colorBlendEnables.size());
 
         uint32_t attachment_count = static_cast<uint32_t>(colorWriteMasks.size());
-        if (attachment_count != 0u) {
+        if (attachment_count != 0U) {
             vkCmdSetColorBlendEquationEXT(cmd, 0, attachment_count, colorBlendEquations.data());
             vkCmdSetColorBlendEnableEXT(cmd, 0, attachment_count, colorBlendEnables.data());
             vkCmdSetColorWriteMaskEXT(cmd, 0, attachment_count, colorWriteMasks.data());
@@ -275,7 +275,7 @@ namespace vk_test {
             }
         }
 
-        if (divisor_count != 0u) {
+        if (divisor_count != 0U) {
             m_VertexInputDivisorState.vertexBindingDivisorCount = divisor_count;
 
             m_VertexInputDivisorState.pNext = graphics_state.vertexInputState.pNext;
@@ -305,7 +305,7 @@ namespace vk_test {
             m_StaticAttachmentState[i].srcColorBlendFactor = graphics_state.colorBlendEquations[i].srcColorBlendFactor;
         }
 
-        if (!m_ShaderStages.empty() != 0u) {
+        if (static_cast<unsigned int>(!m_ShaderStages.empty()) != 0U) {
             // if we use locally provided shaders, then none must have been provided otherwise
             assert(create_info_temp.stageCount == 0 && create_info_temp.pStages == nullptr);
 
@@ -316,7 +316,7 @@ namespace vk_test {
                 if (m_ShaderStages[i].module == nullptr) {
                     m_ShaderStages[i].pNext = &m_ShaderStageModules[i];
                 }
-                if (m_ShaderStageSubgroupSizes[i].requiredSubgroupSize != 0u) {
+                if (m_ShaderStageSubgroupSizes[i].requiredSubgroupSize != 0U) {
                     m_ShaderStageSubgroupSizes[i].pNext = const_cast<void*>(m_ShaderStages[i].pNext);
                     m_ShaderStages[i].pNext             = &m_ShaderStageSubgroupSizes[i];
                 }
@@ -332,13 +332,13 @@ namespace vk_test {
 static void usage_GraphicsPipeline() {
     VkDevice device{};
 
-    vk_test::GraphicsPipelineState graphicsState;
+    vk_test::GraphicsPipelineState graphics_state;
 
     // set some state
     // we are omitting most things to keep it short
-    graphicsState.depthStencilState.depthTestEnable  = VK_TRUE;
-    graphicsState.depthStencilState.depthWriteEnable = VK_TRUE;
-    graphicsState.depthStencilState.depthCompareOp   = VK_COMPARE_OP_GREATER_OR_EQUAL;
+    graphics_state.depthStencilState.depthTestEnable  = VK_TRUE;
+    graphics_state.depthStencilState.depthWriteEnable = VK_TRUE;
+    graphics_state.depthStencilState.depthCompareOp   = VK_COMPARE_OP_GREATER_OR_EQUAL;
 
     // example using traditional pipeline
     {
@@ -359,7 +359,7 @@ static void usage_GraphicsPipeline() {
 
         // create the actual pipeline from a combination of state within `graphicsPipelineCreator` and `graphicsState`
         VkPipeline graphics_pipeline = nullptr;
-        VkResult   result            = graphics_pipeline_creator.createGraphicsPipeline(device, nullptr, graphicsState, &graphics_pipeline);
+        VkResult   result            = graphics_pipeline_creator.createGraphicsPipeline(device, nullptr, graphics_state, &graphics_pipeline);
 
         VkCommandBuffer cmd{};
         VkExtent2D      viewport_size{};
@@ -393,7 +393,7 @@ static void usage_GraphicsPipeline() {
         vk_test::GraphicsPipelineState::cmdSetViewportAndScissor(cmd, viewport_size);
 
         // bind default state via struct
-        graphicsState.cmdApplyAllStates(cmd);
+        graphics_state.cmdApplyAllStates(cmd);
 
         // bind the shaders
         vk_test::GraphicsPipelineState::BindableShaders bindable_shaders;

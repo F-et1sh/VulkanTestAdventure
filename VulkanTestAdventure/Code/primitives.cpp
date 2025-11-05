@@ -62,8 +62,8 @@ namespace vk_test {
     static void generateTexCoords(PrimitiveMesh& mesh) {
         for (auto& vertex : mesh.vertices) {
             glm::vec3 n = normalize(vertex.pos);
-            float     u = 0.5f + std::atan2(n.z, n.x) / (2.0F * float(M_PI));
-            float     v = 0.5f - std::asin(n.y) / float(M_PI);
+            float     u = 0.5F + (std::atan2(n.z, n.x) / (2.0F * float(M_PI)));
+            float     v = 0.5F - (std::asin(n.y) / float(M_PI));
             vertex.tex  = { u, v };
         }
     }
@@ -197,8 +197,8 @@ namespace vk_test {
 
         for (int sz = 0; sz < steps; sz++) {
             for (int sx = 0; sx < steps; sx++) {
-                addTriangle(mesh, sx + sz * (steps + 1), sx + 1 + (sz + 1) * (steps + 1), sx + 1 + sz * (steps + 1));
-                addTriangle(mesh, sx + sz * (steps + 1), sx + (sz + 1) * (steps + 1), sx + 1 + (sz + 1) * (steps + 1));
+                addTriangle(mesh, sx + (sz * (steps + 1)), sx + 1 + ((sz + 1) * (steps + 1)), sx + 1 + (sz * (steps + 1)));
+                addTriangle(mesh, sx + (sz * (steps + 1)), sx + ((sz + 1) * (steps + 1)), sx + 1 + ((sz + 1) * (steps + 1)));
             }
         }
 
@@ -221,8 +221,9 @@ namespace vk_test {
 
         for (int i = 0; i < 6; ++i) {
             auto index = static_cast<int>(mesh.vertices.size());
-            for (int j = 0; j < 4; ++j)
+            for (int j = 0; j < 4; ++j) {
                 mesh.vertices.push_back({ pnt[cube_polygons[i][j]], nrm[i], uv[j] });
+            }
             addTriangle(mesh, index, index + 1, index + 2);
             addTriangle(mesh, index, index + 2, index + 3);
         }
@@ -307,19 +308,19 @@ namespace vk_test {
     PrimitiveMesh createConeMesh(float radius, float height, int segments) {
         PrimitiveMesh mesh;
 
-        float halfHeight = height * 0.5f;
+        float half_height = height * 0.5F;
 
         const float math_pi     = static_cast<float>(M_PI);
         float       sector_step = 2.0F * math_pi / static_cast<float>(segments);
         float       sector_angle{ 0.0F };
 
         // length of the flank of the cone
-        float flank_len = sqrtf(radius * radius + 1.0F);
+        float flank_len = sqrtf((radius * radius) + 1.0F);
         // unit vector along the flank of the cone
         float cone_x = radius / flank_len;
         float cone_y = -1.0F / flank_len;
 
-        glm::vec3 tip = { 0.0F, halfHeight, 0.0F };
+        glm::vec3 tip = { 0.0F, half_height, 0.0F };
 
         // Sides
         for (int i = 0; i <= segments; ++i) {
@@ -329,7 +330,7 @@ namespace vk_test {
             // Position
             v.pos.x = radius * cosf(sector_angle); // r * cos(u) * cos(v)
             v.pos.z = radius * sinf(sector_angle); // r * cos(u) * sin(v)
-            v.pos.y = -halfHeight;
+            v.pos.y = -half_height;
             // Normal
             v.nrm.x = -cone_y * cosf(sector_angle);
             v.nrm.y = cone_x;
@@ -365,7 +366,7 @@ namespace vk_test {
 
             v.pos.x = radius * cosf(sector_angle); // r * cos(u) * cos(v)
             v.pos.z = radius * sinf(sector_angle); // r * cos(u) * sin(v)
-            v.pos.y = -halfHeight;
+            v.pos.y = -half_height;
             //
             v.nrm = { 0.0F, -1.0F, 0.0F };
             //
@@ -400,55 +401,55 @@ namespace vk_test {
         std::vector<glm::vec3> vertices = { { -1, t, 0 }, { 1, t, 0 }, { -1, -t, 0 }, { 1, -t, 0 }, { 0, -1, t }, { 0, 1, t }, { 0, -1, -t }, { 0, 1, -t }, { t, 0, -1 }, { t, 0, 1 }, { -t, 0, -1 }, { -t, 0, 1 } };
 
         // Function to calculate the midpoint between two vertices
-        auto midpoint = [](const glm::vec3& v1, const glm::vec3& v2) { return (v1 + v2) * 0.5f; };
+        auto midpoint = [](const glm::vec3& v1, const glm::vec3& v2) { return (v1 + v2) * 0.5F; };
 
-        auto texCoord = [](const glm::vec3& v1) {
-            return glm::vec2{ 0.5f + std::atan2(v1.z, v1.x) / (2 * M_PI), 0.5f - std::asin(v1.y) / M_PI };
+        auto tex_coord = [](const glm::vec3& v1) {
+            return glm::vec2{ 0.5F + (std::atan2(v1.z, v1.x) / (2 * M_PI)), 0.5F - (std::asin(v1.y) / M_PI) };
         };
 
-        std::vector<PrimitiveVertex> primitiveVertices;
+        std::vector<PrimitiveVertex> primitive_vertices;
         for (const auto& vertex : vertices) {
             glm::vec3 n = normalize(vertex);
-            primitiveVertices.push_back({ n * radius, n, texCoord(n) });
+            primitive_vertices.push_back({ n * radius, n, tex_coord(n) });
         }
 
         std::vector<PrimitiveTriangle> triangles = { { { 0, 11, 5 } }, { { 0, 5, 1 } }, { { 0, 1, 7 } }, { { 0, 7, 10 } }, { { 0, 10, 11 } }, { { 1, 5, 9 } }, { { 5, 11, 4 } }, { { 11, 10, 2 } }, { { 10, 7, 6 } }, { { 7, 1, 8 } }, { { 3, 9, 4 } }, { { 3, 4, 2 } }, { { 3, 2, 6 } }, { { 3, 6, 8 } }, { { 3, 8, 9 } }, { { 4, 9, 5 } }, { { 2, 4, 11 } }, { { 6, 2, 10 } }, { { 8, 6, 7 } }, { { 9, 8, 1 } } };
 
         for (int i = 0; i < subdivisions; ++i) {
-            std::vector<PrimitiveTriangle> subTriangles;
+            std::vector<PrimitiveTriangle> sub_triangles;
             for (const auto& tri : triangles) {
                 // Subdivide each triangle into 4 sub-triangles
-                glm::vec3 mid1 = midpoint(primitiveVertices[tri.indices[0]].pos, primitiveVertices[tri.indices[1]].pos);
-                glm::vec3 mid2 = midpoint(primitiveVertices[tri.indices[1]].pos, primitiveVertices[tri.indices[2]].pos);
-                glm::vec3 mid3 = midpoint(primitiveVertices[tri.indices[2]].pos, primitiveVertices[tri.indices[0]].pos);
+                glm::vec3 mid1 = midpoint(primitive_vertices[tri.indices[0]].pos, primitive_vertices[tri.indices[1]].pos);
+                glm::vec3 mid2 = midpoint(primitive_vertices[tri.indices[1]].pos, primitive_vertices[tri.indices[2]].pos);
+                glm::vec3 mid3 = midpoint(primitive_vertices[tri.indices[2]].pos, primitive_vertices[tri.indices[0]].pos);
 
-                glm::vec3 mid1Normalized = normalize(mid1);
-                glm::vec3 mid2Normalized = normalize(mid2);
-                glm::vec3 mid3Normalized = normalize(mid3);
+                glm::vec3 mid1_normalized = normalize(mid1);
+                glm::vec3 mid2_normalized = normalize(mid2);
+                glm::vec3 mid3_normalized = normalize(mid3);
 
-                glm::vec2 mid1Uv = texCoord(mid1Normalized);
-                glm::vec2 mid2Uv = texCoord(mid2Normalized);
-                glm::vec2 mid3Uv = texCoord(mid3Normalized);
+                glm::vec2 mid1_uv = tex_coord(mid1_normalized);
+                glm::vec2 mid2_uv = tex_coord(mid2_normalized);
+                glm::vec2 mid3_uv = tex_coord(mid3_normalized);
 
-                primitiveVertices.push_back({ mid1Normalized * radius, mid1Normalized, mid1Uv });
-                primitiveVertices.push_back({ mid2Normalized * radius, mid2Normalized, mid2Uv });
-                primitiveVertices.push_back({ mid3Normalized * radius, mid3Normalized, mid3Uv });
+                primitive_vertices.push_back({ mid1_normalized * radius, mid1_normalized, mid1_uv });
+                primitive_vertices.push_back({ mid2_normalized * radius, mid2_normalized, mid2_uv });
+                primitive_vertices.push_back({ mid3_normalized * radius, mid3_normalized, mid3_uv });
 
-                uint32_t m1 = static_cast<uint32_t>(primitiveVertices.size()) - 3U;
+                uint32_t m1 = static_cast<uint32_t>(primitive_vertices.size()) - 3U;
                 uint32_t m2 = m1 + 1U;
                 uint32_t m3 = m2 + 1U;
 
                 // Create 4 new triangles from the subdivided triangle
-                subTriangles.push_back({ { tri.indices[0], m1, m3 } });
-                subTriangles.push_back({ { m1, tri.indices[1], m2 } });
-                subTriangles.push_back({ { m2, tri.indices[2], m3 } });
-                subTriangles.push_back({ { m1, m2, m3 } });
+                sub_triangles.push_back({ { tri.indices[0], m1, m3 } });
+                sub_triangles.push_back({ { m1, tri.indices[1], m2 } });
+                sub_triangles.push_back({ { m2, tri.indices[2], m3 } });
+                sub_triangles.push_back({ { m1, m2, m3 } });
             }
 
-            triangles = std::move(subTriangles);
+            triangles = std::move(sub_triangles);
         }
 
-        return PrimitiveMesh{ std::move(primitiveVertices), std::move(triangles) };
+        return PrimitiveMesh{ std::move(primitive_vertices), std::move(triangles) };
     }
 
     // Generates a torus mesh, which is a 3D geometric shape resembling a donut
@@ -456,31 +457,31 @@ namespace vk_test {
     // minorRadius: This represents the radius of the tube (the smaller circle's radius).
     // majorSegments: The number of segments used to approximate the larger circle that forms the torus.
     // minorSegments: The number of segments used to approximate the smaller circle (tube) within the torus.
-    vk_test::PrimitiveMesh createTorusMesh(float majorRadius, float minorRadius, int majorSegments, int minorSegments) {
+    vk_test::PrimitiveMesh createTorusMesh(float major_radius, float minor_radius, int major_segments, int minor_segments) {
         vk_test::PrimitiveMesh mesh;
 
-        float majorStep = 2.0f * float(M_PI) / float(majorSegments);
-        float minorStep = 2.0f * float(M_PI) / float(minorSegments);
+        float major_step = 2.0F * float(M_PI) / float(major_segments);
+        float minor_step = 2.0F * float(M_PI) / float(minor_segments);
 
-        for (int i = 0; i <= majorSegments; ++i) {
-            float     angle1 = i * majorStep;
-            glm::vec3 center = { majorRadius * std::cos(angle1), 0.0f, majorRadius * std::sin(angle1) };
+        for (int i = 0; i <= major_segments; ++i) {
+            float     angle1 = i * major_step;
+            glm::vec3 center = { major_radius * std::cos(angle1), 0.0F, major_radius * std::sin(angle1) };
 
-            for (int j = 0; j <= minorSegments; ++j) {
-                float     angle2   = j * minorStep;
-                glm::vec3 position = { center.x + minorRadius * std::cos(angle2) * std::cos(angle1), minorRadius * std::sin(angle2), center.z + minorRadius * std::cos(angle2) * std::sin(angle1) };
+            for (int j = 0; j <= minor_segments; ++j) {
+                float     angle2   = j * minor_step;
+                glm::vec3 position = { center.x + (minor_radius * std::cos(angle2) * std::cos(angle1)), minor_radius * std::sin(angle2), center.z + (minor_radius * std::cos(angle2) * std::sin(angle1)) };
 
                 glm::vec3 normal = { std::cos(angle2) * std::cos(angle1), std::sin(angle2), std::cos(angle2) * std::sin(angle1) };
 
-                glm::vec2 texCoord = { static_cast<float>(i) / majorSegments, static_cast<float>(j) / minorSegments };
-                mesh.vertices.push_back({ position, normal, texCoord });
+                glm::vec2 tex_coord = { static_cast<float>(i) / major_segments, static_cast<float>(j) / minor_segments };
+                mesh.vertices.push_back({ position, normal, tex_coord });
             }
         }
 
-        for (int i = 0; i < majorSegments; ++i) {
-            for (int j = 0; j < minorSegments; ++j) {
-                uint32_t idx1 = i * (minorSegments + 1) + j;
-                uint32_t idx2 = (i + 1) * (minorSegments + 1) + j;
+        for (int i = 0; i < major_segments; ++i) {
+            for (int j = 0; j < minor_segments; ++j) {
+                uint32_t idx1 = (i * (minor_segments + 1)) + j;
+                uint32_t idx2 = ((i + 1) * (minor_segments + 1)) + j;
                 uint32_t idx3 = idx1 + 1;
                 uint32_t idx4 = idx2 + 1;
 
@@ -498,47 +499,51 @@ namespace vk_test {
     // different objects.
     std::vector<vk_test::Node> mengerSpongeNodes(int level, float probability, int seed) {
         std::mt19937                          rng(seed);
-        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+        std::uniform_real_distribution<float> dist(0.0F, 1.0F);
 
         struct MengerSponge {
             glm::vec3 m_topLeftFront;
             float     m_size;
 
             void split(std::vector<MengerSponge>& cubes) {
-                float     size         = m_size / 3.f;
-                glm::vec3 topLeftFront = m_topLeftFront;
+                float     size           = m_size / 3.F;
+                glm::vec3 top_left_front = m_topLeftFront;
                 for (int x = 0; x < 3; x++) {
-                    topLeftFront[0] = m_topLeftFront[0] + static_cast<float>(x) * size;
+                    top_left_front[0] = m_topLeftFront[0] + static_cast<float>(x) * size;
                     for (int y = 0; y < 3; y++) {
-                        if (x == 1 && y == 1)
+                        if (x == 1 && y == 1) {
                             continue;
-                        topLeftFront[1] = m_topLeftFront[1] + static_cast<float>(y) * size;
+                        }
+                        top_left_front[1] = m_topLeftFront[1] + static_cast<float>(y) * size;
                         for (int z = 0; z < 3; z++) {
-                            if (x == 1 && z == 1)
+                            if (x == 1 && z == 1) {
                                 continue;
-                            if (y == 1 && z == 1)
+                            }
+                            if (y == 1 && z == 1) {
                                 continue;
+                            }
 
-                            topLeftFront[2] = m_topLeftFront[2] + static_cast<float>(z) * size;
-                            cubes.push_back({ topLeftFront, size });
+                            top_left_front[2] = m_topLeftFront[2] + static_cast<float>(z) * size;
+                            cubes.push_back({ top_left_front, size });
                         }
                     }
                 }
             }
 
             void splitProb(std::vector<MengerSponge>& cubes, float prob, std::mt19937& rng, std::uniform_real_distribution<float>& dist) {
-                float     size         = m_size / 3.f;
-                glm::vec3 topLeftFront = m_topLeftFront;
+                float     size           = m_size / 3.F;
+                glm::vec3 top_left_front = m_topLeftFront;
                 for (int x = 0; x < 3; x++) {
-                    topLeftFront[0] = m_topLeftFront[0] + static_cast<float>(x) * size;
+                    top_left_front[0] = m_topLeftFront[0] + static_cast<float>(x) * size;
                     for (int y = 0; y < 3; y++) {
-                        topLeftFront[1] = m_topLeftFront[1] + static_cast<float>(y) * size;
+                        top_left_front[1] = m_topLeftFront[1] + static_cast<float>(y) * size;
                         for (int z = 0; z < 3; z++) {
                             float sample = dist(rng);
-                            if (sample > prob)
+                            if (sample > prob) {
                                 continue;
-                            topLeftFront[2] = m_topLeftFront[2] + static_cast<float>(z) * size;
-                            cubes.push_back({ topLeftFront, size });
+                            }
+                            top_left_front[2] = m_topLeftFront[2] + static_cast<float>(z) * size;
+                            cubes.push_back({ top_left_front, size });
                         }
                     }
                 }
@@ -546,24 +551,26 @@ namespace vk_test {
         };
 
         // Starting element
-        MengerSponge element = { glm::vec3(-0.5, -0.5, -0.5), 1.f };
+        MengerSponge element = { glm::vec3(-0.5, -0.5, -0.5), 1.F };
 
         std::vector<MengerSponge> elements1 = { element };
         std::vector<MengerSponge> elements2 = {};
 
-        auto previous = &elements1;
-        auto next     = &elements2;
+        auto* previous = &elements1;
+        auto* next     = &elements2;
 
         for (int i = 0; i < level; i++) {
             for (MengerSponge& c : *previous) {
-                if (probability < 0.f)
+                if (probability < 0.F) {
                     c.split(*next);
-                else
+                }
+                else {
                     c.splitProb(*next, probability, rng, dist);
+                }
             }
-            auto temp = previous;
-            previous  = next;
-            next      = temp;
+            auto* temp = previous;
+            previous   = next;
+            next       = temp;
             next->clear();
         }
 
@@ -583,16 +590,16 @@ namespace vk_test {
     // Create a list of nodes where the seeds have the position similar as in a sun flower
     // and the seeds grow slightly the further they are from the center.
     std::vector<vk_test::Node> sunflower(int seeds) {
-        constexpr double goldenRatio = glm::golden_ratio<double>();
+        constexpr double golden_ratio = glm::golden_ratio<double>();
 
         std::vector<vk_test::Node> flower;
         for (int i = 1; i <= seeds; ++i) {
-            double r     = pow(i, goldenRatio) / seeds;
-            double theta = 2 * glm::pi<double>() * goldenRatio * i;
+            double r     = pow(i, golden_ratio) / seeds;
+            double theta = 2 * glm::pi<double>() * golden_ratio * i;
 
             vk_test::Node seed;
             seed.translation = glm::vec3(r * sin(theta), 0, r * cos(theta));
-            seed.scale       = glm::vec3(10.0f * i / (1.0f * seeds));
+            seed.scale       = glm::vec3(10.0F * i / (1.0F * seeds));
             seed.mesh        = 0;
 
             flower.push_back(seed);
@@ -605,7 +612,7 @@ namespace vk_test {
     // - nodes: the nodes to merge
     // - meshes: the mesh array that the nodes is referring to
     vk_test::PrimitiveMesh mergeNodes(const std::vector<vk_test::Node>& nodes, const std::vector<vk_test::PrimitiveMesh> meshes) {
-        vk_test::PrimitiveMesh resultMesh;
+        vk_test::PrimitiveMesh result_mesh;
 
         // Find how many triangles and vertices the merged mesh will have
         size_t nb_triangles = 0;
@@ -614,27 +621,27 @@ namespace vk_test {
             nb_triangles += meshes[n.mesh].triangles.size();
             nb_vertices += meshes[n.mesh].vertices.size();
         }
-        resultMesh.triangles.reserve(nb_triangles);
-        resultMesh.vertices.reserve(nb_vertices);
+        result_mesh.triangles.reserve(nb_triangles);
+        result_mesh.vertices.reserve(nb_vertices);
 
         // Merge all nodes meshes into a single one
         for (const auto& n : nodes) {
             const glm::mat4 mat = n.localMatrix();
 
-            uint32_t                      tIndex = static_cast<uint32_t>(resultMesh.vertices.size());
-            const vk_test::PrimitiveMesh& mesh   = meshes[n.mesh];
+            uint32_t                      t_index = static_cast<uint32_t>(result_mesh.vertices.size());
+            const vk_test::PrimitiveMesh& mesh    = meshes[n.mesh];
 
             for (auto v : mesh.vertices) {
                 v.pos = glm::vec3(mat * glm::vec4(v.pos, 1));
-                resultMesh.vertices.push_back(v);
+                result_mesh.vertices.push_back(v);
             }
             for (auto t : mesh.triangles) {
-                t.indices += tIndex;
-                resultMesh.triangles.push_back(t);
+                t.indices += t_index;
+                result_mesh.triangles.push_back(t);
             }
         }
 
-        return resultMesh;
+        return result_mesh;
     }
 
     // Takes a 3D mesh as input and modifies its vertices by adding random displacements within a
@@ -652,17 +659,17 @@ namespace vk_test {
         // Our random function
         auto rand = [&] { return distribution(gen); };
 
-        std::vector<PrimitiveVertex> newVertices;
-        for (auto& vertex : mesh.vertices) {
-            glm::vec3 originalPosition = vertex.pos;
-            glm::vec3 displacement     = glm::vec3(rand(), rand(), rand());
+        std::vector<PrimitiveVertex> new_vertices;
+        for (const auto& vertex : mesh.vertices) {
+            glm::vec3 original_position = vertex.pos;
+            glm::vec3 displacement      = glm::vec3(rand(), rand(), rand());
             displacement *= amplitude;
-            glm::vec3 newPosition = originalPosition + displacement;
+            glm::vec3 new_position = original_position + displacement;
 
-            newVertices.push_back({ newPosition, vertex.nrm, vertex.tex });
+            new_vertices.push_back({ new_position, vertex.nrm, vertex.tex });
         }
 
-        return { std::move(newVertices), std::move(mesh.triangles) };
+        return { std::move(new_vertices), std::move(mesh.triangles) };
     }
 
     // Takes a 3D mesh as input and returns a new mesh with duplicate vertices removed.
@@ -670,51 +677,52 @@ namespace vk_test {
     // compares its vertices, and creates a new set of unique vertices in uniqueVertices.
     // We use an unordered_map called vertexIndexMap to keep track of the mapping between
     // the original vertices and their corresponding indices in the uniqueVertices vector.
-    PrimitiveMesh removeDuplicateVertices(const PrimitiveMesh& mesh, bool testNormal, bool testUv) {
+    PrimitiveMesh removeDuplicateVertices(const PrimitiveMesh& mesh, bool test_normal, bool test_uv) {
         auto hash = [&](const PrimitiveVertex& v) {
-            if (testNormal) {
-                if (testUv)
+            if (test_normal) {
+                if (test_uv) {
                     return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.nrm.x, v.nrm.y, v.nrm.z, v.tex.x, v.tex.y);
-                else
-                    return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.nrm.x, v.nrm.y, v.nrm.z);
+                }
+                return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.nrm.x, v.nrm.y, v.nrm.z);
             }
-            else if (testUv)
+            else if (test_uv) {
                 return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.tex.x, v.tex.y);
+            }
             return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z);
         };
         auto equal = [&](const PrimitiveVertex& l, const PrimitiveVertex& r) {
-            return (l.pos == r.pos) && (testNormal ? l.nrm == r.nrm : true) && (testUv ? l.tex == r.tex : true);
+            return (l.pos == r.pos) && (test_normal ? l.nrm == r.nrm : true) && (test_uv ? l.tex == r.tex : true);
         };
-        std::unordered_map<PrimitiveVertex, uint32_t, decltype(hash), decltype(equal)> vertexIndexMap(0, hash, equal);
+        std::unordered_map<PrimitiveVertex, uint32_t, decltype(hash), decltype(equal)> vertex_index_map(0, hash, equal);
 
-        std::vector<PrimitiveVertex>   uniqueVertices;
-        std::vector<PrimitiveTriangle> uniqueTriangles;
+        std::vector<PrimitiveVertex>   unique_vertices;
+        std::vector<PrimitiveTriangle> unique_triangles;
 
         for (const auto& triangle : mesh.triangles) {
-            PrimitiveTriangle uniqueTriangle = {};
+            PrimitiveTriangle unique_triangle = {};
             for (int i = 0; i < 3; i++) {
                 const PrimitiveVertex& vertex = mesh.vertices[triangle.indices[i]];
 
                 // Check if the vertex is already in the uniqueVertices list
-                auto it = vertexIndexMap.find(vertex);
-                if (it == vertexIndexMap.end()) {
+                auto it = vertex_index_map.find(vertex);
+                if (it == vertex_index_map.end()) {
                     // Vertex not found, add it to uniqueVertices and update the index map
-                    uint32_t newIndex      = static_cast<uint32_t>(uniqueVertices.size());
-                    vertexIndexMap[vertex] = newIndex;
-                    uniqueVertices.push_back(vertex);
-                    uniqueTriangle.indices[i] = newIndex;
+                    uint32_t new_index       = static_cast<uint32_t>(unique_vertices.size());
+                    vertex_index_map[vertex] = new_index;
+                    unique_vertices.push_back(vertex);
+                    unique_triangle.indices[i] = new_index;
                 }
                 else {
                     // Vertex found, use its index in uniqueVertices
-                    uniqueTriangle.indices[i] = it->second;
+                    unique_triangle.indices[i] = it->second;
                 }
             }
-            uniqueTriangles.push_back(uniqueTriangle);
+            unique_triangles.push_back(unique_triangle);
         }
 
         // nvprintf("Before: %d vertex, %d triangles\n", mesh.vertices.size(), mesh.triangles.size());
         // nvprintf("After: %d vertex, %d triangles\n", uniqueVertices.size(), uniqueTriangles.size());
 
-        return { std::move(uniqueVertices), std::move(uniqueTriangles) };
+        return { std::move(unique_vertices), std::move(unique_triangles) };
     }
 } // namespace vk_test

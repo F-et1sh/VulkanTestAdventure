@@ -52,7 +52,7 @@ vk_test::GBuffer::~GBuffer() {
 
 void vk_test::GBuffer::init(const GBufferInitInfo& create_info) {
     assert(m_Info.color_formats.empty() && "Missing deinit()"); // The buffer must be cleared before creating a new one
-    m_Info = create_info;                                        // Copy the creation info
+    m_Info = create_info;                                       // Copy the creation info
 }
 
 void vk_test::GBuffer::deinit() {
@@ -117,7 +117,7 @@ VkSampleCountFlagBits vk_test::GBuffer::getSampleCount() const {
 float vk_test::GBuffer::getAspectRatio() const {
     if (m_Size.height == 0) {
         return 1.0F;
-}
+    }
     return float(m_Size.width) / float(m_Size.height);
 }
 
@@ -196,8 +196,8 @@ VkResult vk_test::GBuffer::initResources(VkCommandBuffer cmd) {
                                                             .newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL });
         }
         const VkDependencyInfo dep_info{ .sType                   = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
-                                        .imageMemoryBarrierCount = num_color,
-                                        .pImageMemoryBarriers    = barriers.data() };
+                                         .imageMemoryBarrierCount = num_color,
+                                         .pImageMemoryBarriers    = barriers.data() };
         vkCmdPipelineBarrier2(cmd, &dep_info);
 
         for (uint32_t c = 0; c < num_color; c++) {
@@ -291,7 +291,7 @@ static void usage_GBuffer() {
     vk_test::GBuffer gbuffer;
 
     vk_test::ResourceAllocator allocator;
-    VkSampler                  linear_sampler   = nullptr; // EX: create a linear sampler
+    VkSampler                  linear_sampler  = nullptr; // EX: create a linear sampler
     VkDescriptorPool           descriptor_pool = nullptr; // EX: create a descriptor pool or use the one from the app (m_app->getTextureDescriptorPool())
 
     // Create a G-buffer with two color images and one depth image.
@@ -306,9 +306,9 @@ static void usage_GBuffer() {
     gbuffer.update(cmd, VkExtent2D{ 600, 480 });
 
     // Get the image views
-    VkImageView color_image_view_rgba8   = gbuffer.getColorImageView(0);
+    VkImageView color_image_view_rgba8    = gbuffer.getColorImageView(0);
     VkImageView color_image_view_rgba_f32 = gbuffer.getColorImageView(1);
-    VkImageView depth_image_view        = gbuffer.getDepthImageView();
+    VkImageView depth_image_view          = gbuffer.getDepthImageView();
 
     // Display a G-Buffer using Dear ImGui like this (include <imgui.h>):
     // ImGui::Image((ImTextureID)gbuffer.getDescriptorSet(0), ImGui::GetContentRegionAvail());

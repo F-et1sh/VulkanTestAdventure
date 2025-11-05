@@ -46,7 +46,7 @@ namespace vk_test {
                               VkDeviceSize              size,
                               VkBufferUsageFlags2KHR    usage,
                               VmaMemoryUsage            memory_usage   = VMA_MEMORY_USAGE_AUTO,
-                              VmaAllocationCreateFlags  flags         = {},
+                              VmaAllocationCreateFlags  flags          = {},
                               VkDeviceSize              min_alignment  = 0,
                               std::span<const uint32_t> queue_families = {}) const;
 
@@ -70,10 +70,10 @@ namespace vk_test {
                                    VkQueue                   sparse_binding_queue,
                                    VkFence                   sparse_binding_fence = VK_NULL_HANDLE,
                                    VkDeviceSize              max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VmaMemoryUsage            memory_usage        = VMA_MEMORY_USAGE_AUTO,
-                                   VmaAllocationCreateFlags  flags              = {},
-                                   VkDeviceSize              min_alignment       = 0,
-                                   std::span<const uint32_t> queue_families      = {}) const;
+                                   VmaMemoryUsage            memory_usage         = VMA_MEMORY_USAGE_AUTO,
+                                   VmaAllocationCreateFlags  flags                = {},
+                                   VkDeviceSize              min_alignment        = 0,
+                                   std::span<const uint32_t> queue_families       = {}) const;
 
         VkResult createLargeBuffer(LargeBuffer&                   buffer,
                                    const VkBufferCreateInfo&      buffer_info,
@@ -81,7 +81,7 @@ namespace vk_test {
                                    VkQueue                        sparse_binding_queue,
                                    VkFence                        sparse_binding_fence = VK_NULL_HANDLE,
                                    VkDeviceSize                   max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
-                                   VkDeviceSize                   min_alignment       = 0) const;
+                                   VkDeviceSize                   min_alignment        = 0) const;
 
         void destroyLargeBuffer(LargeBuffer& buffer) const;
 
@@ -131,7 +131,7 @@ namespace vk_test {
                                          VkQueue                                     sparse_binding_queue,
                                          VkFence                                     sparse_binding_fence = VK_NULL_HANDLE,
                                          VkDeviceSize                                max_chunk_size       = DEFAULT_LARGE_CHUNK_SIZE,
-                                         std::span<const uint32_t>                   queue_families      = {}) const;
+                                         std::span<const uint32_t>                   queue_families       = {}) const;
 
         void destroyLargeAcceleration(LargeAccelerationStructure& accel) const;
 

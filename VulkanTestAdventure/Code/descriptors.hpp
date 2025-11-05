@@ -53,7 +53,7 @@ namespace vk_test {
                         uint32_t                 descriptor_count,
                         VkShaderStageFlags       stage_flags,
                         const VkSampler*         p_immutable_samplers = nullptr,
-                        VkDescriptorBindingFlags binding_flags       = 0);
+                        VkDescriptorBindingFlags binding_flags        = 0);
 
         void addBinding(const VkDescriptorSetLayoutBinding& layout_binding, VkDescriptorBindingFlags binding_flags = 0);
 
@@ -72,11 +72,11 @@ namespace vk_test {
         // If no entry exists for the given `binding`, returns a `VkWriteDescriptorSet`
         // with .descriptorType set to `VK_DESCRIPTOR_TYPE_MAX_ENUM`.
         VkWriteDescriptorSet getWriteSet(uint32_t        binding,
-                                         VkDescriptorSet dst_set          = nullptr,
+                                         VkDescriptorSet dst_set           = nullptr,
                                          uint32_t        dst_array_element = ~0,
-                                         uint32_t        descriptor_count = 1) const;
+                                         uint32_t        descriptor_count  = 1) const;
 
-        void clear()noexcept {
+        void clear() noexcept {
             m_Bindings.clear();
             m_BindingFlags.clear();
         }
@@ -133,9 +133,9 @@ namespace vk_test {
         // Otherwise the regular `binding.descriptorCount * numSets` is used.
         VkResult init(const DescriptorBindings&        bindings,
                       VkDevice                         device,
-                      uint32_t                         num_sets                  = 1,
-                      VkDescriptorSetLayoutCreateFlags layout_flags              = 0,
-                      VkDescriptorPoolCreateFlags      pool_flags                = 0,
+                      uint32_t                         num_sets                   = 1,
+                      VkDescriptorSetLayoutCreateFlags layout_flags               = 0,
+                      VkDescriptorPoolCreateFlags      pool_flags                 = 0,
                       uint32_t                         total_variable_count       = 0,
                       const uint32_t*                  descriptor_variable_counts = nullptr);
         void     deinit();
@@ -171,7 +171,7 @@ namespace vk_test {
     // Helper function to create a pipeline layout.
     inline VkResult createPipelineLayout(VkDevice                               device,
                                          VkPipelineLayout*                      p_pipeline_layout,
-                                         std::span<const VkDescriptorSetLayout> layouts            = {},
+                                         std::span<const VkDescriptorSetLayout> layouts              = {},
                                          std::span<const VkPushConstantRange>   push_constant_ranges = {}) {
         const VkPipelineLayoutCreateInfo info{ .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
                                                .setLayoutCount         = static_cast<uint32_t>(layouts.size()),
@@ -184,7 +184,7 @@ namespace vk_test {
     // Overload so you can write {layout}, {pushConstantRange}
     inline VkResult createPipelineLayout(VkDevice                                           device,
                                          VkPipelineLayout*                                  p_pipeline_layout,
-                                         std::initializer_list<const VkDescriptorSetLayout> layouts            = {},
+                                         std::initializer_list<const VkDescriptorSetLayout> layouts              = {},
                                          std::initializer_list<const VkPushConstantRange>   push_constant_ranges = {}) {
         return createPipelineLayout(device, p_pipeline_layout, std::span<const VkDescriptorSetLayout>(layouts.begin(), layouts.size()), std::span<const VkPushConstantRange>(push_constant_ranges.begin(), push_constant_ranges.size()));
     }

@@ -23,7 +23,7 @@
 */
 
 #include "pch.h"
-#include "Slang.hpp"
+#include "slang.hpp"
 
 vk_test::SlangCompiler::SlangCompiler() {
     SlangGlobalSessionDesc desc{ .enableGLSL = true };
@@ -194,7 +194,7 @@ static void usage_SlangCompiler() {
     const std::vector<std::filesystem::path> shaders_paths = { "include/shaders" };
     slang_compiler.addSearchPaths(shaders_paths);
     slang_compiler.addOption({ slang::CompilerOptionName::DebugInformation,
-                              { slang::CompilerOptionValueKind::Int, SLANG_DEBUG_INFO_LEVEL_MAXIMAL } });
+                               { slang::CompilerOptionValueKind::Int, SLANG_DEBUG_INFO_LEVEL_MAXIMAL } });
     slang_compiler.addMacro({ "MY_DEFINE", "1" });
 
     // Compile a shader file
@@ -208,7 +208,7 @@ static void usage_SlangCompiler() {
     }
     else {
         // Get the compiled SPIR-V code
-        const uint32_t* spirv     = slang_compiler.getSpirv();
+        const uint32_t* spirv      = slang_compiler.getSpirv();
         size_t          spirv_size = slang_compiler.getSpirvSize();
 
         // Check if there were any warnings

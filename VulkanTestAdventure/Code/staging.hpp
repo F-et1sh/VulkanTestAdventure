@@ -109,13 +109,13 @@ namespace vk_test {
         // and a copy command is appended for later execution via `cmdUploadAppended`
         // `dataSize` can be `0` does return VK_SUCCESS and sets `uploadMapping` to nullptr
         VkResult appendBufferMapping(const vk_test::Buffer& buffer,
-                                     VkDeviceSize           buffer_offset,
-                                     VkDeviceSize           data_size,
-                                     void*&                 upload_mapping,
+                                     VkDeviceSize           bufferOffset,
+                                     VkDeviceSize           dataSize,
+                                     void*&                 uploadMapping,
                                      const SemaphoreState&  semaphore_state = {});
 
         // same as above but infers `bufferOffset` from `bufferRange.offset` and `dataSize` from `bufferRange.range`
-        VkResult appendBufferRangeMapping(const vk_test::BufferRange& buffer_range, void*& upload_mapping, const SemaphoreState& semaphore_state = {});
+        VkResult appendBufferRangeMapping(const vk_test::BufferRange& bufferRange, void*& uploadMapping, const SemaphoreState& semaphore_state = {});
 
         template <typename T>
         VkResult appendBuffer(const vk_test::Buffer& buffer, size_t buffer_offset, std::span<T> data, const SemaphoreState& semaphore_state = {}) {
@@ -124,10 +124,10 @@ namespace vk_test {
 
         template <typename T>
         VkResult appendBufferMapping(const vk_test::Buffer& buffer,
-                                            size_t                 buffer_offset,
-                                            size_t                 data_size,
-                                            T*&                    upload_mapping,
-                                            const SemaphoreState&  semaphore_state = {}) {
+                                     size_t                 buffer_offset,
+                                     size_t                 data_size,
+                                     T*&                    upload_mapping,
+                                     const SemaphoreState&  semaphore_state = {}) {
             return appendBufferMapping(buffer, buffer_offset, data_size, (void*&) upload_mapping, semaphore_state);
         }
 
@@ -139,8 +139,8 @@ namespace vk_test {
 
         template <typename T>
         VkResult appendBufferRangeMapping(const vk_test::BufferRange& buffer_range,
-                                                 T*&                         upload_mapping,
-                                                 const SemaphoreState&       semaphore_state = {}) {
+                                          T*&                         upload_mapping,
+                                          const SemaphoreState&       semaphore_state = {}) {
             return appendBufferRangeMapping(buffer_range, (void*&) upload_mapping, semaphore_state);
         }
 
@@ -166,9 +166,9 @@ namespace vk_test {
 
         template <typename T>
         VkResult appendImage(vk_test::Image&       image,
-                                    std::span<T>          data,
-                                    VkImageLayout         new_layout      = VK_IMAGE_LAYOUT_UNDEFINED,
-                                    const SemaphoreState& semaphore_state = {}) {
+                             std::span<T>          data,
+                             VkImageLayout         new_layout      = VK_IMAGE_LAYOUT_UNDEFINED,
+                             const SemaphoreState& semaphore_state = {}) {
             return appendImage(image, data.size_bytes(), data.data(), new_layout, semaphore_state);
         }
 
@@ -184,12 +184,12 @@ namespace vk_test {
 
         template <typename T>
         VkResult appendImageSub(vk_test::Image&                 image,
-                                       const VkOffset3D&               offset,
-                                       const VkExtent3D&               extent,
-                                       const VkImageSubresourceLayers& subresource,
-                                       std::span<T>                    data,
-                                       VkImageLayout                   new_layout      = VK_IMAGE_LAYOUT_UNDEFINED,
-                                       const SemaphoreState&           semaphore_state = {}) {
+                                const VkOffset3D&               offset,
+                                const VkExtent3D&               extent,
+                                const VkImageSubresourceLayers& subresource,
+                                std::span<T>                    data,
+                                VkImageLayout                   new_layout      = VK_IMAGE_LAYOUT_UNDEFINED,
+                                const SemaphoreState&           semaphore_state = {}) {
             return appendImageSub(image, offset, extent, subresource, data.size_bytes(), data.data(), new_layout, semaphore_state);
         }
 

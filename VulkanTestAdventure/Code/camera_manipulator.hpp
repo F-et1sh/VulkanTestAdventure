@@ -218,7 +218,7 @@ namespace vk_test {
         static double getSystemTime();
 
         static glm::vec3 computeBezier(float t, glm::vec3& p0, glm::vec3& p1, glm::vec3& p2);
-        void      findBezierPoints();
+        void             findBezierPoints();
 
     protected:
         glm::mat4 m_Matrix = glm::mat4(1);

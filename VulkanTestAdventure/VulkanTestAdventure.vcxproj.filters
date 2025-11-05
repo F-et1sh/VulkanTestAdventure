@@ -175,14 +175,17 @@
     <Filter Include="Code\Main\Descriptors">
       <UniqueIdentifier>{504932c2-cbed-4f0b-b78a-659591cd7172}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Main\Utilities\GLTF">
-      <UniqueIdentifier>{438453db-9910-4bb8-b692-7577a2cae3e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Main\Utilities\BoundingBox">
       <UniqueIdentifier>{2ee82d2d-6525-4aac-bff5-6d44ad41ca82}</UniqueIdentifier>
     </Filter>
     <Filter Include="Code\Main\Utilities\Primitives">
       <UniqueIdentifier>{dc6caa54-a182-4715-b16f-649e6ccb79e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\Slang">
+      <UniqueIdentifier>{9c78bc7b-f16c-4cd7-8561-b053b97d2cb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Utilities\GLTF_utils">
+      <UniqueIdentifier>{438453db-9910-4bb8-b692-7577a2cae3e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -253,7 +256,7 @@
       <Filter>Code\Main\Descriptors</Filter>
     </ClCompile>
     <ClCompile Include="Code\gltf_utils.cpp">
-      <Filter>Code\Main\Utilities\GLTF</Filter>
+      <Filter>Code\Main\Utilities\GLTF_utils</Filter>
     </ClCompile>
     <ClCompile Include="Code\primitives.cpp">
       <Filter>Code\Main\Utilities\Primitives</Filter>
@@ -356,13 +359,19 @@
       <Filter>Code\Main\Descriptors</Filter>
     </ClInclude>
     <ClInclude Include="Code\gltf_utils.hpp">
-      <Filter>Code\Main\Utilities\GLTF</Filter>
+      <Filter>Code\Main\Utilities\GLTF_utils</Filter>
     </ClInclude>
     <ClInclude Include="Code\bounding_box.hpp">
       <Filter>Code\Main\Utilities\BoundingBox</Filter>
     </ClInclude>
     <ClInclude Include="Code\primitives.hpp">
       <Filter>Code\Main\Utilities\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\io_gltf.h">
+      <Filter>Code\Main\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\slang_types.h">
+      <Filter>Code\Main\Utilities\Slang</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -514,6 +523,9 @@
     </None>
     <None Include="Code\Renderer.cpp">
       <Filter>Code\Frozen\OneFile Renderer %28 C-Style %29</Filter>
+    </None>
+    <None Include="Code\sky_io.h.slang">
+      <Filter>Code\Main\Utilities\Slang</Filter>
     </None>
   </ItemGroup>
 </Project>

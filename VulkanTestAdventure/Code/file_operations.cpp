@@ -82,7 +82,9 @@ std::string vk_test::loadFile(const std::filesystem::path& file_path) {
     return std::string(buffer.begin(), buffer.end());
 }
 
-std::filesystem::path vk_test::getExecutablePath() { return PATH.getExecutablePath(); }
+std::filesystem::path vk_test::getExecutablePath() {
+    return PATH.getExecutablePath();
+}
 
 std::string vk_test::utf8FromPath(const std::filesystem::path& path) noexcept {
     try {
@@ -107,13 +109,13 @@ std::string vk_test::utf8FromPath(const std::filesystem::path& path) noexcept {
         const int utf16_characters_i = static_cast<int>(utf16_characters);
         // Get output size (does not include terminating null since we specify cchWideChar)
         const int utf8_bytes = WideCharToMultiByte(CP_UTF8,              // CodePage
-                                                  WC_ERR_INVALID_CHARS, // dwFlags
-                                                  utf16_str,             // lpWideCharStr
-                                                  utf16_characters_i,     // cchWideChar
-                                                  nullptr,
-                                                  0, // Output
-                                                  nullptr,
-                                                  nullptr); // lpDefaultChar, lpUsedDefaultChar
+                                                   WC_ERR_INVALID_CHARS, // dwFlags
+                                                   utf16_str,            // lpWideCharStr
+                                                   utf16_characters_i,   // cchWideChar
+                                                   nullptr,
+                                                   0, // Output
+                                                   nullptr,
+                                                   nullptr); // lpDefaultChar, lpUsedDefaultChar
         // WideCharToMultiByte returns 0 on failure. Check for that plus negative
         // values (which chould never happen):
         if (utf8_bytes <= 0) {
@@ -150,7 +152,7 @@ std::filesystem::path vk_test::pathFromUtf8(const char* utf8) noexcept {
             VK_TEST_SAY(__func__ << " : Input had too many characters to store in an int.");
             return L"";
         }
-        const int utf8_bytes_i      = static_cast<int>(utf8_bytes);
+        const int utf8_bytes_i     = static_cast<int>(utf8_bytes);
         const int utf16_characters = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8, utf8_bytes_i, nullptr, 0);
         if (utf16_characters <= 0) {
             VK_TEST_SAY(__func__ << " : MultiByteToWideChar failed. The input is probably not valid UTF-8.");
@@ -183,8 +185,8 @@ bool vk_test::extensionMatches(const std::filesystem::path& path, const char* ex
     // First, find the character where the extension starts.
     // Because we're just testing whether the extension matches, we don't need
     // to handle things like Windows' NTFS Alternate Data Streams.
-    const std::filesystem::path::string_type&   native = path.native();
-    constexpr std::filesystem::path::value_type dot    = '.'; // Same value in UTF-8 and UTF-16
+    const std::filesystem::path::string_type&   native  = path.native();
+    constexpr std::filesystem::path::value_type dot     = '.'; // Same value in UTF-8 and UTF-16
     const auto                                  dot_pos = native.rfind(dot);
     if (dot_pos == native.npos) // No extension?
     {
@@ -194,7 +196,7 @@ bool vk_test::extensionMatches(const std::filesystem::path& path, const char* ex
 #ifdef _WIN32
     // UTF-8 to UTF-16 copy
     const std::filesystem::path              extension_ut_f16 = pathFromUtf8(extension);
-    const std::filesystem::path::value_type* extension_bytes = extension_ut_f16.native().c_str();
+    const std::filesystem::path::value_type* extension_bytes  = extension_ut_f16.native().c_str();
     return 0 == _wcsicmp(native.c_str() + dot_pos, extension_bytes);
 #else
     return 0 == strcasecmp(native.c_str() + dotPos, extension);

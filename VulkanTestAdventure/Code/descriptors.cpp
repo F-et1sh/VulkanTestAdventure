@@ -35,12 +35,13 @@ namespace vk_test {
                                         VkShaderStageFlags       stage_flags,
                                         const VkSampler*         p_immutable_samplers,
                                         VkDescriptorBindingFlags binding_flags) {
-        
+
         addBinding(VkDescriptorSetLayoutBinding{ .binding            = binding,
                                                  .descriptorType     = descriptor_type,
                                                  .descriptorCount    = descriptor_count,
                                                  .stageFlags         = stage_flags,
-                                                 .pImmutableSamplers = p_immutable_samplers }, binding_flags);
+                                                 .pImmutableSamplers = p_immutable_samplers },
+                   binding_flags);
     }
 
     void DescriptorBindings::addBinding(const VkDescriptorSetLayoutBinding& layout_binding, VkDescriptorBindingFlags binding_flags) {
@@ -103,7 +104,7 @@ namespace vk_test {
     void DescriptorBindings::appendPoolSizes(std::vector<VkDescriptorPoolSize>& pool_sizes, uint32_t num_sets, uint32_t total_variable_count) const {
 
         for (size_t i = 0; i < m_Bindings.size(); i++) {
-            const VkDescriptorSetLayoutBinding& it           = m_Bindings[i];
+            const VkDescriptorSetLayoutBinding& it            = m_Bindings[i];
             const VkDescriptorBindingFlags      binding_flags = m_BindingFlags[i];
 
             // Bindings can have a zero descriptor count, used for the layout, but don't reserve storage for them.
@@ -112,7 +113,7 @@ namespace vk_test {
             }
 
             uint32_t count = it.descriptorCount * num_sets;
-            if ((total_variable_count != 0u) && ((binding_flags & VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT) != 0u)) {
+            if ((total_variable_count != 0U) && ((binding_flags & VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT) != 0U)) {
                 count = total_variable_count;
             }
 
@@ -159,19 +160,19 @@ namespace vk_test {
             // Pool
             const std::vector<VkDescriptorPoolSize> pool_sizes = bindings.calculatePoolSizes(num_sets, total_variable_count);
             const VkDescriptorPoolCreateInfo        pool_create_info{ .sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-                                                                    .flags         = pool_flags,
-                                                                    .maxSets       = num_sets,
-                                                                    .poolSizeCount = static_cast<uint32_t>(pool_sizes.size()),
-                                                                    .pPoolSizes    = pool_sizes.data() };
+                                                                      .flags         = pool_flags,
+                                                                      .maxSets       = num_sets,
+                                                                      .poolSizeCount = static_cast<uint32_t>(pool_sizes.size()),
+                                                                      .pPoolSizes    = pool_sizes.data() };
             vkCreateDescriptorPool(device, &pool_create_info, nullptr, &m_Pool);
 
             // Sets
             m_Sets.resize(num_sets);
             std::vector<VkDescriptorSetLayout> alloc_info_layouts(num_sets, m_Layout);
             VkDescriptorSetAllocateInfo        alloc_info{ .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                                                          .descriptorPool     = m_Pool,
-                                                          .descriptorSetCount = num_sets,
-                                                          .pSetLayouts        = alloc_info_layouts.data() };
+                                                           .descriptorPool     = m_Pool,
+                                                           .descriptorSetCount = num_sets,
+                                                           .pSetLayouts        = alloc_info_layouts.data() };
             // Optional variable descriptor counts
             VkDescriptorSetVariableDescriptorCountAllocateInfo var_info{
                 .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO,
@@ -496,7 +497,7 @@ namespace vk_test {
 
     const VkWriteDescriptorSet* WriteSetContainer::data() {
         if (m_NeedPointerUpdate) {
-            size_t accel_write_index    = 0;
+            size_t accel_write_index     = 0;
             size_t buffer_or_image_index = 0;
             size_t accel_or_view_index   = 0;
 
@@ -560,17 +561,17 @@ static void usage_DescriptorBindings() {
 
             VkDescriptorPool                 dpool = VK_NULL_HANDLE;
             const VkDescriptorPoolCreateInfo dpool_info{ .sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-                                                        .maxSets       = num_sets,
-                                                        .poolSizeCount = uint32_t(pool_sizes.size()),
-                                                        .pPoolSizes    = pool_sizes.data() };
+                                                         .maxSets       = num_sets,
+                                                         .poolSizeCount = uint32_t(pool_sizes.size()),
+                                                         .pPoolSizes    = pool_sizes.data() };
             vkCreateDescriptorPool(device, &dpool_info, nullptr, &dpool);
 
             std::vector<VkDescriptorSet>       sets(num_sets);
             std::vector<VkDescriptorSetLayout> alloc_info_layouts(num_sets, dlayout);
             const VkDescriptorSetAllocateInfo  alloc_info{ .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                                                          .descriptorPool     = dpool,
-                                                          .descriptorSetCount = num_sets,
-                                                          .pSetLayouts        = alloc_info_layouts.data() };
+                                                           .descriptorPool     = dpool,
+                                                           .descriptorSetCount = num_sets,
+                                                           .pSetLayouts        = alloc_info_layouts.data() };
             vkAllocateDescriptorSets(device, &alloc_info, sets.data());
 
             // Cleanup

@@ -56,8 +56,8 @@ namespace vk_test {
         // structs are supported.
         VkResult acquireSampler(VkSampler&                 sampler,
                                 const VkSamplerCreateInfo& create_info = { .sType     = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-                                                                          .magFilter = VK_FILTER_LINEAR,
-                                                                          .minFilter = VK_FILTER_LINEAR });
+                                                                           .magFilter = VK_FILTER_LINEAR,
+                                                                           .minFilter = VK_FILTER_LINEAR });
 
         void releaseSampler(VkSampler sampler);
 
@@ -141,13 +141,13 @@ namespace vk_test {
         };
 
         // Stores unique samplers with their corresponding VkSamplerCreateInfo and reference counts
-        std::unordered_map<SamplerState, SamplerEntry, SamplerStateHashFn> m_SamplerMap{};
+        std::unordered_map<SamplerState, SamplerEntry, SamplerStateHashFn> m_SamplerMap;
 
         // Reverse lookup map for O(1) sampler release - must stay in sync with m_samplerMap
-        std::unordered_map<VkSampler, SamplerState> m_SamplerToState{};
+        std::unordered_map<VkSampler, SamplerState> m_SamplerToState;
 
         // Mutex for thread-safe access to both maps
-        mutable std::mutex m_Mutex;
+        mutable std::mutex m_Mutex{};
     };
 
 } // namespace vk_test
