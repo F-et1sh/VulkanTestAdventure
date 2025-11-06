@@ -193,6 +193,12 @@
     <Filter Include="Code\Main\io.h.slang">
       <UniqueIdentifier>{34fbb114-b3ab-431c-b80a-b44afdc52456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Tonemapper">
+      <UniqueIdentifier>{f820f88f-a34b-420d-a298-f2559552a12c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Timers">
+      <UniqueIdentifier>{7a3dbaf8-7eee-4137-bdf4-d6f2d129b704}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -272,6 +278,12 @@
     </ClCompile>
     <ClCompile Include="Code\sky.cpp">
       <Filter>Code\Main\Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\tonemapper.cpp">
+      <Filter>Code\Main\Tonemapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\timers.cpp">
+      <Filter>Code\Main\Timers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -386,6 +398,15 @@
       <Filter>Code\Main\Sky</Filter>
     </ClInclude>
     <ClInclude Include="Code\io_gltf.h">
+      <Filter>Code\Main\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\tonemapper.hpp">
+      <Filter>Code\Main\Tonemapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\timers.hpp">
+      <Filter>Code\Main\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\compute_pipeline.hpp">
       <Filter>Code\Main\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
@@ -543,6 +564,9 @@
       <Filter>Code\Main\io.h.slang</Filter>
     </None>
     <None Include="Code\tonemap_io.h.slang">
+      <Filter>Code\Main\io.h.slang</Filter>
+    </None>
+    <None Include="Code\tonemap_functions.h.slang">
       <Filter>Code\Main\io.h.slang</Filter>
     </None>
   </ItemGroup>

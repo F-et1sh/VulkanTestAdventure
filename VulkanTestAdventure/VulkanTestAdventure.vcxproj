@@ -180,6 +180,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Code\sky_io.h.slang" />
+    <None Include="Code\tonemap_functions.h.slang" />
     <None Include="Code\tonemap_io.h.slang" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
@@ -220,6 +221,8 @@
     <ClCompile Include="Code\spirv.cpp" />
     <ClCompile Include="Code\staging.cpp" />
     <ClCompile Include="Code\Swapchain.cpp" />
+    <ClCompile Include="Code\timers.cpp" />
+    <ClCompile Include="Code\tonemapper.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -275,6 +278,7 @@
     <ClInclude Include="Code\bounding_box.hpp" />
     <ClInclude Include="Code\camera_manipulator.hpp" />
     <ClInclude Include="Code\Commands.hpp" />
+    <ClInclude Include="Code\compute_pipeline.hpp" />
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\descriptors.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
@@ -308,6 +312,8 @@
     <ClInclude Include="Code\spirv.hpp" />
     <ClInclude Include="Code\staging.hpp" />
     <ClInclude Include="Code\Swapchain.hpp" />
+    <ClInclude Include="Code\timers.hpp" />
+    <ClInclude Include="Code\tonemapper.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
     <ClInclude Include="Code\Vertices.hpp" />

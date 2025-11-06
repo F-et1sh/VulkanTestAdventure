@@ -10,6 +10,7 @@
 #include "descriptors.hpp"
 #include "gltf_utils.hpp"
 #include "sky.hpp"
+#include "tonemapper.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -1023,32 +1024,32 @@ namespace vk_test {
         std::vector<Image> m_textures{};      // Textures used in the scene
 
         SkySimple                m_SkySimple;                                 // Sky rendering
-        Tonemapper               m_tonemapper{};                                // Tonemapper for post-processing effects
-        shaderio::TonemapperData m_tonemapperData{};                            // Tonemapper data used to pass parameters to the tonemapper shader
-        glm::vec2                m_metallicRoughnessOverride{ -0.01F, -0.01F }; // Override values for metallic and roughness, used in the UI to control the material properties
+        Tonemapper               m_Tonemapper{};                                // Tonemapper for post-processing effects
+        shaderio::TonemapperData m_TonemapperData{};                            // Tonemapper data used to pass parameters to the tonemapper shader
+        glm::vec2                m_MetallicRoughnessOverride{ -0.01F, -0.01F }; // Override values for metallic and roughness, used in the UI to control the material properties
 
         // Ray Tracing Pipeline Components
-        DescriptorPack   m_rtDescPack;         // Ray tracing descriptor bindings
-        VkPipeline       m_rtPipeline{};       // Ray tracing pipeline
-        VkPipelineLayout m_rtPipelineLayout{}; // Ray tracing pipeline layout
+        DescriptorPack   m_RtDescPack;         // Ray tracing descriptor bindings
+        VkPipeline       m_RtPipeline{};       // Ray tracing pipeline
+        VkPipelineLayout m_RtPipelineLayout{}; // Ray tracing pipeline layout
 
         // Acceleration Structure Components
-        std::vector<AccelerationStructure> m_blasAccel{};
-        AccelerationStructure              m_tlasAccel;
+        std::vector<AccelerationStructure> m_BlasAccel{};
+        AccelerationStructure              m_TlasAccel;
 
         // Direct SBT management
-        Buffer                          m_sbtBuffer;        // Buffer for shader binding table
-        std::vector<uint8_t>            m_shaderHandles{};  // Storage for shader group handles
-        VkStridedDeviceAddressRegionKHR m_raygenRegion{};   // Ray generation shader region
-        VkStridedDeviceAddressRegionKHR m_missRegion{};     // Miss shader region
-        VkStridedDeviceAddressRegionKHR m_hitRegion{};      // Hit shader region
-        VkStridedDeviceAddressRegionKHR m_callableRegion{}; // Callable shader region
+        Buffer                          m_SbtBuffer;        // Buffer for shader binding table
+        std::vector<uint8_t>            m_ShaderHandles{};  // Storage for shader group handles
+        VkStridedDeviceAddressRegionKHR m_RaygenRegion{};   // Ray generation shader region
+        VkStridedDeviceAddressRegionKHR m_MissRegion{};     // Miss shader region
+        VkStridedDeviceAddressRegionKHR m_HitRegion{};      // Hit shader region
+        VkStridedDeviceAddressRegionKHR m_CallableRegion{}; // Callable shader region
 
         // Ray Tracing Properties
-        VkPhysicalDeviceRayTracingPipelinePropertiesKHR    m_rtProperties{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR };
-        VkPhysicalDeviceAccelerationStructurePropertiesKHR m_asProperties{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR };
+        VkPhysicalDeviceRayTracingPipelinePropertiesKHR    m_TtProperties{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR };
+        VkPhysicalDeviceAccelerationStructurePropertiesKHR m_AsProperties{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR };
 
         // Ray tracing toggle
-        bool m_useRayTracing = true; // Set to true to use ray tracing, false for rasterization
+        bool m_UseRayTracing = true; // Set to true to use ray tracing, false for rasterization
     };
 } // namespace vk_test
