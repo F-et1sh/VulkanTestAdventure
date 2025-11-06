@@ -24,6 +24,9 @@
 
 #pragma once
 
+#include "resources.hpp"
+#include "staging.hpp"
+
 namespace vk_test {
 
     inline static VkShaderModuleCreateInfo getShaderModuleCreateInfo(const std::span<const uint32_t>& spirv) {

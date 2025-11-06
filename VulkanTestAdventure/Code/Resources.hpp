@@ -60,9 +60,9 @@ namespace vk_test {
         // Size of the image
         VkExtent3D extent{};
         // Number of mip levels
-        uint32_t mipLevels{};
+        uint32_t mip_levels{};
         // number of array layers
-        uint32_t arrayLayers{};
+        uint32_t array_layers{};
         // format of the image itself
         VkFormat format{ VK_FORMAT_UNDEFINED };
         // Memory associated with the image

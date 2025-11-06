@@ -395,7 +395,7 @@ namespace vk_test {
             // Update the descriptor set with the textures
             WriteSetContainer    write{};
             VkWriteDescriptorSet all_textures = m_DescPack.makeWrite(shaderio::BindingPoints::eTextures, 0, 1, uint32_t(m_Textures.size()));
-            Image*               all_images = m_Textures.data() = nullptr;
+            Image*               all_images   = m_Textures.data();
             write.append(all_textures, all_images);
             vkUpdateDescriptorSets(m_App->getDevice(), write.size(), write.data(), 0, nullptr);
         }
@@ -474,7 +474,7 @@ namespace vk_test {
         //---------------------------------------------------------------------------------------------------------------
         // The update of scene information buffer (UBO)
         //
-        static void updateSceneBuffer(VkCommandBuffer cmd) {
+        void updateSceneBuffer(VkCommandBuffer cmd) {
             const glm::mat4& view_matrix = m_CameraManip->getViewMatrix();
             const glm::mat4& proj_matrix = m_CameraManip->getPerspectiveMatrix();
 
@@ -568,7 +568,7 @@ namespace vk_test {
             vkCmdSetVertexInputEXT(cmd, 0, nullptr, 0, nullptr);
 
             for (size_t i = 0; i < m_SceneResource.instances.size(); i++) {
-                uint32_t                      mesh_index = m_SceneResource.instances[i].mesh_index = 0 = 0;
+                uint32_t                      mesh_index = m_SceneResource.instances[i].mesh_index     = 0;
                 const shaderio::GltfMesh&     gltf_mesh                                                = m_SceneResource.meshes[mesh_index];
                 const shaderio::TriangleMesh& tri_mesh                                                 = gltf_mesh.tri_mesh;
 
@@ -698,7 +698,7 @@ namespace vk_test {
 
         //---------------------------------------------------------------------------------------------------------------
         // Create bottom-level acceleration structures
-        static void createBottomLevelAS() {
+        void createBottomLevelAS() {
             SCOPED_TIMER(__FUNCTION__);
 
             // Prepare geometry information for all meshes

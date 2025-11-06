@@ -69,17 +69,16 @@ namespace vk_test {
         void            submitAndWaitTempCmdBuffer(VkCommandBuffer cmd);
 
         // Getters
-        VkInstance        getInstance() const { return m_Instance; }
-        VkPhysicalDevice  getPhysicalDevice() const { return m_PhysicalDevice; }
-        VkDevice          getDevice() const { return m_Device; }
-        const QueueInfo&  getQueue(uint32_t index) const { return m_Queues[index]; }
-        VkCommandPool     getCommandPool() const { return m_TransientCommandPool; }
-        VkDescriptorPool  getTextureDescriptorPool() const { return m_DescriptorPool; }
-        const VkExtent2D& getViewportSize() const { return m_ViewportExtent; }
-        const VkExtent2D& getWindowSize() const { return m_WindowExtent; }
-        GLFWwindow*       getWindowHandle() const { return m_Window.getGLFWWindow(); }
-        uint32_t          getFrameCycleIndex() const { return m_FrameRingCurrent; }
-        uint32_t          getFrameCycleSize() const { return uint32_t(m_FrameData.size()); }
+        inline VkInstance        getInstance() const { return m_Instance; }
+        inline VkPhysicalDevice  getPhysicalDevice() const { return m_PhysicalDevice; }
+        inline VkDevice          getDevice() const { return m_Device; }
+        inline const QueueInfo&  getQueue(uint32_t index) const { return m_Queues[index]; }
+        inline VkCommandPool     getCommandPool() const { return m_TransientCommandPool; }
+        inline VkDescriptorPool  getTextureDescriptorPool() const { return m_DescriptorPool; }
+        inline const VkExtent2D& getViewportSize() const { return m_ViewportExtent; }
+        inline const VkExtent2D& getWindowSize() const { return m_WindowExtent; }
+        inline GLFWwindow*       getWindowHandle() const { return m_Window.getGLFWWindow(); }
+        inline uint32_t          getFrameCycleIndex() const { return m_FrameRingCurrent; }
 
     private:
         void        testAndSetWindowSizeAndPos(const glm::uvec2& window_size);

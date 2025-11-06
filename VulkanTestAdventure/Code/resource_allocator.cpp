@@ -337,8 +337,8 @@ VkResult vk_test::ResourceAllocator::createImage(vk_test::Image& image, const Vk
     }
 
     image.extent                 = image_info.extent;
-    image.mipLevels              = image_info.mipLevels;
-    image.arrayLayers            = image_info.arrayLayers;
+    image.mip_levels             = image_info.mipLevels;
+    image.array_layers           = image_info.arrayLayers;
     image.format                 = image_info.format;
     image.descriptor.imageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 

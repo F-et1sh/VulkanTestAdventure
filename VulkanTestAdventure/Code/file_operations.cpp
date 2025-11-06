@@ -22,25 +22,30 @@
 * 2025
 */
 
+#include "pch.h"
+
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
-#define VK_TEST_WI_N32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif
 #ifndef NOMINMAX
-#define VK_TEST_NOMINMAX
+#define NOMINMAX
 #endif
 #include <windows.h>
-#include <libloaderapi.h> // GetModuleFileNameA
-#include <stringapiset.h> // WideChartoMultiByte
+#include <libloaderapi.h>  // GetModuleFileNameA
+#include <stringapiset.h>  // WideChartoMultiByte
 #else
-#include <limits.h>    // PATH_MAX
-#include <strings.h>   // strcasecmp
-#include <sys/types.h> // ssize_t
-#include <unistd.h>    // readlink
+#include <limits.h>     // PATH_MAX
+#include <strings.h>    // strcasecmp
+#include <sys/types.h>  // ssize_t
+#include <unistd.h>     // readlink
 #endif
 
-#include "pch.h"
 #include "file_operations.hpp"
+
+#include <fstream>
+#include <limits>
+#include <tuple>
 
 std::filesystem::path vk_test::findFile(const std::filesystem::path&              filename,
                                         const std::vector<std::filesystem::path>& search_paths,
