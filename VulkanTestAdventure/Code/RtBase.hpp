@@ -1013,16 +1013,16 @@ namespace vk_test {
 
         // Pipeline
         GraphicsPipelineState m_DynamicPipeline;         // The dynamic pipeline state used to set the graphics pipeline state, like viewport, scissor, and depth test
-        DescriptorPack        m_descPack;                // The descriptor bindings used to create the descriptor set layout and descriptor sets
-        VkPipelineLayout      m_graphicPipelineLayout{}; // The pipeline layout use with graphics pipeline
+        DescriptorPack        m_GescPack;                // The descriptor bindings used to create the descriptor set layout and descriptor sets
+        VkPipelineLayout      m_GraphicPipelineLayout{}; // The pipeline layout use with graphics pipeline
 
         // Shaders
-        VkShaderEXT m_vertexShader{};   // The vertex shader used to render the scene
-        VkShaderEXT m_fragmentShader{}; // The fragment shader used to render the scene
+        VkShaderEXT m_VertexShader{};   // The vertex shader used to render the scene
+        VkShaderEXT m_FragmentShader{}; // The fragment shader used to render the scene
 
         // Scene information buffer (UBO)
         GltfSceneResource  m_SceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
-        std::vector<Image> m_textures{};      // Textures used in the scene
+        std::vector<Image> m_Textures{};      // Textures used in the scene
 
         SkySimple                m_SkySimple;                                   // Sky rendering
         Tonemapper               m_Tonemapper;                                  // Tonemapper for post-processing effects
