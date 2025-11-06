@@ -214,6 +214,7 @@
     <ClCompile Include="Code\RtBase.cpp" />
     <ClCompile Include="Code\sampler_pool.cpp" />
     <ClCompile Include="Code\semaphore.cpp" />
+    <ClCompile Include="Code\sky.cpp" />
     <ClCompile Include="Code\slang.cpp" />
     <ClCompile Include="Code\spirv.cpp" />
     <ClCompile Include="Code\staging.cpp" />
@@ -300,6 +301,7 @@
     <ClInclude Include="Code\RtBase.hpp" />
     <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />
+    <ClInclude Include="Code\sky.hpp" />
     <ClInclude Include="Code\slang.hpp" />
     <ClInclude Include="Code\slang_types.h" />
     <ClInclude Include="Code\spirv.hpp" />

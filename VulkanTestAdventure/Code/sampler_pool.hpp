@@ -62,7 +62,7 @@ namespace vk_test {
         void releaseSampler(VkSampler sampler);
 
     private:
-        VkDevice m_device{};
+        VkDevice m_Device{};
 
         struct SamplerState {
             VkSamplerCreateInfo                create_info{};

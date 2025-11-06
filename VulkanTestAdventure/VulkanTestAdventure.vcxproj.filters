@@ -187,6 +187,9 @@
     <Filter Include="Code\Main\Utilities\GLTF_utils">
       <UniqueIdentifier>{438453db-9910-4bb8-b692-7577a2cae3e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Sky">
+      <UniqueIdentifier>{d7597af4-2477-43e3-966b-b8577e88184c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -263,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="Code\RtBase.cpp">
       <Filter>Code\Main\RtBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\sky.cpp">
+      <Filter>Code\Main\Sky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +381,9 @@
     </ClInclude>
     <ClInclude Include="Code\slang_types.h">
       <Filter>Code\Main\Utilities\Slang</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\sky.hpp">
+      <Filter>Code\Main\Sky</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

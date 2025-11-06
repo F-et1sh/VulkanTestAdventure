@@ -9,6 +9,7 @@
 #include "graphics_pipeline.hpp"
 #include "descriptors.hpp"
 #include "gltf_utils.hpp"
+#include "sky.hpp"
 
 namespace vk_test {
     //---------------------------------------------------------------------------------------
@@ -1019,7 +1020,7 @@ namespace vk_test {
         GltfSceneResource  m_SceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
         std::vector<Image> m_textures{};      // Textures used in the scene
 
-        SkySimple                m_skySimple{};                                 // Sky rendering
+        SkySimple                m_SkySimple{};                                 // Sky rendering
         Tonemapper               m_tonemapper{};                                // Tonemapper for post-processing effects
         shaderio::TonemapperData m_tonemapperData{};                            // Tonemapper data used to pass parameters to the tonemapper shader
         glm::vec2                m_metallicRoughnessOverride{ -0.01f, -0.01f }; // Override values for metallic and roughness, used in the UI to control the material properties

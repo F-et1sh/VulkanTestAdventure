@@ -47,7 +47,7 @@
 
 #include "sky_io.h.slang"
 
-VK_TEST_NAMESPACE_SHADERIO_BEGIN()
+NAMESPACE_SHADERIO_BEGIN()
 // GLTF
 struct BufferView {
     uint32_t offset;     // Offset in the buffer where the data starts (in bytes)
@@ -115,5 +115,5 @@ struct GltfSceneInfo {
 };
 VK_TEST_CHECK_STRUCT_ALIGNMENT(GltfSceneInfo)
 
-VK_TEST_NAMESPACE_SHADERIO_END()
+NAMESPACE_SHADERIO_END()
 #endif // IO_GLTF_H

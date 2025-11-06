@@ -17,8 +17,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/*
+* Modified by Farrakh
+* 2025
+*/
+
+// clang-tidy off
+
 #ifndef SLANG_TYPES_H
-#define VK_TEST_SLANG_TYPES_H
+#define SLANG_TYPES_H
 
 // This header provides type definitions and aliases to bridge between Slang shader types, C++ GLM types, and GLSL types.
 // It enables seamless data sharing between shader code and host code while maintaining type safety.
@@ -28,10 +35,10 @@
 
 // In C++, we put all of the shared types and functions into the 'shaderio' namespace.
 // We provide the below macros to deal with the fact that not all languages #include'ing this header actually support namespaces.
-#define VK_TEST_NAMESPACE_SHADERIO_BEGIN() namespace shaderio {
-#define VK_TEST_NAMESPACE_SHADERIO_END() } // namespace shaderio
+#define NAMESPACE_SHADERIO_BEGIN() namespace shaderio {
+#define NAMESPACE_SHADERIO_END() } // namespace shaderio
 
-VK_TEST_NAMESPACE_SHADERIO_BEGIN()
+NAMESPACE_SHADERIO_BEGIN()
 
 using namespace glm; // import all of glm into the shaderio namespace
 
@@ -86,9 +93,9 @@ glm::mat<N, N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> 
     return b * a;
 }
 
-#define VK_TEST_SLANG_DEFAULT(x) = (x)
+#define SLANG_DEFAULT(x) = (x)
 
-VK_TEST_NAMESPACE_SHADERIO_END()
+NAMESPACE_SHADERIO_END()
 
 #elif defined(GL_core_profile) // GLSL
 
@@ -154,3 +161,5 @@ __intrinsic_op(cmpGT) public vector<bool, N> greaterThan<T, let N : int>(vector<
 #endif // __cplusplus
 
 #endif // SLANG_TYPES_H
+
+// clang-tidy on

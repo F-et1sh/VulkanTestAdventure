@@ -26,14 +26,14 @@
 #include "sampler_pool.hpp"
 
 vk_test::SamplerPool::SamplerPool(SamplerPool&& other) noexcept
-    : m_device(other.m_device), m_SamplerMap(std::move(other.m_SamplerMap)), m_SamplerToState(std::move(other.m_SamplerToState)) {
+    : m_Device(other.m_Device), m_SamplerMap(std::move(other.m_SamplerMap)), m_SamplerToState(std::move(other.m_SamplerToState)) {
     // Reset the moved-from object to a valid state
-    other.m_device = VK_NULL_HANDLE;
+    other.m_Device = VK_NULL_HANDLE;
 }
 
 vk_test::SamplerPool& vk_test::SamplerPool::operator=(SamplerPool&& other) noexcept {
     if (this != &other) {
-        m_device         = std::move(other.m_device);
+        m_Device         = std::move(other.m_Device);
         m_SamplerMap     = std::move(other.m_SamplerMap);
         m_SamplerToState = std::move(other.m_SamplerToState);
     }
@@ -41,21 +41,21 @@ vk_test::SamplerPool& vk_test::SamplerPool::operator=(SamplerPool&& other) noexc
 }
 
 vk_test::SamplerPool::~SamplerPool() {
-    assert(m_device == VK_NULL_HANDLE && "Missing deinit()");
+    assert(m_Device == VK_NULL_HANDLE && "Missing deinit()");
 }
 
 void vk_test::SamplerPool::init(VkDevice device) {
-    m_device = device;
+    m_Device = device;
 }
 
 void vk_test::SamplerPool::deinit() {
     std::lock_guard<std::mutex> lock(m_Mutex);
     for (const auto& entry : m_SamplerMap) {
-        vkDestroySampler(m_device, entry.second.sampler, nullptr);
+        vkDestroySampler(m_Device, entry.second.sampler, nullptr);
     }
     m_SamplerMap.clear();
     m_SamplerToState.clear();
-    m_device = VK_NULL_HANDLE;
+    m_Device = VK_NULL_HANDLE;
 }
 
 VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSamplerCreateInfo& create_info) {
@@ -82,7 +82,7 @@ VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSample
     sampler_state.reduction.pNext   = nullptr;
     sampler_state.ycbr.pNext        = nullptr;
 
-    assert(m_device && "Initialization was missing");
+    assert(m_Device && "Initialization was missing");
 
     std::lock_guard<std::mutex> lock(m_Mutex);
     if (auto it = m_SamplerMap.find(sampler_state); it != m_SamplerMap.end()) {
@@ -93,7 +93,7 @@ VkResult vk_test::SamplerPool::acquireSampler(VkSampler& sampler, const VkSample
     }
 
     // Otherwise, create a new sampler
-    vkCreateSampler(m_device, &create_info, nullptr, &sampler);
+    vkCreateSampler(m_Device, &create_info, nullptr, &sampler);
     m_SamplerMap[sampler_state] = { sampler, 1 };
     m_SamplerToState[sampler]   = sampler_state;
     return VK_SUCCESS;
@@ -117,7 +117,7 @@ void vk_test::SamplerPool::releaseSampler(VkSampler sampler) {
 
     sampler_it->second.reference_count--;
     if (sampler_it->second.reference_count == 0) {
-        vkDestroySampler(m_device, sampler, nullptr);
+        vkDestroySampler(m_Device, sampler, nullptr);
         m_SamplerMap.erase(sampler_it);
         m_SamplerToState.erase(state_it);
     }
