@@ -20,8 +20,8 @@ namespace vk_test {
             return m_AssetsPath;
         }
 
-        [[nodiscard]] std::filesystem::path getApplicationPath() const {
-            return this->getAssetsPath() / L"Application";
+        [[nodiscard]] std::filesystem::path getShadersPath() const {
+            return this->getAssetsPath() / L"Shaders";
         }
 
     private:

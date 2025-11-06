@@ -199,6 +199,9 @@
     <Filter Include="Code\Main\Timers">
       <UniqueIdentifier>{7a3dbaf8-7eee-4137-bdf4-d6f2d129b704}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Utilities\Formats">
+      <UniqueIdentifier>{8161c91c-fb37-4d51-8a0d-cb81193e23fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="Code\timers.cpp">
       <Filter>Code\Main\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\formats.cpp">
+      <Filter>Code\Main\Utilities\Formats</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +414,9 @@
     </ClInclude>
     <ClInclude Include="Code\compute_pipeline.hpp">
       <Filter>Code\Main\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\formats.hpp">
+      <Filter>Code\Main\Utilities\Formats</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

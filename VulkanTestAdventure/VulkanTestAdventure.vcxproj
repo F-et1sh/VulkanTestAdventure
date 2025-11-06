@@ -118,7 +118,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;$(SolutionDir)VulkanTestAdventure\_autogen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -152,7 +152,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;$(SolutionDir)VulkanTestAdventure\Include;$(SolutionDir)VulkanTestAdventure\Code;$(SolutionDir)VulkanTestAdventure\Files;$(SolutionDir)VulkanTestAdventure\_autogen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -194,6 +194,7 @@
     <ClCompile Include="Code\Context.cpp" />
     <ClCompile Include="Code\descriptors.cpp" />
     <ClCompile Include="Code\file_operations.cpp" />
+    <ClCompile Include="Code\formats.cpp" />
     <ClCompile Include="Code\gbuffers.cpp" />
     <ClCompile Include="Code\gltf_utils.cpp" />
     <ClCompile Include="Code\graphics_pipeline.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="Code\Context.hpp" />
     <ClInclude Include="Code\descriptors.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
+    <ClInclude Include="Code\formats.hpp" />
     <ClInclude Include="Code\gbuffers.hpp" />
     <ClInclude Include="Code\gltf_utils.hpp" />
     <ClInclude Include="Code\graphics_pipeline.hpp" />
