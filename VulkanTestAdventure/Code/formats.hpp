@@ -25,17 +25,17 @@
 #pragma once
 
 namespace vk_test {
-// A helper function to find a supported format from a list of candidates.
-// For example, we can use this function to find a supported depth format.
-VkFormat findSupportedFormat(VkPhysicalDevice             physicalDevice,
-                             const std::vector<VkFormat>& candidates,
-                             VkImageTiling                tiling,
-                             VkFormatFeatureFlags2        features);
+    // A helper function to find a supported format from a list of candidates.
+    // For example, we can use this function to find a supported depth format.
+    VkFormat findSupportedFormat(VkPhysicalDevice             physicalDevice,
+                                 const std::vector<VkFormat>& candidates,
+                                 VkImageTiling                tiling,
+                                 VkFormatFeatureFlags2        features);
 
-// A helper function to find the depth format that is supported by the physical device.
-VkFormat findDepthFormat(VkPhysicalDevice physicalDevice);
+    // A helper function to find the depth format that is supported by the physical device.
+    VkFormat findDepthFormat(VkPhysicalDevice physicalDevice);
 
-// A helper function to find the depth stencil format that is supported by the physical device.
-VkFormat findDepthStencilFormat(VkPhysicalDevice physicalDevice);
+    // A helper function to find the depth stencil format that is supported by the physical device.
+    VkFormat findDepthStencilFormat(VkPhysicalDevice physicalDevice);
 
-}  // namespace vk_test
+} // namespace vk_test

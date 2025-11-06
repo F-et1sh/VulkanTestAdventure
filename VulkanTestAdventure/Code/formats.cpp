@@ -27,29 +27,29 @@
 
 namespace vk_test {
 
-    VkFormat findSupportedFormat(VkPhysicalDevice physicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags2 features) {
+    VkFormat findSupportedFormat(VkPhysicalDevice physical_device, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags2 features) {
         for (const VkFormat format : candidates) {
             VkFormatProperties2 props{ .sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2 };
-            vkGetPhysicalDeviceFormatProperties2(physicalDevice, format, &props);
+            vkGetPhysicalDeviceFormatProperties2(physical_device, format, &props);
 
             if (tiling == VK_IMAGE_TILING_LINEAR && (props.formatProperties.linearTilingFeatures & features) == features) {
                 return format;
             }
-            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.formatProperties.optimalTilingFeatures & features) == features) {
+            if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.formatProperties.optimalTilingFeatures & features) == features) {
                 return format;
             }
         }
         return VK_FORMAT_UNDEFINED;
     }
 
-    VkFormat findDepthFormat(VkPhysicalDevice physicalDevice) {
-        return findSupportedFormat(physicalDevice,
+    VkFormat findDepthFormat(VkPhysicalDevice physical_device) {
+        return findSupportedFormat(physical_device,
                                    { VK_FORMAT_D32_SFLOAT, VK_FORMAT_X8_D24_UNORM_PACK32, VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D16_UNORM, VK_FORMAT_D16_UNORM_S8_UINT },
                                    VK_IMAGE_TILING_OPTIMAL,
                                    VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 
-    VkFormat findDepthStencilFormat(VkPhysicalDevice physicalDevice) {
-        return findSupportedFormat(physicalDevice, { VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D16_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+    VkFormat findDepthStencilFormat(VkPhysicalDevice physical_device) {
+        return findSupportedFormat(physical_device, { VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D16_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 } // namespace vk_test

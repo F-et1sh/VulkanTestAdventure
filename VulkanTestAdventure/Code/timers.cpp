@@ -93,8 +93,8 @@ namespace vk_test {
 
     ScopedTimer::ScopedTimer(const char* fmt, ...) {
         std::string str(256, '\0'); // initial guess. ideally the first try fits
-        va_list     args1;
-        va_list     args2;
+        va_list     args1 = nullptr;
+        va_list     args2 = nullptr;
         va_start(args1, fmt);
         va_copy(args2, args1); // make a backup as vsnprintf may consume args1
         int rc = vsnprintf(str.data(), str.size(), fmt, args1);

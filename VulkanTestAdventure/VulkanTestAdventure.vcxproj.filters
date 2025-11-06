@@ -202,6 +202,9 @@
     <Filter Include="Code\Main\Utilities\Formats">
       <UniqueIdentifier>{8161c91c-fb37-4d51-8a0d-cb81193e23fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Utilities\Utils %28 tutorial %29">
+      <UniqueIdentifier>{21313cb1-f50b-4878-8ba0-3e28dfc46804}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -290,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="Code\formats.cpp">
       <Filter>Code\Main\Utilities\Formats</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\utils.cpp">
+      <Filter>Code\Main\Utilities\Utils %28 tutorial %29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +423,15 @@
     </ClInclude>
     <ClInclude Include="Code\formats.hpp">
       <Filter>Code\Main\Utilities\Formats</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\utils.hpp">
+      <Filter>Code\Main\Utilities\Utils %28 tutorial %29</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\default_structs.hpp">
+      <Filter>Code\Main\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\shaderio.h">
+      <Filter>Code\Main\io.h.slang</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -50,26 +50,26 @@ void vk_test::primitiveMeshToResource(GltfSceneResource&            scene_resour
 
     // Set up the TriangleMesh structure with proper BufferView offsets
     shaderio::GltfMesh mesh;
-    mesh.triMesh.positions = { .offset     = 0,
-                               .count      = static_cast<uint32_t>(prim_mesh.vertices.size()),
-                               .byteStride = sizeof(vk_test::PrimitiveVertex) };
+    mesh.tri_mesh.positions = { .offset      = 0,
+                                .count       = static_cast<uint32_t>(prim_mesh.vertices.size()),
+                                .byte_stride = sizeof(vk_test::PrimitiveVertex) };
 
-    mesh.triMesh.normals = { .offset     = offsetof(vk_test::PrimitiveVertex, nrm),
-                             .count      = static_cast<uint32_t>(prim_mesh.vertices.size()),
-                             .byteStride = sizeof(vk_test::PrimitiveVertex) };
+    mesh.tri_mesh.normals = { .offset      = offsetof(vk_test::PrimitiveVertex, nrm),
+                              .count       = static_cast<uint32_t>(prim_mesh.vertices.size()),
+                              .byte_stride = sizeof(vk_test::PrimitiveVertex) };
 
-    mesh.triMesh.texCoords = { .offset     = offsetof(vk_test::PrimitiveVertex, tex),
-                               .count      = static_cast<uint32_t>(prim_mesh.vertices.size()),
-                               .byteStride = sizeof(vk_test::PrimitiveVertex) };
+    mesh.tri_mesh.tex_coords = { .offset      = offsetof(vk_test::PrimitiveVertex, tex),
+                                 .count       = static_cast<uint32_t>(prim_mesh.vertices.size()),
+                                 .byte_stride = sizeof(vk_test::PrimitiveVertex) };
 
-    mesh.triMesh.indices = { .offset     = static_cast<uint32_t>(vertices_size),
-                             .count      = static_cast<uint32_t>(prim_mesh.triangles.size() * 3), // 3 indices per triangle
-                             .byteStride = sizeof(uint32_t) };
-    mesh.indexType       = VK_INDEX_TYPE_UINT32; // Assuming uint32_t indices
+    mesh.tri_mesh.indices = { .offset      = static_cast<uint32_t>(vertices_size),
+                              .count       = static_cast<uint32_t>(prim_mesh.triangles.size() * 3), // 3 indices per triangle
+                              .byte_stride = sizeof(uint32_t) };
+    mesh.index_type       = VK_INDEX_TYPE_UINT32; // Assuming uint32_t indices
 
     // Set the buffer address and index type
-    mesh.gltfBuffer = (uint8_t*) gltf_data.address;
-    mesh.indexType  = VK_INDEX_TYPE_UINT32; // Assuming uint32_t indices
+    mesh.gltf_buffer = (uint8_t*) gltf_data.address;
+    mesh.index_type  = VK_INDEX_TYPE_UINT32; // Assuming uint32_t indices
     scene_resource.meshes.push_back(mesh);
 
     // Update the mapping from mesh index to buffer index
@@ -140,9 +140,9 @@ void vk_test::importGltfData(GltfSceneResource&        scene_resource,
         const tinygltf::BufferView& bv  = model.bufferViews[acc.bufferView];
         assert((acc.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) && "Should be floats");
         attr = {
-            .offset     = uint32_t(bv.byteOffset + acc.byteOffset),
-            .count      = uint32_t(acc.count),
-            .byteStride = (bv.byteStride ? uint32_t(bv.byteStride) : get_type_size(acc.type) * get_element_byte_size(acc.componentType)),
+            .offset      = uint32_t(bv.byteOffset + acc.byteOffset),
+            .count       = uint32_t(acc.count),
+            .byte_stride = (bv.byteStride ? uint32_t(bv.byteStride) : get_type_size(acc.type) * get_element_byte_size(acc.componentType)),
         };
     };
 
@@ -173,22 +173,22 @@ void vk_test::importGltfData(GltfSceneResource&        scene_resource,
         const auto& accessor    = model.accessors[primitive.indices];
         const auto& buffer_view = model.bufferViews[accessor.bufferView];
         assert((accessor.count % 3 == 0) && "Should be a multiple of 3");
-        mesh.triMesh.indices = {
-            .offset     = uint32_t(buffer_view.byteOffset + accessor.byteOffset),
-            .count      = uint32_t(accessor.count),
-            .byteStride = uint32_t((buffer_view.byteStride != 0U) ? buffer_view.byteStride : get_element_byte_size(accessor.componentType)),
+        mesh.tri_mesh.indices = {
+            .offset      = uint32_t(buffer_view.byteOffset + accessor.byteOffset),
+            .count       = uint32_t(accessor.count),
+            .byte_stride = uint32_t((buffer_view.byteStride != 0U) ? buffer_view.byteStride : get_element_byte_size(accessor.componentType)),
         };
-        mesh.indexType = accessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+        mesh.index_type = accessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
 
         // Set the buffer address
-        mesh.gltfBuffer = (uint8_t*) b_gltf_data.address;
+        mesh.gltf_buffer = (uint8_t*) b_gltf_data.address;
 
         // Extract attributes
-        extract_attribute("POSITION", mesh.triMesh.positions, primitive);
-        extract_attribute("NORMAL", mesh.triMesh.normals, primitive);
-        extract_attribute("COLOR_0", mesh.triMesh.colorVert, primitive);
-        extract_attribute("TEXCOORD_0", mesh.triMesh.texCoords, primitive);
-        extract_attribute("TANGENT", mesh.triMesh.tangents, primitive);
+        extract_attribute("POSITION", mesh.tri_mesh.positions, primitive);
+        extract_attribute("NORMAL", mesh.tri_mesh.normals, primitive);
+        extract_attribute("COLOR_0", mesh.tri_mesh.color_vert, primitive);
+        extract_attribute("TEXCOORD_0", mesh.tri_mesh.tex_coords, primitive);
+        extract_attribute("TANGENT", mesh.tri_mesh.tangents, primitive);
 
         scene_resource.meshes.emplace_back(mesh);
 
@@ -230,8 +230,8 @@ void vk_test::importGltfData(GltfSceneResource&        scene_resource,
                 const tinygltf::Primitive& primitive = tiny_mesh.primitives.front();
                 assert((tiny_mesh.primitives.size() == 1 && primitive.mode == TINYGLTF_MODE_TRIANGLES) && "Must have one triangle primitive");
                 shaderio::GltfInstance instance{};
-                instance.meshIndex = node.mesh + mesh_offset;
-                instance.transform = node_transform;
+                instance.mesh_index = node.mesh + mesh_offset;
+                instance.transform  = node_transform;
                 scene_resource.instances.push_back(instance);
             }
 

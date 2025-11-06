@@ -224,6 +224,7 @@
     <ClCompile Include="Code\Swapchain.cpp" />
     <ClCompile Include="Code\timers.cpp" />
     <ClCompile Include="Code\tonemapper.cpp" />
+    <ClCompile Include="Code\utils.cpp" />
     <ClCompile Include="Code\Vertices.cpp" />
     <ClCompile Include="Code\Window.cpp" />
     <CustomBuild Include="..\Files\Shaders\SimpleTriangle\shader.frag">
@@ -281,6 +282,7 @@
     <ClInclude Include="Code\Commands.hpp" />
     <ClInclude Include="Code\compute_pipeline.hpp" />
     <ClInclude Include="Code\Context.hpp" />
+    <ClInclude Include="Code\default_structs.hpp" />
     <ClInclude Include="Code\descriptors.hpp" />
     <ClInclude Include="Code\file_operations.hpp" />
     <ClInclude Include="Code\formats.hpp" />
@@ -308,6 +310,7 @@
     <ClInclude Include="Code\RtBase.hpp" />
     <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />
+    <ClInclude Include="Code\shaderio.h" />
     <ClInclude Include="Code\sky.hpp" />
     <ClInclude Include="Code\slang.hpp" />
     <ClInclude Include="Code\slang_types.h" />
@@ -318,6 +321,7 @@
     <ClInclude Include="Code\tonemapper.hpp" />
     <ClInclude Include="Code\traits.hpp" />
     <ClInclude Include="Code\utilities.hpp" />
+    <ClInclude Include="Code\utils.hpp" />
     <ClInclude Include="Code\Vertices.hpp" />
     <ClInclude Include="Code\Window.hpp" />
     <None Include="Code\ApplicationHpp.h" />

@@ -78,7 +78,7 @@ namespace vk_test {
         int       material{ 0 };
         int       mesh{ -1 };
 
-        static glm::mat4 localMatrix() {
+        static glm::mat4 localMatrix() const {
             glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0F), translation);
             glm::mat4 rotation_matrix    = glm::mat4_cast(rotation);
             glm::mat4 scale_matrix       = glm::scale(glm::mat4(1.0F), scale);

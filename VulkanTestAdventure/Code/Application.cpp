@@ -91,6 +91,16 @@ void vk_test::Application::Loop() {
     }
 }
 
+VkCommandBuffer vk_test::Application::createTempCmdBuffer() const {
+    VkCommandBuffer cmd{};
+    beginSingleTimeCommands(cmd, m_Device, m_TransientCommandPool);
+    return cmd;
+}
+
+void vk_test::Application::submitAndWaitTempCmdBuffer(VkCommandBuffer cmd) {
+    endSingleTimeCommands(cmd, m_Device, m_TransientCommandPool, m_Queues[0].queue);
+}
+
 //-----------------------------------------------------------------------
 // Create a command pool for short lived operations
 // The command pool is used to allocate command buffers.
