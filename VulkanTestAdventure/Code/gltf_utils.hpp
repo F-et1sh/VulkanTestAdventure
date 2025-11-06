@@ -30,7 +30,7 @@
 
 #include "io_gltf.h" // Contains definitions for GLTF GltfMesh, BufferView, TriangleMesh and more
 
-#include "Resources.hpp"
+#include "resources.hpp"
 #include "staging.hpp"
 #include "bounding_box.hpp"
 

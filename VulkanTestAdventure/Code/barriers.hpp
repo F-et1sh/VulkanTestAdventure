@@ -32,7 +32,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include "Resources.hpp"
+#include "resources.hpp"
 
 //-----------------------------------------------------------------------------
 // Helper functions for more concise Vulkan barriers.

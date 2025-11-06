@@ -210,7 +210,8 @@
     <None Include="Code\Renderer.cpp" />
     <ClCompile Include="Code\primitives.cpp" />
     <ClCompile Include="Code\resource_allocator.cpp" />
-    <ClCompile Include="Code\Resources.cpp" />
+    <ClCompile Include="Code\resources.cpp" />
+    <ClCompile Include="Code\RtBase.cpp" />
     <ClCompile Include="Code\sampler_pool.cpp" />
     <ClCompile Include="Code\semaphore.cpp" />
     <ClCompile Include="Code\slang.cpp" />
@@ -295,7 +296,7 @@
     <None Include="Code\Renderer.hpp" />
     <ClInclude Include="Code\primitives.hpp" />
     <ClInclude Include="Code\resource_allocator.hpp" />
-    <ClInclude Include="Code\Resources.hpp" />
+    <ClInclude Include="Code\resources.hpp" />
     <ClInclude Include="Code\RtBase.hpp" />
     <ClInclude Include="Code\sampler_pool.hpp" />
     <ClInclude Include="Code\semaphore.hpp" />

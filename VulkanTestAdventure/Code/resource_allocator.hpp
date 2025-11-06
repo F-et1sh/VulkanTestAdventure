@@ -1,5 +1,5 @@
 #pragma once
-#include "Resources.hpp"
+#include "resources.hpp"
 
 namespace vk_test {
     //--- Resource Allocator ------------------------------------------------------------------------------------------------------------

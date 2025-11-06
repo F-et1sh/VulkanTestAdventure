@@ -1,5 +1,5 @@
 #pragma once
-#include "Resources.hpp"
+#include "resources.hpp"
 #include "barriers.hpp"
 
 namespace vk_test {

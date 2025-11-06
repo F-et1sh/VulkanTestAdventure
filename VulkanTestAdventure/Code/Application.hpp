@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.hpp"
-#include "Resources.hpp"
+#include "resources.hpp"
 #include "Context.hpp"
 #include "Swapchain.hpp"
 

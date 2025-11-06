@@ -207,7 +207,7 @@
     <ClCompile Include="Code\Vertices.cpp">
       <Filter>Code\Main\Vertices</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Resources.cpp">
+    <ClCompile Include="Code\resources.cpp">
       <Filter>Code\Main\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Code\Context.cpp">
@@ -261,6 +261,9 @@
     <ClCompile Include="Code\primitives.cpp">
       <Filter>Code\Main\Utilities\Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="Code\RtBase.cpp">
+      <Filter>Code\Main\RtBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\Files\Shaders\Test1\shader.vert">
@@ -301,7 +304,7 @@
     <ClInclude Include="Code\Vertices.hpp">
       <Filter>Code\Main\Vertices</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Resources.hpp">
+    <ClInclude Include="Code\resources.hpp">
       <Filter>Code\Main\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Code\Context.hpp">
