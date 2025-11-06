@@ -109,13 +109,13 @@ namespace vk_test {
         // and a copy command is appended for later execution via `cmdUploadAppended`
         // `dataSize` can be `0` does return VK_SUCCESS and sets `uploadMapping` to nullptr
         VkResult appendBufferMapping(const vk_test::Buffer& buffer,
-                                     VkDeviceSize           bufferOffset,
-                                     VkDeviceSize           dataSize,
-                                     void*&                 uploadMapping,
+                                     VkDeviceSize           buffer_offset,
+                                     VkDeviceSize           data_size,
+                                     void*&                 upload_mapping,
                                      const SemaphoreState&  semaphore_state = {});
 
         // same as above but infers `bufferOffset` from `bufferRange.offset` and `dataSize` from `bufferRange.range`
-        VkResult appendBufferRangeMapping(const vk_test::BufferRange& bufferRange, void*& uploadMapping, const SemaphoreState& semaphore_state = {});
+        VkResult appendBufferRangeMapping(const vk_test::BufferRange& buffer_range, void*& upload_mapping, const SemaphoreState& semaphore_state = {});
 
         template <typename T>
         VkResult appendBuffer(const vk_test::Buffer& buffer, size_t buffer_offset, std::span<T> data, const SemaphoreState& semaphore_state = {}) {
@@ -208,10 +208,10 @@ namespace vk_test {
             bool   transfer_only = false;
             size_t staging_size  = 0;
 
-            std::vector<VkBufferCopy2>            copy_buffer_regions;
-            std::vector<VkCopyBufferInfo2>        copy_buffer_infos;
-            std::vector<VkBufferImageCopy2>       copy_buffer_image_regions;
-            std::vector<VkCopyBufferToImageInfo2> copy_buffer_image_infos;
+            std::vector<VkBufferCopy2>            copy_buffer_regions{};
+            std::vector<VkCopyBufferInfo2>        copy_buffer_infos{};
+            std::vector<VkBufferImageCopy2>       copy_buffer_image_regions{};
+            std::vector<VkCopyBufferToImageInfo2> copy_buffer_image_infos{};
             BarrierContainer                      pre;
             BarrierContainer                      post;
         };
@@ -225,7 +225,7 @@ namespace vk_test {
         size_t             m_StagingResourcesSize = 0;
         bool               m_EnableLayoutBarriers = false;
 
-        std::vector<StagingResource> m_StagingResources;
+        std::vector<StagingResource> m_StagingResources{};
         Batch                        m_Batch{};
     };
 

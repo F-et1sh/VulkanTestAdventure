@@ -24,7 +24,7 @@
 */
 
 #ifndef IO_GLTF_H
-#define VK_TEST_IO_GLTF_H
+#define IO_GLTF_H
 
 #ifdef __cplusplus
 #define VK_TEST_CHECK_STRUCT_ALIGNMENT(_s) static_assert(sizeof(_s) % 8 == 0);
@@ -94,8 +94,8 @@ struct GltfPunctual {
 
 struct GltfInstance {
     float4x4 transform;     // Transform matrix for the instance (local to world)
-    uint32_t materialIndex; // Material properties for the instance
-    uint32_t meshIndex;     // Index of the mesh in the GltfMesh vector
+    uint32_t materialIndex{}; // Material properties for the instance
+    uint32_t meshIndex{};     // Index of the mesh in the GltfMesh vector
 };
 VK_TEST_CHECK_STRUCT_ALIGNMENT(GltfInstance)
 

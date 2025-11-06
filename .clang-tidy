@@ -7,9 +7,6 @@ CheckOptions:
   # Defines
   - { key: readability-identifier-naming.MacroDefinitionCase,    value: UPPER_CASE }
 
-  # Define prefix
-  - { key: readability-identifier-naming.MacroDefinitionPrefix,  value: VK_TEST_ }
-
   # Local variables
   - { key: readability-identifier-naming.LocalVariableCase,      value: lower_case }
 

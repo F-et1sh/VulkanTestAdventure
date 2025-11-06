@@ -66,8 +66,8 @@ namespace vk_test {
     };
 
     struct PrimitiveMesh {
-        std::vector<PrimitiveVertex>   vertices;  // Array of all vertex
-        std::vector<PrimitiveTriangle> triangles; // Indices forming triangles
+        std::vector<PrimitiveVertex>   vertices{};  // Array of all vertex
+        std::vector<PrimitiveTriangle> triangles{}; // Indices forming triangles
     };
 
     struct Node {
@@ -78,7 +78,7 @@ namespace vk_test {
         int       material{ 0 };
         int       mesh{ -1 };
 
-        glm::mat4 localMatrix() const {
+        static glm::mat4 localMatrix() {
             glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0F), translation);
             glm::mat4 rotation_matrix    = glm::mat4_cast(rotation);
             glm::mat4 scale_matrix       = glm::scale(glm::mat4(1.0F), scale);

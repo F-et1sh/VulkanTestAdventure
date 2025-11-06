@@ -685,7 +685,7 @@ namespace vk_test {
                 }
                 return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.nrm.x, v.nrm.y, v.nrm.z);
             }
-            else if (test_uv) {
+            if (test_uv) {
                 return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z, v.tex.x, v.tex.y);
             }
             return vk_test::hashVal(v.pos.x, v.pos.y, v.pos.z);

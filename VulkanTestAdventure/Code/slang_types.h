@@ -22,8 +22,6 @@
 * 2025
 */
 
-// clang-tidy off
-
 #ifndef SLANG_TYPES_H
 #define SLANG_TYPES_H
 
@@ -93,7 +91,7 @@ glm::mat<N, N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> 
     return b * a;
 }
 
-#define SLANG_DEFAULT(x) = (x)
+#define VK_TEST_SLANG_DEFAULT(x) = (x)
 
 NAMESPACE_SHADERIO_END()
 
@@ -161,5 +159,3 @@ __intrinsic_op(cmpGT) public vector<bool, N> greaterThan<T, let N : int>(vector<
 #endif // __cplusplus
 
 #endif // SLANG_TYPES_H
-
-// clang-tidy on

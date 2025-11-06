@@ -294,9 +294,9 @@ namespace vk_test {
 
     class BarrierContainer {
     public:
-        std::vector<VkMemoryBarrier2>       memoryBarriers;
-        std::vector<VkBufferMemoryBarrier2> bufferBarriers;
-        std::vector<VkImageMemoryBarrier2>  imageBarriers;
+        std::vector<VkMemoryBarrier2>       memoryBarriers{};
+        std::vector<VkBufferMemoryBarrier2> bufferBarriers{};
+        std::vector<VkImageMemoryBarrier2>  imageBarriers{};
 
         // Submits all barriers. Does not clear vectors.
         void cmdPipelineBarrier(VkCommandBuffer cmd, VkDependencyFlags dependency_flags);

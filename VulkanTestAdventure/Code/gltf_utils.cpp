@@ -176,7 +176,7 @@ void vk_test::importGltfData(GltfSceneResource&        scene_resource,
         mesh.triMesh.indices = {
             .offset     = uint32_t(buffer_view.byteOffset + accessor.byteOffset),
             .count      = uint32_t(accessor.count),
-            .byteStride = uint32_t((buffer_view.byteStride != 0u) ? buffer_view.byteStride : get_element_byte_size(accessor.componentType)),
+            .byteStride = uint32_t((buffer_view.byteStride != 0U) ? buffer_view.byteStride : get_element_byte_size(accessor.componentType)),
         };
         mesh.indexType = accessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
 

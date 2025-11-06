@@ -190,6 +190,9 @@
     <Filter Include="Code\Main\Sky">
       <UniqueIdentifier>{d7597af4-2477-43e3-966b-b8577e88184c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\io.h.slang">
+      <UniqueIdentifier>{34fbb114-b3ab-431c-b80a-b44afdc52456}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -376,14 +379,14 @@
     <ClInclude Include="Code\primitives.hpp">
       <Filter>Code\Main\Utilities\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="Code\io_gltf.h">
-      <Filter>Code\Main\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Code\slang_types.h">
       <Filter>Code\Main\Utilities\Slang</Filter>
     </ClInclude>
     <ClInclude Include="Code\sky.hpp">
       <Filter>Code\Main\Sky</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\io_gltf.h">
+      <Filter>Code\Main\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -537,7 +540,10 @@
       <Filter>Code\Frozen\OneFile Renderer %28 C-Style %29</Filter>
     </None>
     <None Include="Code\sky_io.h.slang">
-      <Filter>Code\Main\Utilities\Slang</Filter>
+      <Filter>Code\Main\io.h.slang</Filter>
+    </None>
+    <None Include="Code\tonemap_io.h.slang">
+      <Filter>Code\Main\io.h.slang</Filter>
     </None>
   </ItemGroup>
 </Project>

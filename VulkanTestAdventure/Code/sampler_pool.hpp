@@ -147,7 +147,7 @@ namespace vk_test {
         std::unordered_map<VkSampler, SamplerState> m_SamplerToState;
 
         // Mutex for thread-safe access to both maps
-        mutable std::mutex m_Mutex{};
+        mutable std::mutex m_Mutex;
     };
 
 } // namespace vk_test

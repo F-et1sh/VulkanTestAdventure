@@ -180,6 +180,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Code\sky_io.h.slang" />
+    <None Include="Code\tonemap_io.h.slang" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
     <None Include="Code\VkHpp_GPUResourceManager.cpp" />
