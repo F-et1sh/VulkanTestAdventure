@@ -48,10 +48,10 @@ namespace vk_test {
 
         // GPU buffers for the scene data
         std::vector<vk_test::Buffer> b_gltf_datas{}; // Buffers containing the GLTF binary data for each loaded scene
-        vk_test::Buffer              b_meshes;     // Buffer containing all GltfMesh data
-        vk_test::Buffer              b_instances;  // Buffer containing all GltfInstance data
-        vk_test::Buffer              b_materials;  // Buffer containing all GltfMetallicRoughness data
-        vk_test::Buffer              b_scene_info; // Buffer containing GltfSceneInfo
+        vk_test::Buffer              b_meshes;       // Buffer containing all GltfMesh data
+        vk_test::Buffer              b_instances;    // Buffer containing all GltfInstance data
+        vk_test::Buffer              b_materials;    // Buffer containing all GltfMetallicRoughness data
+        vk_test::Buffer              b_scene_info;   // Buffer containing GltfSceneInfo
 
         // Mapping from mesh index to buffer index in bGltfDatas
         std::vector<uint32_t> mesh_to_buffer_index{}; // meshToBufferIndex[meshIndex] = bufferIndex

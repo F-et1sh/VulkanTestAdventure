@@ -93,7 +93,7 @@ struct GltfPunctual {
 };
 
 struct GltfInstance {
-    float4x4 transform;     // Transform matrix for the instance (local to world)
+    float4x4 transform{};     // Transform matrix for the instance (local to world)
     uint32_t materialIndex{}; // Material properties for the instance
     uint32_t meshIndex{};     // Index of the mesh in the GltfMesh vector
 };

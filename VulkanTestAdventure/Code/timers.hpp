@@ -93,7 +93,7 @@ namespace vk_test {
 
         TimeValue m_Start{};
         // Returns the current TimeValue.
-        TimeValue now() const;
+        static TimeValue now();
     };
 
     // Logging the time spent while alive in a scope.
@@ -109,8 +109,9 @@ namespace vk_test {
         ~ScopedTimer();
         static std::string indent() {
             std::string result(static_cast<size_t>(s_Nesting * 2), ' ');
-            for (int i = 0; i < s_Nesting * 2; i += 2)
+            for (int i = 0; i < s_Nesting * 2; i += 2) {
                 result[i] = '|';
+            }
             return result;
         }
 

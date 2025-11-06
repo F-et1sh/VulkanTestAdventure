@@ -66,8 +66,8 @@ namespace vk_test {
     };
 
     struct PrimitiveMesh {
-        std::vector<PrimitiveVertex>   vertices{};  // Array of all vertex
-        std::vector<PrimitiveTriangle> triangles{}; // Indices forming triangles
+        std::vector<PrimitiveVertex>   vertices;  // Array of all vertex
+        std::vector<PrimitiveTriangle> triangles; // Indices forming triangles
     };
 
     struct Node {

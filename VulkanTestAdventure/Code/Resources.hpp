@@ -33,7 +33,7 @@ namespace vk_test {
         VkBuffer                   buffer{};
         VkDeviceSize               bufferSize{};
         VkDeviceAddress            address{};
-        std::vector<VmaAllocation> allocations{};
+        std::vector<VmaAllocation> allocations;
     };
 
     // allows >= 4GB sizes

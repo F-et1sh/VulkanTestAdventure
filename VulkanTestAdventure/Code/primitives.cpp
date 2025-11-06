@@ -626,7 +626,7 @@ namespace vk_test {
 
         // Merge all nodes meshes into a single one
         for (const auto& n : nodes) {
-            const glm::mat4 mat = n.localMatrix();
+            const glm::mat4 mat = value_type::localMatrix();
 
             uint32_t                      t_index = static_cast<uint32_t>(result_mesh.vertices.size());
             const vk_test::PrimitiveMesh& mesh    = meshes[n.mesh];

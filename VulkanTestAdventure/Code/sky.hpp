@@ -108,7 +108,7 @@ namespace vk_test {
             // Remove the translation from the view matrix
             glm::mat4 view_no_trans = view_matrix;
             view_no_trans[3]        = { 0.0F, 0.0F, 0.0F, 1.0F };
-            glm::mat4 mvp         = glm::inverse(proj_matrix * view_no_trans); // This will be to have a world direction vector pointing to the pixel
+            glm::mat4 mvp           = glm::inverse(proj_matrix * view_no_trans); // This will be to have a world direction vector pointing to the pixel
 
             // Push constant
             vkCmdPushConstants(cmd, m_PipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(SkyParams), &sky_param);

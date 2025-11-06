@@ -33,9 +33,9 @@ NAMESPACE_SHADERIO_BEGIN()
 // Converts a color from linear RGB to sRGB.
 inline float3 toSrgb(float3 rgb)
 {
-  float3 low  = rgb * 12.92f;
-  float3 high = fma(pow(rgb, float3(1.0F / 2.4F)), float3(1.055F), float3(-0.055F));
-  return lerp(low, high, float3(greaterThan(rgb, float3(0.0031308F))));
+    float3 low  = rgb * 12.92F;
+    float3 high = fma(pow(rgb, float3(1.0F / 2.4F)), float3(1.055F), float3(-0.055F));
+    return lerp(low, high, float3(greaterThan(rgb, float3(0.0031308F))));
 }
 
 // Converts a color from sRGB to linear RGB.
@@ -54,22 +54,20 @@ inline float ev100Luminance(float ev100)
   // a logarithmic scale, and using EV100 here gives values photographers are familiar with.
   // See https://en.wikipedia.org/wiki/Exposure_value#Relationship_of_EV_to_lighting_conditions
   // for the equation source, and historical background as to why this is called EV100.
-  return exp2(ev100) / float(100.0f / 12.5f);
+  return exp2(ev100) / (100.0F / 12.5F);
 }
 
 // Converts from linear scene luminance to photographer's EV100 ("exposure in stops").
 // See ev100Luminance().
 inline float luminanceEv100(float luminance)
 {
-  return log2(luminance * float(100.0f / 12.5f));
+    return log2(luminance * (100.0F / 12.5F));
 }
 
 // Returns the luminance of a linear color in the BT.709 standard.
-inline float bt709Luminance(float3 linearColor)
-{
-  return dot(linearColor, float3(0.2126, 0.7152, 0.0722));
+inline float bt709Luminance(float3 linear_color) {
+    return dot(linear_color, float3(0.2126, 0.7152, 0.0722));
 }
-
 
 /*-------------------------------------------------------------------------------------------------
 # Function `tonemapFilmic`
@@ -106,13 +104,13 @@ inline float3 tonemapUncharted2Impl(float3 color)
 
 inline float3 tonemapUncharted2(float3 color)
 {
-  const float W             = 11.2F;
-  const float exposure_bias = 2.0F;
-  color                     = tonemapUncharted2Impl(color * exposure_bias);
-  float3 white_scale        = float3(1.0F) / tonemapUncharted2Impl(float3(W));
-  // We apply pow() here instead of calling toSrgb to match the
-  // original implementation.
-  return pow(color * white_scale, float3(1.0F / 2.2F));
+    const float w             = 11.2F;
+    const float exposure_bias = 2.0F;
+    color                     = tonemapUncharted2Impl(color * exposure_bias);
+    float3 white_scale        = float3(1.0F) / tonemapUncharted2Impl(float3(w));
+    // We apply pow() here instead of calling toSrgb to match the
+    // original implementation.
+    return pow(color * white_scale, float3(1.0F / 2.2F));
 }
 
 /*-------------------------------------------------------------------------------------------------
@@ -126,20 +124,28 @@ via https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
 inline float3 tonemapACES(float3 color)
 {
   // Input transform
-  const float3x3 ACESInputMat = float3x3(0.59719F, 0.07600F, 0.02840F,   // Row 1
-                                         0.35458F, 0.90834F, 0.13383F,   // Row 2
-                                         0.04823F, 0.01566F, 0.83777F);  // Row 3
-  color                       = mul(color, ACESInputMat);
+  const float3x3 aces_input_mat = float3x3(0.59719F, 0.07600F, 0.02840F, // Row 1
+                                           0.35458F,
+                                           0.90834F,
+                                           0.13383F, // Row 2
+                                           0.04823F,
+                                           0.01566F,
+                                           0.83777F); // Row 3
+  color                         = mul(color, aces_input_mat);
 
   // RRT and ODT fit
   float3 a = color * (color + float3(0.0245786F)) - float3(0.000090537F);
   float3 b = color * (float3(0.983729F) * color + float3(0.4329510F)) + float3(0.238081F);
   color    = a / b;  // Always OK because of the large constant term in b's polynomial
   // Output transform
-  const float3x3 ACESOutputMat = float3x3(1.60475F, -0.10208F, -0.00327F,  //
-                                          -0.53108F, 1.10813F, -0.07276F,  //
-                                          -0.07367F, -0.00605F, 1.07602F);
-  color                        = mul(color, ACESOutputMat);
+  const float3x3 aces_output_mat = float3x3(1.60475F, -0.10208F, -0.00327F, //
+                                            -0.53108F,
+                                            1.10813F,
+                                            -0.07276F, //
+                                            -0.07367F,
+                                            -0.00605F,
+                                            1.07602F);
+  color                          = mul(color, aces_output_mat);
   return toSrgb(color);
 }
 
@@ -158,8 +164,8 @@ inline float3 tonemapAgX(float3 color)
   color                  = mul(color, agx_mat);
 
   // Log2 space encoding
-  const float min_ev = -12.47393f;
-  const float max_ev = 4.026069f;
+  const float min_ev = -12.47393F;
+  const float max_ev = 4.026069F;
   color              = clamp(log2(color), min_ev, max_ev);
   color              = (color - min_ev) / (max_ev - min_ev);
 
@@ -189,8 +195,8 @@ Adapted from https://github.com/KhronosGroup/ToneMapping/blob/main/PBR_Neutral/p
 -------------------------------------------------------------------------------------------------*/
 inline float3 tonemapKhronosPBR(float3 color)
 {
-  const float startCompression = 0.8F - 0.04F;
-  const float desaturation     = 0.15F;
+    const float start_compression = 0.8F - 0.04F;
+    const float desaturation      = 0.15F;
 
 #ifdef __cplusplus
   float x    = glm::min(color.x, glm::min(color.y, color.z));
@@ -203,14 +209,13 @@ inline float3 tonemapKhronosPBR(float3 color)
   float offset = x < 0.08F ? x * (-6.25F * x + 1.F) : 0.04F;
   color -= offset;
 
-  if(peak >= startCompression)
-  {
-    const float d       = 1.F - startCompression;
-    float       newPeak = 1.F - d * d / (peak + d - startCompression);
-    color *= newPeak / peak;
+  if (peak >= start_compression) {
+      const float d        = 1.F - start_compression;
+      float       new_peak = 1.F - (d * d / (peak + d - start_compression));
+      color *= new_peak / peak;
 
-    float g = 1.F - 1.F / (desaturation * (peak - newPeak) + 1.F);
-    color   = lerp(color, float3(newPeak), float3(g));
+      float g = 1.F - (1.F / (desaturation * (peak - new_peak) + 1.F));
+      color   = lerp(color, float3(new_peak), float3(g));
   }
   return toSrgb(color);
 }
@@ -238,16 +243,16 @@ inline float2 cie1960LightColor(float t, float duv)
   // We compute the derivative analytically.
   // As a result of this approximation, D65 is at 6506 rather than the usual
   // 6504 K.
-  float  rcpUDenom = 1.0F / ((7.08145163e-7F * t + 8.42420235e-4F) * t + 1.F);
-  float  rcpVDenom = 1.0F / ((1.61456053e-7F * t - 2.89741816e-5F) * t + 1.F);
-  float2 uv        = float2(((1.28641212e-7F * t + 1.54118254e-4F) * t + 0.860117757F) * rcpUDenom,  //
-                            ((4.20481691e-8F * t + 4.22806245e-5F) * t + 0.317398726F) * rcpVDenom);
+  float  rcp_u_denom = 1.0F / ((7.08145163e-7F * t + 8.42420235e-4F) * t + 1.F);
+  float  rcp_v_denom = 1.0F / ((1.61456053e-7F * t - 2.89741816e-5F) * t + 1.F);
+  float2 uv          = float2(((1.28641212e-7F * t + 1.54118254e-4F) * t + 0.860117757F) * rcp_u_denom, //
+                     ((4.20481691e-8F * t + 4.22806245e-5F) * t + 0.317398726F) * rcp_v_denom);
 
   // For the derivative, note that we can re - use the denominator, since
   // d/dt f(t) / g(t) = (f'(t)g(t) - f(t)g'(t)) / g(t)^2:
   float2 derivative =
-      float2(((-7.68136056380576e-13F * t - 9.60894034459919e-7F) * t - 0.000570462348979613F) * rcpUDenom * rcpUDenom,  //
-             ((-8.04477403759601e-12F * t - 1.8395552854377e-8F) * t + 5.14769928267326e-5F) * rcpVDenom * rcpVDenom);
+      float2(((-7.68136056380576e-13F * t - 9.60894034459919e-7F) * t - 0.000570462348979613F) * rcp_u_denom * rcp_u_denom, //
+             ((-8.04477403759601e-12F * t - 1.8395552854377e-8F) * t + 5.14769928267326e-5F) * rcp_v_denom * rcp_v_denom);
   derivative = normalize(derivative);  // Normalize it
 
   // Apply the duv offset
@@ -260,15 +265,15 @@ inline float2 cie1960LightColor(float t, float duv)
 inline float3 cie1931XyzFromCie1960UV(float2 uv)
 {
   // From https://en.wikipedia.org/wiki/CIE_1960_color_space#Relation_to_CIE_XYZ
-  float2 xy = uv * float2(3.f, 2.f) / (2.f * uv.x - 8.f * uv.y + 4.f);
+  float2 xy = uv * float2(3.F, 2.F) / ((2.F * uv.x) - (8.F * uv.y) + 4.F);
   // From https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xyY_color_space :
   // For low color temperatures and high Duv, the light color might get a
   // negative z = 1 - x - y value, which is totally impossible.
   // Scale the xy value back in to prevent this:
-  xy /= max(1.f, xy.x + xy.y);
+  xy /= max(1.F, xy.x + xy.y);
   // Convert to (x, y, 1-x-y) then divide by y
-  float rcpY = 1.f / xy.y;
-  return float3(xy.x * rcpY, 1.f, (1.f - xy.x) * rcpY - 1.f);
+  float rcp_y = 1.F / xy.y;
+  return float3(xy.x * rcp_y, 1.F, ((1.F - xy.x) * rcp_y) - 1.F);
 }
 
 // Returns a matrix that corrects a light source with the given Kelvin
@@ -290,28 +295,40 @@ inline float3x3 getColorCorrectionMatrix(float exposure, float temperature, floa
   // a single 3x3 matrix.
   //
   // Here are the matrices we'll need:
-  const float3x3 kCmccat2000FromCie1931Xyz = float3x3(0.7982F, 0.3389F, -0.1371F,              // Row 1
-                                                      -0.5918F, 1.5512F, 0.0406F,              // Row 2
-                                                      0.0008F, 0.0239F, 0.9753F);              // Row 3
-  const float3x3 kCmccat2000FromRgb        = float3x3(0.39858179F, 0.51147528F, 0.03823013F,   //
-                                                      0.08651038F, 0.90263008F, 0.04376704F,   //
-                                                      0.02423435F, 0.13363512F, 0.92889263F);  //
-  const float3x3 kRgbFromCmccat2000        = float3x3(2.86209568F, -1.61563711F, -0.04166966,  //
-                                                      -0.27259146F, 1.26953249F, -0.04859816,  //
-                                                      -0.0354543F, -0.14049009F, 1.0846294);
+  const float3x3 k_cmccat2000_from_cie1931_xyz = float3x3(0.7982F, 0.3389F, -0.1371F, // Row 1
+                                                          -0.5918F,
+                                                          1.5512F,
+                                                          0.0406F, // Row 2
+                                                          0.0008F,
+                                                          0.0239F,
+                                                          0.9753F);                              // Row 3
+  const float3x3 k_cmccat2000_from_rgb         = float3x3(0.39858179F, 0.51147528F, 0.03823013F, //
+                                                  0.08651038F,
+                                                  0.90263008F,
+                                                  0.04376704F, //
+                                                  0.02423435F,
+                                                  0.13363512F,
+                                                  0.92889263F);                           //
+  const float3x3 k_rgb_from_cmccat2000         = float3x3(2.86209568F, -1.61563711F, -0.04166966, //
+                                                  -0.27259146F,
+                                                  1.26953249F,
+                                                  -0.04859816, //
+                                                  -0.0354543F,
+                                                  -0.14049009F,
+                                                  1.0846294);
 
   // Whitepoint to CMCCAT2000
-  float3 whitepointXYZ        = cie1931XyzFromCie1960UV(cie1960LightColor(temperature, tint));
-  float3 whitepointCmccat2000 = mul(kCmccat2000FromCie1931Xyz, whitepointXYZ);
+  float3 whitepoint_xyz        = cie1931XyzFromCie1960UV(cie1960LightColor(temperature, tint));
+  float3 whitepoint_cmccat2000 = mul(k_cmccat2000_from_cie1931_xyz, whitepoint_xyz);
   // Componentwise multiplier.
   // Note that even for D65, whitepointCmccat2000 isn't [1,1,1], so we need to
   // apply a normalization factor. This is mul(kCmccat2000FromRgb, float3(1,1,1)):
-  float3   middleFactor = exposure * (float3(0.948287308f, 1.03290749f, 1.08676255f) / whitepointCmccat2000);
-  float3x3 right        = float3x3(middleFactor[0] * kCmccat2000FromRgb[0],  //
-                                   middleFactor[1] * kCmccat2000FromRgb[1],  //
-                                   middleFactor[2] * kCmccat2000FromRgb[2]);
+  float3   middle_factor = exposure * (float3(0.948287308F, 1.03290749F, 1.08676255F) / whitepoint_cmccat2000);
+  float3x3 right         = float3x3(middle_factor[0] * k_cmccat2000_from_rgb[0], //
+                            middle_factor[1] * k_cmccat2000_from_rgb[1], //
+                            middle_factor[2] * k_cmccat2000_from_rgb[2]);
   // Fold all the matrices together
-  float3x3 result = mul(kRgbFromCmccat2000, right);
+  float3x3 result = mul(k_rgb_from_cmccat2000, right);
   // Note that for the default exposure, temperature, and tint we now have the
   // identity matrix to within 2e-7.
   return result;
@@ -320,73 +337,70 @@ inline float3x3 getColorCorrectionMatrix(float exposure, float temperature, floa
 // Applies the given tone mapper and color grading settings to a given color.
 // Requires the pixel index so it can dither,
 // and the screen size so that it can apply vignetting.
-inline float3 applyTonemap(TonemapperData tm, float3 color, float2 pixel, float2 imageSize)
-{
-  // Exposure and white balance.
-  // These are combined into a matrix and applied together before tonemapping
-  // because they're correcting for scene lighting and camera parameters.
-  color = mul(tm.inputMatrix, color);
+inline float3 applyTonemap(TonemapperData tm, float3 color, float2 pixel, float2 image_size) {
+    // Exposure and white balance.
+    // These are combined into a matrix and applied together before tonemapping
+    // because they're correcting for scene lighting and camera parameters.
+    color = mul(tm.inputMatrix, color);
 
-  float3 c;
-  // Tonemap
-  switch(tm.method)
-  {
-    case ToneMapMethod::eFilmic:
-      c = tonemapFilmic(color);
-      break;
-    case ToneMapMethod::eUncharted2:
-      c = tonemapUncharted2(color);
-      break;
-    case ToneMapMethod::eClip:
-      c = toSrgb(color);
-      break;
-    case ToneMapMethod::eACES:
-      c = tonemapACES(color);
-      break;
-    case ToneMapMethod::eAgX:
-      c = tonemapAgX(color);
-      break;
-    case ToneMapMethod::eKhronosPBR:
-      c = tonemapKhronosPBR(color);
-      break;
-  }
+    float3 c;
+    // Tonemap
+    switch (tm.method) {
+        case ToneMapMethod::eFilmic:
+            c = tonemapFilmic(color);
+            break;
+        case ToneMapMethod::eUncharted2:
+            c = tonemapUncharted2(color);
+            break;
+        case ToneMapMethod::eClip:
+            c = toSrgb(color);
+            break;
+        case ToneMapMethod::eACES:
+            c = tonemapACES(color);
+            break;
+        case ToneMapMethod::eAgX:
+            c = tonemapAgX(color);
+            break;
+        case ToneMapMethod::eKhronosPBR:
+            c = tonemapKhronosPBR(color);
+            break;
+    }
 
-  // SDR color grading.
-  // contrast and clamp (just in case)
-  c = clamp(lerp(float3(0.5F), c, float3(tm.contrast)), float3(0.F), float3(1.F));
-  // brightness
-  c = pow(c, float3(1.0F / tm.brightness));
-  // saturation
-  float3 i = float3(dot(c, float3(0.299F, 0.587F, 0.114F)));
-  c        = lerp(i, c, float3(tm.saturation));
-  // vignette
-  float2 center_uv = (pixel / imageSize) * 2.0F - 1.0F;
-  c *= 1.0F - dot(center_uv, center_uv) * tm.vignette;
+    // SDR color grading.
+    // contrast and clamp (just in case)
+    c = clamp(lerp(float3(0.5F), c, float3(tm.contrast)), float3(0.F), float3(1.F));
+    // brightness
+    c = pow(c, float3(1.0F / tm.brightness));
+    // saturation
+    float3 i = float3(dot(c, float3(0.299F, 0.587F, 0.114F)));
+    c        = lerp(i, c, float3(tm.saturation));
+    // vignette
+    float2 center_uv = (pixel / image_size) * 2.0F - 1.0F;
+    c *= 1.0F - (dot(center_uv, center_uv) * tm.vignette);
 
-  // Dither assuming 8-bit output.
-  if(tm.dither == 1)
-  {
-    const float levelsMinus1 = 255.F;
-    // Based on Fardan Niqbal's survey at https://www.shadertoy.com/view/cl2GRm,
-    // we use R2 noise in [0, 1]:
-    float noise = fract(dot(pixel, float2(0.245122331F, 0.430159704F)));
-    // routed through a triangular wave to [-.5,.5]:
-    noise = .5F - 2.F * abs(noise - .5F);
-    // shaped so its probability distribution function is a triangle over [-1, 1]:
-    const float trinoise = sign(noise) * (1.F - sqrt(1.F - 2.F * abs(noise)));
-    // We use triangular noise for most of the range (so that the amount of
-    // noise appears uniform) but switch to uniform at the ends:
-    const bool3 useUniform = greaterThan(float3(.5F / levelsMinus1), c)  //
-                             || greaterThan(c, float3(1.F - .5F / levelsMinus1));
-    // Note that because we add noise in sRGB space, we gain an average of
-    // 4 * 10^-6 luminance (roughly 0.279/L^2 where L is the number of levels).
-    // http://www.thetenthplanet.de/archives/5367 does energy-preserving dither,
-    // but with a box instead of a triangular kernel, so the amount of noise
-    // has a banding pattern over the image.
-    c += lerp(float3(trinoise), float3(noise), float3(useUniform)) / levelsMinus1;
-  }
+    // Dither assuming 8-bit output.
+    if (tm.dither == 1) {
+        const float levels_minus1 = 255.F;
+        // Based on Fardan Niqbal's survey at https://www.shadertoy.com/view/cl2GRm,
+        // we use R2 noise in [0, 1]:
+        float noise = fract(dot(pixel, float2(0.245122331F, 0.430159704F)));
+        // routed through a triangular wave to [-.5,.5]:
+        noise = .5F - 2.F * abs(noise - .5F);
+        // shaped so its probability distribution function is a triangle over [-1, 1]:
+        const float trinoise = sign(noise) * (1.F - sqrt(1.F - (2.F * abs(noise))));
+        // We use triangular noise for most of the range (so that the amount of
+        // noise appears uniform) but switch to uniform at the ends:
+        const bool3 use_uniform = greaterThan(float3(.5F / levels_minus1), c) //
+                                  || greaterThan(c, float3(1.F - (.5F / levels_minus1)));
+        // Note that because we add noise in sRGB space, we gain an average of
+        // 4 * 10^-6 luminance (roughly 0.279/L^2 where L is the number of levels).
+        // http://www.thetenthplanet.de/archives/5367 does energy-preserving dither,
+        // but with a box instead of a triangular kernel, so the amount of noise
+        // has a banding pattern over the image.
+        c += lerp(float3(trinoise), float3(noise), float3(use_uniform)) / levels_minus1;
+    }
 
-  return c;
+    return c;
 }
 
 NAMESPACE_SHADERIO_END()

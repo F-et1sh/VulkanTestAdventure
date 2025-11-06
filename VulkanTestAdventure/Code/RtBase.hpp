@@ -116,7 +116,7 @@ namespace vk_test {
         void onDetach() override {
             NVVK_CHECK(vkQueueWaitIdle(m_app->getQueue(0).queue));
 
-            VkDevice device = m_app->getDevice() = nullptr = nullptr;
+            VkDevice device = m_app->getDevice() = nullptr = nullptr = nullptr;
 
             m_descPack.deinit();
             vkDestroyPipelineLayout(device, m_graphicPipelineLayout, nullptr);
@@ -171,12 +171,13 @@ namespace vk_test {
 
                 if (ImGui::CollapsingHeader("Camera")) {
                     nvgui::CameraWidget(m_camera_manip);
-}
+                }
                 if (ImGui::CollapsingHeader("Environment")) {
                     ImGui::Checkbox("Use Sky", (bool*) &m_sceneResource.sceneInfo.useSky);
                     if (m_sceneResource.sceneInfo.useSky) {
                         nvgui::skySimpleParametersUI(m_sceneResource.sceneInfo.skySimpleParam);
-                    } else {
+                    }
+                    else {
                         PE::begin();
                         PE::ColorEdit3("Background", (float*) &m_sceneResource.sceneInfo.backgroundColor);
                         PE::end();
@@ -275,7 +276,7 @@ namespace vk_test {
         static void createScene() {
             SCOPED_TIMER(__FUNCTION__);
 
-            VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr;
+            VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr = nullptr;
 
             // Load the GLTF resources
             {
@@ -288,7 +289,7 @@ namespace vk_test {
                 // Textures
                 {
                     std::filesystem::path image_filename = nvutils::findFile("tiled_floor.png", getResourcesDirs());
-                    Image                 texture       = loadAndCreateImage(cmd, m_stagingUploader, m_app->getDevice(), imageFilename); // Load the image from the file and create a texture from it
+                    Image                 texture        = loadAndCreateImage(cmd, m_stagingUploader, m_app->getDevice(), imageFilename); // Load the image from the file and create a texture from it
                     NVVK_DBG_NAME(texture.image);
                     m_samplerPool.acquireSampler(texture.descriptor.sampler);
                     m_textures.emplace_back(texture); // Store the texture in the vector of textures
@@ -323,10 +324,10 @@ namespace vk_test {
 
             // Scene information
             shaderio::GltfSceneInfo& scene_info    = m_sceneResource.sceneInfo;
-            scene_info.useSky                      = 0;                                                                 // Use light
-            sceneInfo.instances                   = (shaderio::GltfInstance*) m_sceneResource.bInstances.address;          // Address of the instance buffer
-            sceneInfo.meshes                      = (shaderio::GltfMesh*) m_sceneResource.bMeshes.address;                 // Address of the mesh buffer
-            sceneInfo.materials                   = (shaderio::GltfMetallicRoughness*) m_sceneResource.bMaterials.address; // Address of the material buffer
+            scene_info.useSky                      = 0;                                                                     // Use light
+            sceneInfo.instances                    = (shaderio::GltfInstance*) m_sceneResource.bInstances.address;          // Address of the instance buffer
+            sceneInfo.meshes                       = (shaderio::GltfMesh*) m_sceneResource.bMeshes.address;                 // Address of the mesh buffer
+            sceneInfo.materials                    = (shaderio::GltfMetallicRoughness*) m_sceneResource.bMaterials.address; // Address of the material buffer
             scene_info.backgroundColor             = { 0.85F, 0.85F, 0.85F };                                               // The background color
             scene_info.numLights                   = 1;
             scene_info.punctualLights[0].color     = glm::vec3(1.0F, 1.0F, 1.0F);
@@ -389,13 +390,13 @@ namespace vk_test {
         static void updateTextures() {
             if (m_textures.empty()) {
                 return;
-}
+            }
 
             // Update the descriptor set with the textures
             WriteSetContainer    write{};
             VkWriteDescriptorSet all_textures =
                 m_descPack.makeWrite(shaderio::BindingPoints::eTextures, 0, 1, uint32_t(m_textures.size()));
-            Image* all_images = m_textures.data() = nullptr;
+            Image* all_images = m_textures.data() = nullptr = nullptr;
             write.append(all_textures, all_images);
             vkUpdateDescriptorSets(m_app->getDevice(), write.size(), write.data(), 0, nullptr);
         }
@@ -524,20 +525,20 @@ namespace vk_test {
 
             // Rendering to the GBuffer
             VkRenderingAttachmentInfo color_attachment = DEFAULT_VkRenderingAttachmentInfo;
-            colorAttachment.loadOp                    = m_sceneResource.sceneInfo.useSky ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
-            colorAttachment.imageView                 = m_gBuffers.getColorImageView(eImgRendered);
-            colorAttachment.clearValue                = { .color = { m_sceneResource.sceneInfo.backgroundColor.x,
-                                                                     m_sceneResource.sceneInfo.backgroundColor.y,
-                                                                     m_sceneResource.sceneInfo.backgroundColor.z,
-                                                                     1.0f } };
+            colorAttachment.loadOp                     = m_sceneResource.sceneInfo.useSky ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
+            colorAttachment.imageView                  = m_gBuffers.getColorImageView(eImgRendered);
+            colorAttachment.clearValue                 = { .color = { m_sceneResource.sceneInfo.backgroundColor.x,
+                                                                      m_sceneResource.sceneInfo.backgroundColor.y,
+                                                                      m_sceneResource.sceneInfo.backgroundColor.z,
+                                                                      1.0f } };
 
             VkRenderingAttachmentInfo depth_attachment = DEFAULT_VkRenderingAttachmentInfo;
-            depthAttachment.imageView                 = m_gBuffers.getDepthImageView();
-            depthAttachment.clearValue                = { .depthStencil = DEFAULT_VkClearDepthStencilValue };
+            depthAttachment.imageView                  = m_gBuffers.getDepthImageView();
+            depthAttachment.clearValue                 = { .depthStencil = DEFAULT_VkClearDepthStencilValue };
 
             // Create the rendering info
             VkRenderingInfo rendering_info      = DEFAULT_VkRenderingInfo;
-            renderingInfo.renderArea           = DEFAULT_VkRect2D(m_gBuffers.getSize());
+            renderingInfo.renderArea            = DEFAULT_VkRect2D(m_gBuffers.getSize());
             rendering_info.colorAttachmentCount = 1;
             rendering_info.pColorAttachments    = &color_attachment;
             rendering_info.pDepthAttachment     = &depth_attachment;
@@ -547,11 +548,11 @@ namespace vk_test {
 
             // Bind the descriptor sets for the graphics pipeline (making textures available to the shaders)
             const VkBindDescriptorSetsInfo bind_descriptor_sets_info{ .sType              = VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_SETS_INFO,
-                                                                   .stageFlags         = VK_SHADER_STAGE_ALL_GRAPHICS,
-                                                                   .layout             = m_graphicPipelineLayout,
-                                                                   .firstSet           = 0,
-                                                                   .descriptorSetCount = 1,
-                                                                   .pDescriptorSets    = m_descPack.getSetPtr() };
+                                                                      .stageFlags         = VK_SHADER_STAGE_ALL_GRAPHICS,
+                                                                      .layout             = m_graphicPipelineLayout,
+                                                                      .firstSet           = 0,
+                                                                      .descriptorSetCount = 1,
+                                                                      .pDescriptorSets    = m_descPack.getSetPtr() };
             vkCmdBindDescriptorSets2(cmd, &bind_descriptor_sets_info);
 
             // ** BEGIN RENDERING **
@@ -572,18 +573,18 @@ namespace vk_test {
             vkCmdSetVertexInputEXT(cmd, 0, nullptr, 0, nullptr);
 
             for (size_t i = 0; i < m_sceneResource.instances.size(); i++) {
-                uint32_t                      mesh_index = m_sceneResource.instances[i].meshIndex = 0 = 0;
-                const shaderio::GltfMesh&     gltf_mesh  = m_sceneResource.meshes[meshIndex];
-                const shaderio::TriangleMesh& tri_mesh   = gltf_mesh.triMesh;
+                uint32_t                      mesh_index = m_sceneResource.instances[i].meshIndex = 0 = 0 = 0;
+                const shaderio::GltfMesh&     gltf_mesh                                                   = m_sceneResource.meshes[meshIndex];
+                const shaderio::TriangleMesh& tri_mesh                                                    = gltf_mesh.triMesh;
 
                 // Push constant is information that is passed to the shader at each draw call.
-                pushValues.normalMatrix  = glm::transpose(glm::inverse(glm::mat3(m_sceneResource.instances[i].transform)));
+                pushValues.normalMatrix   = glm::transpose(glm::inverse(glm::mat3(m_sceneResource.instances[i].transform)));
                 push_values.instanceIndex = int(i); // The index of the instance in the m_instances vector
                 vkCmdPushConstants2(cmd, &push_info);
 
                 // Get the buffer directly using the pre-computed mapping
-                uint32_t      buffer_index = m_sceneResource.meshToBufferIndex[meshIndex] = 0 = 0;
-                const Buffer& v           = m_sceneResource.bGltfDatas[bufferIndex];
+                uint32_t      buffer_index = m_sceneResource.meshToBufferIndex[meshIndex] = 0 = 0 = 0;
+                const Buffer& v                                                                   = m_sceneResource.bGltfDatas[bufferIndex];
 
                 // Bind index buffers
                 vkCmdBindIndexBuffer(cmd, v.buffer, tri_mesh.indices.offset, VkIndexType(gltf_mesh.indexType));
@@ -608,8 +609,8 @@ namespace vk_test {
         // Converting a PrimitiveMesh as input for BLAS
         //
         static void primitiveToGeometry(const shaderio::GltfMesh&                 gltf_mesh,
-                                 VkAccelerationStructureGeometryKHR&       geometry,
-                                 VkAccelerationStructureBuildRangeInfoKHR& range_info) {
+                                        VkAccelerationStructureGeometryKHR&       geometry,
+                                        VkAccelerationStructureBuildRangeInfoKHR& range_info) {
             const shaderio::TriangleMesh tri_mesh       = gltf_mesh.triMesh;
             const auto                   triangle_count = static_cast<uint32_t>(tri_mesh.indices.count / 3U);
 
@@ -639,13 +640,13 @@ namespace vk_test {
         // Generic function to create an acceleration structure (BLAS or TLAS)
         // Note: This function creates and destroys a scratch buffer for each call.
         // Not optimal but easier to read and understand. See Helper function for a better approach.
-        void createAccelerationStructure(VkAccelerationStructureTypeKHR            as_type,           // The type of acceleration structure (BLAS or TLAS)
-                                         AccelerationStructure&                    accel_struct,      // The acceleration structure to create
-                                         VkAccelerationStructureGeometryKHR&       as_geometry,       // The geometry to build the acceleration structure from
-                                         VkAccelerationStructureBuildRangeInfoKHR& as_build_range_info, // The range info for building the acceleration structure
-                                         VkBuildAccelerationStructureFlagsKHR      flags             // Build flags (e.g. prefer fast trace)
+        static void createAccelerationStructure(VkAccelerationStructureTypeKHR            as_type,             // The type of acceleration structure (BLAS or TLAS)
+                                                AccelerationStructure&                    accel_struct,        // The acceleration structure to create
+                                                VkAccelerationStructureGeometryKHR&       as_geometry,         // The geometry to build the acceleration structure from
+                                                VkAccelerationStructureBuildRangeInfoKHR& as_build_range_info, // The range info for building the acceleration structure
+                                                VkBuildAccelerationStructureFlagsKHR      flags                // Build flags (e.g. prefer fast trace)
         ) {
-            VkDevice device = m_app->getDevice() = nullptr = nullptr;
+            VkDevice device = m_app->getDevice() = nullptr = nullptr = nullptr;
 
             // Helper function to align a value to a given alignment
             auto align_up = [](auto value, size_t alignment) noexcept { return ((value + alignment - 1) & ~(alignment - 1)); };
@@ -653,11 +654,11 @@ namespace vk_test {
             // Fill the build information with the current information, the rest is filled later (scratch buffer and destination AS)
             VkAccelerationStructureBuildGeometryInfoKHR as_build_info{
                 .sType         = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR,
-                .type          = as_type,                                         // The type of acceleration structure (BLAS or TLAS)
+                .type          = as_type,                                        // The type of acceleration structure (BLAS or TLAS)
                 .flags         = flags,                                          // Build flags (e.g. prefer fast trace)
                 .mode          = VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR, // Build mode vs update
                 .geometryCount = 1,                                              // Deal with one geometry at a time
-                .pGeometries   = &as_geometry,                                    // The geometry to build the acceleration structure from
+                .pGeometries   = &as_geometry,                                   // The geometry to build the acceleration structure from
             };
 
             // One geometry at a time (could be multiple)
@@ -669,7 +670,7 @@ namespace vk_test {
             vkGetAccelerationStructureBuildSizesKHR(device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &as_build_info, maxPrimCount.data(), &as_build_size);
 
             // Make sure the scratch buffer is properly aligned
-            VkDeviceSize scratch_size = align_up(as_build_size.buildScratchSize, m_asProperties.minAccelerationStructureScratchOffsetAlignment);
+            VkDeviceSize scratch_size = align_up(as_build_size.buildScratchSize = 0, m_asProperties.minAccelerationStructureScratchOffsetAlignment);
 
             // Create the scratch buffer to store the temporary data for the build
             Buffer scratch_buffer;
@@ -679,13 +680,13 @@ namespace vk_test {
             VkAccelerationStructureCreateInfoKHR create_info{
                 .sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR,
                 .size  = as_build_size.accelerationStructureSize, // The size of the acceleration structure
-                .type  = as_type,                                // The type of acceleration structure (BLAS or TLAS)
+                .type  = as_type,                                 // The type of acceleration structure (BLAS or TLAS)
             };
             NVVK_CHECK(m_allocator.createAcceleration(accelStruct, createInfo));
 
             // Build the acceleration structure
             {
-                VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr;
+                VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr = nullptr;
 
                 // Fill with new information for the build,scratch buffer and destination AS
                 as_build_info.dstAccelerationStructure  = accel_struct.accel;
@@ -724,7 +725,7 @@ namespace vk_test {
         //--------------------------------------------------------------------------------------------------
         // Create the top level acceleration structures, referencing all BLAS
         //
-        void createTopLevelAS() {
+        static void createTopLevelAS() {
             SCOPED_TIMER(__FUNCTION__);
 
             // VkTransformMatrixKHR is row-major 3x4, glm::mat4 is column-major; transpose before memcpy.
@@ -751,7 +752,7 @@ namespace vk_test {
             // Then create the buffer with the instance data
             Buffer tlas_instances_buffer;
             {
-                VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr;
+                VkCommandBuffer cmd = m_app->createTempCmdBuffer() = nullptr = nullptr = nullptr;
 
                 // Create the instances buffer and upload the instance data
                 NVVK_CHECK(m_allocator.createBuffer(
@@ -769,8 +770,8 @@ namespace vk_test {
 
                 // Convert the instance information to acceleration structure geometry, similar to primitiveToGeometry()
                 VkAccelerationStructureGeometryInstancesDataKHR geometry_instances{ .sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR,
-                                                                                   .data  = { .deviceAddress = tlas_instances_buffer.address } };
-                as_geometry       = { .sType        = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR,
+                                                                                    .data  = { .deviceAddress = tlas_instances_buffer.address } };
+                as_geometry      = { .sType        = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR,
                                      .geometryType = VK_GEOMETRY_TYPE_INSTANCES_KHR,
                                      .geometry     = { .instances = geometry_instances } };
                 asBuildRangeInfo = { .primitiveCount = static_cast<uint32_t>(m_sceneResource.instances.size()) };
@@ -893,16 +894,16 @@ namespace vk_test {
         // Create the shader binding table
         // The shader binding table is a buffer that contains the shader handles for the ray tracing pipeline,
         // used to identify the shaders for the ray tracing pipeline.
-        void createShaderBindingTable(const VkRayTracingPipelineCreateInfoKHR& rt_pipeline_info) {
+        static void createShaderBindingTable(const VkRayTracingPipelineCreateInfoKHR& rt_pipeline_info) {
             SCOPED_TIMER(__FUNCTION__);
 
             m_allocator.destroyBuffer(m_sbtBuffer); // Cleanup when re-creating
 
-            VkDevice device = m_app->getDevice() = nullptr = nullptr;
-            uint32_t handle_size      = m_rtProperties.shaderGroupHandleSize;
-            uint32_t handle_alignment = m_rtProperties.shaderGroupHandleAlignment;
-            uint32_t base_alignment   = m_rtProperties.shaderGroupBaseAlignment;
-            uint32_t group_count      = rt_pipeline_info.groupCount;
+            VkDevice device = m_app->getDevice() = nullptr = nullptr = nullptr;
+            uint32_t handle_size = m_rtProperties.shaderGroupHandleSize = 0;
+            uint32_t handle_alignment = m_rtProperties.shaderGroupHandleAlignment = 0;
+            uint32_t base_alignment = m_rtProperties.shaderGroupBaseAlignment = 0;
+            uint32_t group_count                                              = rt_pipeline_info.groupCount;
 
             // Get shader group handles
             size_t data_size = handle_size * group_count;
@@ -929,7 +930,7 @@ namespace vk_test {
             NVVK_DBG_NAME(m_sbtBuffer.buffer);
 
             // Populate SBT buffer
-            uint8_t* p_data = m_sbtBuffer.mapping;
+            uint8_t* p_data = m_sbtBuffer.mapping = nullptr;
 
             // Ray generation shader (group 0)
             memcpy(p_data + raygen_offset, m_shaderHandles.data() + (0 * handle_size), handle_size);
@@ -957,7 +958,7 @@ namespace vk_test {
 
         //---------------------------------------------------------------------------------------------------------------
         // Ray tracing rendering method
-        void raytraceScene(VkCommandBuffer cmd) {
+        static void raytraceScene(VkCommandBuffer cmd) {
             NVVK_DBG_SCOPE(cmd); // <-- Helps to debug in NSight
 
             // Ray trace pipeline
@@ -965,11 +966,11 @@ namespace vk_test {
 
             // Bind the descriptor sets for the graphics pipeline (making textures available to the shaders)
             const VkBindDescriptorSetsInfo bind_descriptor_sets_info{ .sType              = VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_SETS_INFO,
-                                                                   .stageFlags         = VK_SHADER_STAGE_ALL,
-                                                                   .layout             = m_rtPipelineLayout,
-                                                                   .firstSet           = 0,
-                                                                   .descriptorSetCount = 1,
-                                                                   .pDescriptorSets    = m_descPack.getSetPtr() };
+                                                                      .stageFlags         = VK_SHADER_STAGE_ALL,
+                                                                      .layout             = m_rtPipelineLayout,
+                                                                      .firstSet           = 0,
+                                                                      .descriptorSetCount = 1,
+                                                                      .pDescriptorSets    = m_descPack.getSetPtr() };
             vkCmdBindDescriptorSets2(cmd, &bind_descriptor_sets_info);
 
             // Push descriptor sets for ray tracing
@@ -984,10 +985,10 @@ namespace vk_test {
                 .metallicRoughnessOverride = m_metallicRoughnessOverride,
             };
             const VkPushConstantsInfo push_info{ .sType      = VK_STRUCTURE_TYPE_PUSH_CONSTANTS_INFO,
-                                                .layout     = m_rtPipelineLayout,
-                                                .stageFlags = VK_SHADER_STAGE_ALL,
-                                                .size       = sizeof(shaderio::TutoPushConstant),
-                                                .pValues    = &pushValues };
+                                                 .layout     = m_rtPipelineLayout,
+                                                 .stageFlags = VK_SHADER_STAGE_ALL,
+                                                 .size       = sizeof(shaderio::TutoPushConstant),
+                                                 .pValues    = &pushValues };
             vkCmdPushConstants2(cmd, &push_info);
 
             // Ray trace
@@ -1000,7 +1001,7 @@ namespace vk_test {
 
     private:
         // Application and core components
-        Application*      m_App{};             // The application framework
+        Application*      m_App{};           // The application framework
         ResourceAllocator m_Allocator;       // Resource allocator for Vulkan resources, used for buffers and images
         StagingUploader   m_StagingUploader; // Utility to upload data to the GPU, used for staging buffers and images
         SamplerPool       m_SamplerPool;     // Texture sampler pool, used to acquire texture samplers for images
@@ -1023,8 +1024,8 @@ namespace vk_test {
         GltfSceneResource  m_SceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
         std::vector<Image> m_textures{};      // Textures used in the scene
 
-        SkySimple                m_SkySimple;                                 // Sky rendering
-        Tonemapper               m_Tonemapper{};                                // Tonemapper for post-processing effects
+        SkySimple                m_SkySimple;                                   // Sky rendering
+        Tonemapper               m_Tonemapper;                                  // Tonemapper for post-processing effects
         shaderio::TonemapperData m_TonemapperData{};                            // Tonemapper data used to pass parameters to the tonemapper shader
         glm::vec2                m_MetallicRoughnessOverride{ -0.01F, -0.01F }; // Override values for metallic and roughness, used in the UI to control the material properties
 

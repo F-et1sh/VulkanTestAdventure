@@ -41,12 +41,12 @@ namespace vk_test {
         void runCompute(VkCommandBuffer                 cmd,
                         const VkExtent2D&               size,
                         const shaderio::TonemapperData& tonemapper,
-                        const VkDescriptorImageInfo&    inImage,
-                        const VkDescriptorImageInfo&    outImage);
+                        const VkDescriptorImageInfo&    in_image,
+                        const VkDescriptorImageInfo&    out_image);
 
     private:
         // Add new methods for histogram-based auto-exposure
-        void runAutoExposureHistogram(VkCommandBuffer cmd, const VkExtent2D& size, const VkDescriptorImageInfo& inImage);
+        void runAutoExposureHistogram(VkCommandBuffer cmd, const VkExtent2D& size, const VkDescriptorImageInfo& in_image);
         void runAutoExposure(VkCommandBuffer cmd);
         void clearHistogram(VkCommandBuffer cmd);
 
