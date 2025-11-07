@@ -208,10 +208,10 @@ namespace vk_test {
             bool   transfer_only = false;
             size_t staging_size  = 0;
 
-            std::vector<VkBufferCopy2>            copy_buffer_regions{};
-            std::vector<VkCopyBufferInfo2>        copy_buffer_infos{};
-            std::vector<VkBufferImageCopy2>       copy_buffer_image_regions{};
-            std::vector<VkCopyBufferToImageInfo2> copy_buffer_image_infos{};
+            std::vector<VkBufferCopy2>            copy_buffer_regions;
+            std::vector<VkCopyBufferInfo2>        copy_buffer_infos;
+            std::vector<VkBufferImageCopy2>       copy_buffer_image_regions;
+            std::vector<VkCopyBufferToImageInfo2> copy_buffer_image_infos;
             BarrierContainer                      pre;
             BarrierContainer                      post;
         };
@@ -225,7 +225,7 @@ namespace vk_test {
         size_t             m_StagingResourcesSize = 0;
         bool               m_EnableLayoutBarriers = false;
 
-        std::vector<StagingResource> m_StagingResources{};
+        std::vector<StagingResource> m_StagingResources;
         Batch                        m_Batch{};
     };
 

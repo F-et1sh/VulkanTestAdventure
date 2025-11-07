@@ -33,11 +33,11 @@
 // In C++, we put all of the shared types and functions into the 'shaderio' namespace.
 // We provide the below macros to deal with the fact that not all languages #include'ing this header actually support namespaces.
 #define NAMESPACE_SHADERIO_BEGIN() namespace shaderio {
-#define NAMESPACE_SHADERIO_END() }  // namespace shaderio
+#define NAMESPACE_SHADERIO_END() } // namespace shaderio
 
 NAMESPACE_SHADERIO_BEGIN()
 
-using namespace glm;  // import all of glm into the shaderio namespace
+using namespace glm; // import all of glm into the shaderio namespace
 
 // Type aliases to match Slang shader types with C++ GLM types
 using float4x4 = glm::mat4;
@@ -71,34 +71,30 @@ using bool4 = glm::bvec4;
 
 // Linear interpolation between two values a and b using parameter t in [0,1]
 template <typename T>
-T lerp(T a, T b, T t)
-{
-  return glm::mix(a, b, t);
+T lerp(T a, T b, T t) {
+    return glm::mix(a, b, t);
 }
 
 template <glm::length_t N, typename ScalarType, glm::qualifier Precision>
-glm::vec<N, ScalarType, Precision> mul(glm::vec<N, ScalarType, Precision> v, glm::mat<N, N, ScalarType, Precision> M)
-{
-  return M * v;
+glm::vec<N, ScalarType, Precision> mul(glm::vec<N, ScalarType, Precision> v, glm::mat<N, N, ScalarType, Precision> m) {
+    return m * v;
 }
 
 template <glm::length_t N, typename ScalarType, glm::qualifier Precision>
-glm::vec<N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> M, glm::vec<N, ScalarType, Precision> v)
-{
-  return v * M;
+glm::vec<N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> m, glm::vec<N, ScalarType, Precision> v) {
+    return v * m;
 }
 
 template <glm::length_t N, typename ScalarType, glm::qualifier Precision>
-glm::mat<N, N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> A, glm::mat<N, N, ScalarType, Precision> B)
-{
-  return B * A;
+glm::mat<N, N, ScalarType, Precision> mul(glm::mat<N, N, ScalarType, Precision> a, glm::mat<N, N, ScalarType, Precision> b) {
+    return b * a;
 }
 
 #define SLANG_DEFAULT(x) = (x)
 
 NAMESPACE_SHADERIO_END()
 
-#elif defined(GL_core_profile)  // GLSL
+#elif defined(GL_core_profile) // GLSL
 
 #define NAMESPACE_SHADERIO_BEGIN()
 #define NAMESPACE_SHADERIO_END()
@@ -139,15 +135,12 @@ NAMESPACE_SHADERIO_END()
 
 #define SLANG_DEFAULT(x)
 
-
-vec3 mul(vec3 a, mat3 b)
-{
-  return b * a;
+vec3 mul(vec3 a, mat3 b) {
+    return b * a;
 }
 
-mat3 mul(mat3 a, mat3 b)
-{
-  return b * a;
+mat3 mul(mat3 a, mat3 b) {
+    return b * a;
 }
 
 #elif __SLANG__
@@ -162,6 +155,6 @@ __intrinsic_op(cmpGT) public vector<bool, N> greaterThan<T, let N : int>(vector<
 
 #error "Unknown language environment"
 
-#endif  // __cplusplus
+#endif // __cplusplus
 
-#endif  // SLANG_TYPES_H
+#endif // SLANG_TYPES_H

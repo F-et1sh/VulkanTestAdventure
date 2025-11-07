@@ -32,13 +32,13 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
-#include <libloaderapi.h>  // GetModuleFileNameA
-#include <stringapiset.h>  // WideChartoMultiByte
+#include <libloaderapi.h> // GetModuleFileNameA
+#include <stringapiset.h> // WideChartoMultiByte
 #else
-#include <limits.h>     // PATH_MAX
-#include <strings.h>    // strcasecmp
-#include <sys/types.h>  // ssize_t
-#include <unistd.h>     // readlink
+#include <limits.h>    // PATH_MAX
+#include <strings.h>   // strcasecmp
+#include <sys/types.h> // ssize_t
+#include <unistd.h>    // readlink
 #endif
 
 #include "file_operations.hpp"

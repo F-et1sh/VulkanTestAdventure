@@ -34,13 +34,13 @@
 
 namespace vk_test {
 
-    vk_test::Image loadAndCreateImage(VkCommandBuffer cmd, vk_test::StagingUploader& staging, VkDevice device, const std::filesystem::path& filename, bool s_rgb) {
+    Image loadAndCreateImage(VkCommandBuffer cmd, StagingUploader& staging, VkDevice device, const std::filesystem::path& filename, bool s_rgb) {
         // Load the image from disk
-        int            w;
-        int            h;
-        int            comp;
+        int            w    = 0;
+        int            h    = 0;
+        int            comp = 0;
         int            req_comp{ 4 };
-        std::string    filename_utf8 = vk_test::utf8FromPath(filename);
+        std::string    filename_utf8 = utf8FromPath(filename);
         const stbi_uc* data          = stbi_load(filename_utf8.c_str(), &w, &h, &comp, req_comp);
         assert((data != nullptr) && "Could not load texture image!");
 
@@ -50,11 +50,11 @@ namespace vk_test {
         image_info.usage             = VK_IMAGE_USAGE_SAMPLED_BIT;
         image_info.extent            = { uint32_t(w), uint32_t(h), 1 };
 
-        vk_test::ResourceAllocator* allocator = staging.getResourceAllocator();
+        ResourceAllocator* allocator = staging.getResourceAllocator();
 
         // Use the VMA allocator to create the image
         const std::span data_span(data, w * h * req_comp);
-        vk_test::Image  texture;
+        Image           texture;
         allocator->createImage(texture, image_info, DEFAULT_VkImageViewCreateInfo);
         staging.appendImage(texture, data_span, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 

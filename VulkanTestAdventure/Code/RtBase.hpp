@@ -135,8 +135,8 @@ namespace vk_test {
             m_Allocator.destroyBuffer(m_SceneResource.b_meshes);
             m_Allocator.destroyBuffer(m_SceneResource.b_materials);
             m_Allocator.destroyBuffer(m_SceneResource.b_instances);
-            for (auto& gltfData : m_SceneResource.b_gltf_datas) {
-                m_Allocator.destroyBuffer(gltfData);
+            for (auto& gltf_data : m_SceneResource.b_gltf_datas) {
+                m_Allocator.destroyBuffer(gltf_data);
             }
             for (auto& texture : m_Textures) {
                 m_Allocator.destroyImage(texture);
@@ -181,28 +181,28 @@ namespace vk_test {
             //        nvgui::CameraWidget(m_camera_manip);
             //    }
             //    if (ImGui::CollapsingHeader("Environment")) {
-            //        ImGui::Checkbox("Use Sky", (bool*) &m_SceneResource.sceneInfo.use_sky);
-            //        if (m_SceneResource.sceneInfo.use_sky) {
-            //            nvgui::skySimpleParametersUI(m_SceneResource.sceneInfo.sky_simple_param);
+            //        ImGui::Checkbox("Use Sky", (bool*) &m_SceneResource.scene_info.use_sky);
+            //        if (m_SceneResource.scene_info.use_sky) {
+            //            nvgui::skySimpleParametersUI(m_SceneResource.scene_info.sky_simple_param);
             //        }
             //        else {
             //            PE::begin();
-            //            PE::ColorEdit3("Background", (float*) &m_SceneResource.sceneInfo.background_color);
+            //            PE::ColorEdit3("Background", (float*) &m_SceneResource.scene_info.background_color);
             //            PE::end();
             //            // Light
             //            PE::begin();
-            //            if (m_SceneResource.sceneInfo.punctualLights[0].type == shaderio::GltfLightType::ePoint || m_SceneResource.sceneInfo.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
-            //                PE::DragFloat3("Light Position", glm::value_ptr(m_SceneResource.sceneInfo.punctualLights[0].position), 1.0f, -20.0f, 20.0f, "%.2f", ImGuiSliderFlags_None, "Position of the light");
+            //            if (m_SceneResource.scene_info.punctualLights[0].type == shaderio::GltfLightType::ePoint || m_SceneResource.scene_info.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
+            //                PE::DragFloat3("Light Position", glm::value_ptr(m_SceneResource.scene_info.punctualLights[0].position), 1.0f, -20.0f, 20.0f, "%.2f", ImGuiSliderFlags_None, "Position of the light");
             //            }
-            //            if (m_SceneResource.sceneInfo.punctualLights[0].type == shaderio::GltfLightType::eDirectional || m_SceneResource.sceneInfo.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
-            //                PE::SliderFloat3("Light Direction", glm::value_ptr(m_SceneResource.sceneInfo.punctualLights[0].direction), -1.0f, 1.0f, "%.2f", ImGuiSliderFlags_None, "Direction of the light");
+            //            if (m_SceneResource.scene_info.punctualLights[0].type == shaderio::GltfLightType::eDirectional || m_SceneResource.scene_info.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
+            //                PE::SliderFloat3("Light Direction", glm::value_ptr(m_SceneResource.scene_info.punctualLights[0].direction), -1.0f, 1.0f, "%.2f", ImGuiSliderFlags_None, "Direction of the light");
             //            }
 
-            //            PE::SliderFloat("Light Intensity", &m_SceneResource.sceneInfo.punctualLights[0].intensity, 0.0f, 1000.0f, "%.2f", ImGuiSliderFlags_Logarithmic, "Intensity of the light");
-            //            PE::ColorEdit3("Light Color", glm::value_ptr(m_SceneResource.sceneInfo.punctualLights[0].color), ImGuiColorEditFlags_NoInputs, "Color of the light");
-            //            PE::Combo("Light Type", (int*) &m_SceneResource.sceneInfo.punctualLights[0].type, "Point\0Spot\0Directional\0", 3, "Type of the light (Point, Spot, Directional)");
-            //            if (m_SceneResource.sceneInfo.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
-            //                PE::SliderAngle("Cone Angle", &m_SceneResource.sceneInfo.punctualLights[0].coneAngle, 0.f, 90.f, "%.2f", ImGuiSliderFlags_AlwaysClamp, "Cone angle of the spot light");
+            //            PE::SliderFloat("Light Intensity", &m_SceneResource.scene_info.punctualLights[0].intensity, 0.0f, 1000.0f, "%.2f", ImGuiSliderFlags_Logarithmic, "Intensity of the light");
+            //            PE::ColorEdit3("Light Color", glm::value_ptr(m_SceneResource.scene_info.punctualLights[0].color), ImGuiColorEditFlags_NoInputs, "Color of the light");
+            //            PE::Combo("Light Type", (int*) &m_SceneResource.scene_info.punctualLights[0].type, "Point\0Spot\0Directional\0", 3, "Type of the light (Point, Spot, Directional)");
+            //            if (m_SceneResource.scene_info.punctualLights[0].type == shaderio::GltfLightType::eSpot) {
+            //                PE::SliderAngle("Cone Angle", &m_SceneResource.scene_info.punctualLights[0].coneAngle, 0.f, 90.f, "%.2f", ImGuiSliderFlags_AlwaysClamp, "Cone angle of the spot light");
             //            }
             //            PE::end();
             //        }
@@ -307,18 +307,18 @@ namespace vk_test {
 
             m_SceneResource.materials = {
                 // Teapot material
-                { .base_color_factor = glm::vec4(0.8f, 1.0f, 0.6f, 1.0f), .metallic_factor = 0.5f, .roughness_factor = 0.5f },
+                { .base_color_factor = glm::vec4(0.8F, 1.0F, 0.6F, 1.0F), .metallic_factor = 0.5F, .roughness_factor = 0.5F },
                 // Plane material with texture
-                { .base_color_factor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), .metallic_factor = 0.1f, .roughness_factor = 0.8f, .base_color_texture_index = 1 }
+                { .base_color_factor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), .metallic_factor = 0.1F, .roughness_factor = 0.8F, .base_color_texture_index = 1 }
             };
 
             m_SceneResource.instances = {
                 // Teapot
-                { .transform      = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1), glm::vec3(0.5f)),
+                { .transform      = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1), glm::vec3(0.5F)),
                   .material_index = 0,
                   .mesh_index     = 0 },
                 // Plane
-                { .transform = glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0)), glm::vec3(2.f)), .material_index = 1, .mesh_index = 1 },
+                { .transform = glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, -0.9F, 0)), glm::vec3(2.F)), .material_index = 1, .mesh_index = 1 },
             };
 
             createGltfSceneInfoBuffer(m_SceneResource, m_StagingUploader); // Create buffers for the scene data (GPU buffers)
@@ -326,7 +326,7 @@ namespace vk_test {
             m_StagingUploader.cmdUploadAppended(cmd); // Upload the scene information to the GPU
 
             // Scene information
-            shaderio::GltfSceneInfo& scene_info      = m_SceneResource.sceneInfo;
+            shaderio::GltfSceneInfo& scene_info      = m_SceneResource.scene_info;
             scene_info.use_sky                       = 0;                                                                      // Use light
             scene_info.instances                     = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Address of the instance buffer
             scene_info.meshes                        = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Address of the mesh buffer
@@ -478,18 +478,18 @@ namespace vk_test {
             const glm::mat4& view_matrix = m_CameraManip->getViewMatrix();
             const glm::mat4& proj_matrix = m_CameraManip->getPerspectiveMatrix();
 
-            m_SceneResource.sceneInfo.view_proj_matrix = proj_matrix * view_matrix;                                              // Combine the view and projection matrices
-            m_SceneResource.sceneInfo.proj_inv_matrix  = glm::inverse(proj_matrix);                                              // Inverse projection matrix
-            m_SceneResource.sceneInfo.view_inv_matrix  = glm::inverse(view_matrix);                                              // Inverse view matrix
-            m_SceneResource.sceneInfo.camera_position  = m_CameraManip->getEye();                                                // Get the camera position
-            m_SceneResource.sceneInfo.instances        = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Get the address of the instance buffer
-            m_SceneResource.sceneInfo.meshes           = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Get the address of the mesh buffer
-            m_SceneResource.sceneInfo.materials        = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Get the address of the material buffer
+            m_SceneResource.scene_info.view_proj_matrix = proj_matrix * view_matrix;                                              // Combine the view and projection matrices
+            m_SceneResource.scene_info.proj_inv_matrix  = glm::inverse(proj_matrix);                                              // Inverse projection matrix
+            m_SceneResource.scene_info.view_inv_matrix  = glm::inverse(view_matrix);                                              // Inverse view matrix
+            m_SceneResource.scene_info.camera_position  = m_CameraManip->getEye();                                                // Get the camera position
+            m_SceneResource.scene_info.instances        = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Get the address of the instance buffer
+            m_SceneResource.scene_info.meshes           = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Get the address of the mesh buffer
+            m_SceneResource.scene_info.materials        = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Get the address of the material buffer
 
             // Making sure the scene information buffer is updated before rendering
             // Wait that the fragment shader is done reading the previous scene information and wait for the transfer to complete
             cmdBufferMemoryBarrier(cmd, { m_SceneResource.b_scene_info.buffer, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_2_TRANSFER_BIT });
-            vkCmdUpdateBuffer(cmd, m_SceneResource.b_scene_info.buffer, 0, sizeof(shaderio::GltfSceneInfo), &m_SceneResource.sceneInfo);
+            vkCmdUpdateBuffer(cmd, m_SceneResource.b_scene_info.buffer, 0, sizeof(shaderio::GltfSceneInfo), &m_SceneResource.scene_info);
             cmdBufferMemoryBarrier(cmd, { m_SceneResource.b_scene_info.buffer, VK_PIPELINE_STAGE_2_TRANSFER_BIT, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT });
         }
 
@@ -512,20 +512,20 @@ namespace vk_test {
             };
 
             // Rendering the Sky
-            if (m_SceneResource.sceneInfo.use_sky) {
+            if (m_SceneResource.scene_info.use_sky != 0) {
                 const glm::mat4& view_matrix = m_CameraManip->getViewMatrix();
                 const glm::mat4& proj_matrix = m_CameraManip->getPerspectiveMatrix();
-                m_SkySimple.runCompute(cmd, m_App->getViewportSize(), view_matrix, proj_matrix, m_SceneResource.sceneInfo.sky_simple_param, m_GBuffers.getDescriptorImageInfo(eImgRendered));
+                m_SkySimple.runCompute(cmd, m_App->getViewportSize(), view_matrix, proj_matrix, m_SceneResource.scene_info.sky_simple_param, m_GBuffers.getDescriptorImageInfo(eImgRendered));
             }
 
             // Rendering to the GBuffer
             VkRenderingAttachmentInfo color_attachment = DEFAULT_VkRenderingAttachmentInfo;
-            color_attachment.loadOp                    = m_SceneResource.sceneInfo.use_sky ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
+            color_attachment.loadOp                    = (m_SceneResource.scene_info.use_sky != 0) ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
             color_attachment.imageView                 = m_GBuffers.getColorImageView(eImgRendered);
-            color_attachment.clearValue                = { .color = { m_SceneResource.sceneInfo.background_color.x,
-                                                                      m_SceneResource.sceneInfo.background_color.y,
-                                                                      m_SceneResource.sceneInfo.background_color.z,
-                                                                      1.0f } };
+            color_attachment.clearValue                = { .color = { { m_SceneResource.scene_info.background_color.x,
+                                                                        m_SceneResource.scene_info.background_color.y,
+                                                                        m_SceneResource.scene_info.background_color.z,
+                                                                        1.0F } } };
 
             VkRenderingAttachmentInfo depth_attachment = DEFAULT_VkRenderingAttachmentInfo;
             depth_attachment.imageView                 = m_GBuffers.getDepthImageView();
@@ -568,9 +568,9 @@ namespace vk_test {
             vkCmdSetVertexInputEXT(cmd, 0, nullptr, 0, nullptr);
 
             for (size_t i = 0; i < m_SceneResource.instances.size(); i++) {
-                uint32_t                      mesh_index = m_SceneResource.instances[i].mesh_index     = 0;
-                const shaderio::GltfMesh&     gltf_mesh                                                = m_SceneResource.meshes[mesh_index];
-                const shaderio::TriangleMesh& tri_mesh                                                 = gltf_mesh.tri_mesh;
+                uint32_t                      mesh_index = m_SceneResource.instances[i].mesh_index = 0;
+                const shaderio::GltfMesh&     gltf_mesh                                            = m_SceneResource.meshes[mesh_index];
+                const shaderio::TriangleMesh& tri_mesh                                             = gltf_mesh.tri_mesh;
 
                 // Push constant is information that is passed to the shader at each draw call.
                 push_values.normalMatrix  = glm::transpose(glm::inverse(glm::mat3(m_SceneResource.instances[i].transform)));
@@ -815,8 +815,9 @@ namespace vk_test {
                 eShaderGroupCount
             };
             std::array<VkPipelineShaderStageCreateInfo, eShaderGroupCount> stages{};
-            for (auto& s : stages)
+            for (auto& s : stages) {
                 s.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+            }
 
             // Compile shader, fallback to pre-compiled
             VkShaderModuleCreateInfo shader_code = compileSlangShader("rtbasic.slang", rtbasic_slang);
@@ -1011,7 +1012,7 @@ namespace vk_test {
 
         // Scene information buffer (UBO)
         GltfSceneResource  m_SceneResource{}; // The GLTF scene resource, contains all the buffers and data for the scene
-        std::vector<Image> m_Textures{};      // Textures used in the scene
+        std::vector<Image> m_Textures;        // Textures used in the scene
 
         SkySimple                m_SkySimple;                                   // Sky rendering
         Tonemapper               m_Tonemapper;                                  // Tonemapper for post-processing effects
@@ -1024,12 +1025,12 @@ namespace vk_test {
         VkPipelineLayout m_RtPipelineLayout{}; // Ray tracing pipeline layout
 
         // Acceleration Structure Components
-        std::vector<AccelerationStructure> m_BlasAccel{};
+        std::vector<AccelerationStructure> m_BlasAccel;
         AccelerationStructure              m_TlasAccel;
 
         // Direct SBT management
         Buffer                          m_SbtBuffer;        // Buffer for shader binding table
-        std::vector<uint8_t>            m_ShaderHandles{};  // Storage for shader group handles
+        std::vector<uint8_t>            m_ShaderHandles;    // Storage for shader group handles
         VkStridedDeviceAddressRegionKHR m_RaygenRegion{};   // Ray generation shader region
         VkStridedDeviceAddressRegionKHR m_MissRegion{};     // Miss shader region
         VkStridedDeviceAddressRegionKHR m_HitRegion{};      // Hit shader region

@@ -37,10 +37,10 @@ namespace vk_test {
         };
     }
 
-    vk_test::Image loadAndCreateImage(VkCommandBuffer              cmd,
-                                      vk_test::StagingUploader&    staging,
-                                      VkDevice                     device,
-                                      const std::filesystem::path& filename,
-                                      bool                         s_rgb = true);
+    Image loadAndCreateImage(VkCommandBuffer              cmd,
+                             StagingUploader&             staging,
+                             VkDevice                     device,
+                             const std::filesystem::path& filename,
+                             bool                         s_rgb = true);
 
 } // namespace vk_test

@@ -202,6 +202,9 @@
     <Filter Include="Code\Main\Shaders">
       <UniqueIdentifier>{34fbb114-b3ab-431c-b80a-b44afdc52456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\GLTF">
+      <UniqueIdentifier>{71d586b2-f39d-4a1b-9807-07b618bd4197}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -586,6 +589,9 @@
     </None>
     <None Include="Shaders\slang_types.h">
       <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="Include\tiny_gltf.h">
+      <Filter>Code\Main\GLTF</Filter>
     </None>
   </ItemGroup>
 </Project>

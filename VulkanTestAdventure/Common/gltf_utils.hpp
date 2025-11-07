@@ -41,20 +41,20 @@ namespace vk_test {
 
     // Simple scene resource that holds meshes, instances, and materials
     struct GltfSceneResource {
-        std::vector<shaderio::GltfMesh>              meshes{};    // All meshes in the scene
-        std::vector<shaderio::GltfInstance>          instances{}; // All instances in the scene
-        std::vector<shaderio::GltfMetallicRoughness> materials{}; // All materials in the scene
-        shaderio::GltfSceneInfo                      sceneInfo{}; // Scene information (camera matrices, meshes, instances, materials, etc.)
+        std::vector<shaderio::GltfMesh>              meshes;       // All meshes in the scene
+        std::vector<shaderio::GltfInstance>          instances;    // All instances in the scene
+        std::vector<shaderio::GltfMetallicRoughness> materials;    // All materials in the scene
+        shaderio::GltfSceneInfo                      scene_info{}; // Scene information (camera matrices, meshes, instances, materials, etc.)
 
         // GPU buffers for the scene data
-        std::vector<vk_test::Buffer> b_gltf_datas{}; // Buffers containing the GLTF binary data for each loaded scene
-        vk_test::Buffer              b_meshes;       // Buffer containing all GltfMesh data
-        vk_test::Buffer              b_instances;    // Buffer containing all GltfInstance data
-        vk_test::Buffer              b_materials;    // Buffer containing all GltfMetallicRoughness data
-        vk_test::Buffer              b_scene_info;   // Buffer containing GltfSceneInfo
+        std::vector<Buffer> b_gltf_datas; // Buffers containing the GLTF binary data for each loaded scene
+        Buffer              b_meshes;     // Buffer containing all GltfMesh data
+        Buffer              b_instances;  // Buffer containing all GltfInstance data
+        Buffer              b_materials;  // Buffer containing all GltfMetallicRoughness data
+        Buffer              b_scene_info; // Buffer containing GltfSceneInfo
 
         // Mapping from mesh index to buffer index in bGltfDatas
-        std::vector<uint32_t> mesh_to_buffer_index{}; // meshToBufferIndex[meshIndex] = bufferIndex
+        std::vector<uint32_t> mesh_to_buffer_index; // meshToBufferIndex[meshIndex] = bufferIndex
 
         ~GltfSceneResource() = default;
     };
@@ -63,15 +63,15 @@ namespace vk_test {
     tinygltf::Model loadGltfResources(const std::filesystem::path& filename);
 
     // This is a utility function to import the GLTF data into the scene resource.
-    void importGltfData(GltfSceneResource&        scene_resource,
-                        const tinygltf::Model&    model,
-                        vk_test::StagingUploader& staging_uploader,
-                        bool                      import_instance = false);
+    void importGltfData(GltfSceneResource&     scene_resource,
+                        const tinygltf::Model& model,
+                        StagingUploader&       staging_uploader,
+                        bool                   import_instance = false);
 
     // This is a utility function to create the scene info buffer.
-    void createGltfSceneInfoBuffer(GltfSceneResource& scene_resource, vk_test::StagingUploader& staging_uploader);
+    void createGltfSceneInfoBuffer(GltfSceneResource& scene_resource, StagingUploader& staging_uploader);
 
     // This is a utility function to convert a primitive mesh to a GltfMeshResource.
-    void primitiveMeshToResource(GltfSceneResource& scene_resource, vk_test::StagingUploader& staging_uploader, const vk_test::PrimitiveMesh& prim_mesh);
+    void primitiveMeshToResource(GltfSceneResource& scene_resource, StagingUploader& staging_uploader, const PrimitiveMesh& prim_mesh);
 
 } // namespace vk_test

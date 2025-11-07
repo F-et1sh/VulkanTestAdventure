@@ -147,9 +147,7 @@
       <Outputs>
       </Outputs>
     </CustomBuild>
-    <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
+    <ProjectReference />
     <PostBuildEvent>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
@@ -170,6 +168,9 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -189,7 +190,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;$(SolutionDir)VulkanTestAdventure\Libraries\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;slang.lib;volk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;slang.lib;volk.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
@@ -208,9 +209,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Outputs>
       </Outputs>
     </CustomBuild>
-    <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
+    <ProjectReference />
     <PostBuildEvent>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
@@ -231,6 +230,9 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Common\gltf_utils.cpp" />
@@ -324,6 +326,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\gltf_utils.hpp" />
+    <None Include="Include\tiny_gltf.h" />
     <None Include="Shaders\slang_types.h" />
     <None Include="Code\VkHpp_Image.h" />
     <None Include="Code\VkHpp_PipelineManager.h" />

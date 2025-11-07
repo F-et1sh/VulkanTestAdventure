@@ -82,7 +82,7 @@ struct SkySimpleParameters
   float glowSharpness SLANG_DEFAULT(4.F);
 
   float3 directionUp SLANG_DEFAULT(float3(0.F, 1.F, 0.F));
-  float sunIntensity SLANG_DEFAULT(1.0f);
+  float sunIntensity SLANG_DEFAULT(1.0F);
 
   float3 lightRadiance SLANG_DEFAULT(float3(1.0F, 1.0F, 1.0F));
   float brightness     SLANG_DEFAULT(1.0F);
@@ -99,25 +99,25 @@ struct SkySimpleParameters
 -------------------------------------------------------------------------------------------------*/
 struct SkyPhysicalParameters
 {
-  float3 rgbUnitConversion SLANG_DEFAULT(float3(1.0f / 80000.0f));
-  float multiplier         SLANG_DEFAULT(0.1f);
+    float3 rgbUnitConversion SLANG_DEFAULT(float3(1.0F / 80000.0F));
+    float multiplier         SLANG_DEFAULT(0.1F);
 
-  float haze          SLANG_DEFAULT(0.1f);
-  float redblueshift  SLANG_DEFAULT(0.1f);
-  float saturation    SLANG_DEFAULT(1.0f);
-  float horizonHeight SLANG_DEFAULT(0.0f);
+    float haze          SLANG_DEFAULT(0.1F);
+    float redblueshift  SLANG_DEFAULT(0.1F);
+    float saturation    SLANG_DEFAULT(1.0F);
+    float horizonHeight SLANG_DEFAULT(0.0F);
 
-  float3 groundColor SLANG_DEFAULT(float3(0.4f));
-  float horizonBlur  SLANG_DEFAULT(0.3f);
+    float3 groundColor SLANG_DEFAULT(float3(0.4F));
+    float horizonBlur  SLANG_DEFAULT(0.3F);
 
-  float3 nightColor      SLANG_DEFAULT(float3(0.0f, 0.0f, 0.01f));
-  float sunDiskIntensity SLANG_DEFAULT(1.0f);
+    float3 nightColor      SLANG_DEFAULT(float3(0.0F, 0.0F, 0.01F));
+    float sunDiskIntensity SLANG_DEFAULT(1.0F);
 
-  float3 sunDirection SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
-  float sunDiskScale  SLANG_DEFAULT(1.0f);
+    float3 sunDirection SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
+    float sunDiskScale  SLANG_DEFAULT(1.0F);
 
-  float sunGlowIntensity SLANG_DEFAULT(1.0f);
-  int yIsUp              SLANG_DEFAULT(1);
+    float sunGlowIntensity SLANG_DEFAULT(1.0F);
+    int yIsUp              SLANG_DEFAULT(1);
 };
 
 NAMESPACE_SHADERIO_END()

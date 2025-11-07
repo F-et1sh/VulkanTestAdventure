@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "resource_allocator.hpp"
 
+// Vulkan Memory Allocator
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define VMA_IMPLEMENTATION
+#include "vma/vk_mem_alloc.h"
+
 vk_test::ResourceAllocator::ResourceAllocator(ResourceAllocator&& other) noexcept {
     std::swap(m_Allocator, other.m_Allocator);
     std::swap(m_Device, other.m_Device);

@@ -76,19 +76,12 @@ namespace vk_test {
 
     private:
         struct TimeValue {
-#ifdef __unix__
-            // On Unix platforms, store the full 128-bit time struct; this gets us
-            // nanosecond precision and still avoids overflow issues.
-            int64_t seconds{};
-            int64_t nanoseconds{};
-#else
             // Store the start time in ticks as a 64-bit signed integer, in units of
             // 100 nanoseconds (as this is what Windows uses).
             // Since on Windows we measure time since boot, rollover is implausible.
             // On other platforms, this will only roll over about 29226 years after the
             // platform's epoch.
             int64_t ticks_100ns{};
-#endif
         };
 
         TimeValue m_Start{};

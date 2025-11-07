@@ -37,7 +37,7 @@
 #include <Volk/volk.h>
 
 // Vulkan Memory Allocator
-#include <vma/vk_mem_alloc.h>
+#include "vma/vk_mem_alloc.h"
 
 // GLFW
 // NOLINTNEXTLINE(readability-identifier-naming)
