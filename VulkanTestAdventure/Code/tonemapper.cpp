@@ -24,7 +24,7 @@
 #include <commands.hpp>
 #include <compute_pipeline.hpp>
 
-#include "tonemap_functions.h.slang"
+#include "../Shaders/tonemap_functions.h.slang"
 
 VkResult vk_test::Tonemapper::init(vk_test::ResourceAllocator* alloc, std::span<const uint32_t> spirv) {
     assert(!m_Device);

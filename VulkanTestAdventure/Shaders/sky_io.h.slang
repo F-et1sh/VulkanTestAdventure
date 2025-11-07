@@ -17,10 +17,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
+ /*
  * Modified by Farrakh
  * 2025
-*/
+ */
 
 #ifndef SKY_SHADERIO_H
 #define SKY_SHADERIO_H 1
@@ -66,40 +66,26 @@ struct SkySamplingResult
 -------------------------------------------------------------------------------------------------*/
 struct SkySimpleParameters
 {
-    float3 sunDirection;
-    SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
-    float angularSizeOfLight;
-    SLANG_DEFAULT(0.059F);
+  float3 sunDirection      SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
+  float angularSizeOfLight SLANG_DEFAULT(0.059F);
 
-    float3 sunColor;
-    SLANG_DEFAULT(float3(1.0F, 1.0F, 1.0F));
-    float glowSize;
-    SLANG_DEFAULT(0.091F);
+  float3 sunColor SLANG_DEFAULT(float3(1.0F, 1.0F, 1.0F));
+  float glowSize  SLANG_DEFAULT(0.091F);
 
-    float3 skyColor;
-    SLANG_DEFAULT(float3(0.17F, 0.37F, 0.65F));
-    float glowIntensity;
-    SLANG_DEFAULT(0.9F);
+  float3 skyColor     SLANG_DEFAULT(float3(0.17F, 0.37F, 0.65F));
+  float glowIntensity SLANG_DEFAULT(0.9F);
 
-    float3 horizonColor;
-    SLANG_DEFAULT(float3(0.50F, 0.70F, 0.92F));
-    float horizonSize;
-    SLANG_DEFAULT(0.5F);
+  float3 horizonColor SLANG_DEFAULT(float3(0.50F, 0.70F, 0.92F));
+  float horizonSize   SLANG_DEFAULT(0.5F);
 
-    float3 groundColor;
-    SLANG_DEFAULT(float3(0.62F, 0.59F, 0.55F));
-    float glowSharpness;
-    SLANG_DEFAULT(4.F);
+  float3 groundColor  SLANG_DEFAULT(float3(0.62F, 0.59F, 0.55F));
+  float glowSharpness SLANG_DEFAULT(4.F);
 
-    float3 directionUp;
-    SLANG_DEFAULT(float3(0.F, 1.F, 0.F));
-    float sunIntensity;
-    SLANG_DEFAULT(1.0F);
+  float3 directionUp SLANG_DEFAULT(float3(0.F, 1.F, 0.F));
+  float sunIntensity SLANG_DEFAULT(1.0f);
 
-    float3 lightRadiance;
-    SLANG_DEFAULT(float3(1.0F, 1.0F, 1.0F));
-    float brightness;
-    SLANG_DEFAULT(1.0F);
+  float3 lightRadiance SLANG_DEFAULT(float3(1.0F, 1.0F, 1.0F));
+  float brightness     SLANG_DEFAULT(1.0F);
 };
 
 
@@ -113,30 +99,25 @@ struct SkySimpleParameters
 -------------------------------------------------------------------------------------------------*/
 struct SkyPhysicalParameters
 {
-    float3 rgbUnitConversion;
-    SLANG_DEFAULT(float3(1.0F / 80000.0F));
-    float multiplier;
-    SLANG_DEFAULT(0.1F);
+  float3 rgbUnitConversion SLANG_DEFAULT(float3(1.0f / 80000.0f));
+  float multiplier         SLANG_DEFAULT(0.1f);
 
-    float haze;
-    SLANG_DEFAULT(0.1F);
-    float redblueshift;
-    SLANG_DEFAULT(0.1F);
-    float saturation;
-    SLANG_DEFAULT(1.0F);
-    float horizonHeight SLANG_DEFAULT(0.0F);
+  float haze          SLANG_DEFAULT(0.1f);
+  float redblueshift  SLANG_DEFAULT(0.1f);
+  float saturation    SLANG_DEFAULT(1.0f);
+  float horizonHeight SLANG_DEFAULT(0.0f);
 
-    float3 groundColor SLANG_DEFAULT(float3(0.4F));
-    float horizonBlur  SLANG_DEFAULT(0.3F);
+  float3 groundColor SLANG_DEFAULT(float3(0.4f));
+  float horizonBlur  SLANG_DEFAULT(0.3f);
 
-    float3 nightColor      SLANG_DEFAULT(float3(0.0F, 0.0F, 0.01F));
-    float sunDiskIntensity SLANG_DEFAULT(1.0F);
+  float3 nightColor      SLANG_DEFAULT(float3(0.0f, 0.0f, 0.01f));
+  float sunDiskIntensity SLANG_DEFAULT(1.0f);
 
-    float3 sunDirection SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
-    float sunDiskScale  SLANG_DEFAULT(1.0F);
+  float3 sunDirection SLANG_DEFAULT(float3(-1.23413404e-08F, 0.707106829F, 0.707106709F));
+  float sunDiskScale  SLANG_DEFAULT(1.0f);
 
-    float sunGlowIntensity SLANG_DEFAULT(1.0F);
-    int yIsUp              SLANG_DEFAULT(1);
+  float sunGlowIntensity SLANG_DEFAULT(1.0f);
+  int yIsUp              SLANG_DEFAULT(1);
 };
 
 NAMESPACE_SHADERIO_END()

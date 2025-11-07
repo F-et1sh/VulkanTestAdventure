@@ -8,7 +8,7 @@
 #include "camera_manipulator.hpp"
 #include "graphics_pipeline.hpp"
 #include "descriptors.hpp"
-#include "gltf_utils.hpp"
+#include "../Common/gltf_utils.hpp"
 #include "sky.hpp"
 #include "tonemapper.hpp"
 #include "formats.hpp"

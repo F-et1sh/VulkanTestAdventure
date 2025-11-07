@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "io_gltf.h"
+#include "../Common/io_gltf.h"
 
 NAMESPACE_SHADERIO_BEGIN()
 

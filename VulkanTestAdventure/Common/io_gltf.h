@@ -45,7 +45,7 @@
 
 #endif
 
-#include "sky_io.h.slang"
+#include "../Shaders/sky_io.h.slang"
 
 NAMESPACE_SHADERIO_BEGIN()
 // GLTF
