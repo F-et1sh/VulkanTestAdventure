@@ -58,10 +58,9 @@ std::filesystem::path vk_test::findFile(const std::filesystem::path&            
     }
     VK_TEST_SAY("File not found : \n"
                 << utf8FromPath(filename).c_str());
-    VK_TEST_SAY("Searched under : \n");
+    VK_TEST_SAY("Searched under : ");
     for (const auto& path : search_paths) {
-        VK_TEST_SAY("  %s\n"
-                    << utf8FromPath(path).c_str());
+        std::wcerr << utf8FromPath(path).c_str() << std::endl;
     }
     return std::filesystem::path();
 }

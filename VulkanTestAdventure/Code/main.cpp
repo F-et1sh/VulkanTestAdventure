@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Application.hpp"
 
+#include "RtBase.hpp"
 #include "element_camera.hpp"
 #include "element_default_title.hpp"
 #include "element_default_menu.hpp"
@@ -67,20 +68,21 @@ int main(int argc, char* argv[]) {
         application_create_info.queues          = context->getQueueInfos();
 
         // Elements added to the application
-        //auto tutorial    = std::make_shared<Rt12InfinitePlane>();
-        auto element_camera  = std::make_shared<vk_test::ElementCamera>();
-        //auto window_title = std::make_shared<vk_test::ElementDefaultWindowTitle>();
-        //auto window_menu  = std::make_shared<vk_test::ElementDefaultMenu>();
-        auto camera_manipulator    = tutorial->getCameraManipulator();
+        auto tutorial           = std::make_shared<RtBasic>();
+        auto element_camera     = std::make_shared<vk_test::ElementCamera>();
+        auto window_title       = std::make_shared<vk_test::ElementDefaultWindowTitle>();
+        auto window_menu        = std::make_shared<vk_test::ElementDefaultMenu>();
+        auto camera_manipulator = tutorial->getCameraManipulator();
         element_camera->setCameraManipulator(camera_manipulator);
 
-        //// Add elements
-        //app->addElement(window_menu);
-        //app->addElement(window_title);
-        app->addElement(element_camera);
-        //app->addElement(tutorial);
-
         app->Initialize(application_create_info);
+
+        // Add elements
+        app->addElement(window_menu);
+        app->addElement(window_title);
+        app->addElement(element_camera);
+        app->addElement(tutorial);
+
         app->Loop();
         app->Release();
 

@@ -238,6 +238,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Code\element_camera.cpp" />
     <ClCompile Include="Code\element_default_menu.cpp" />
     <ClCompile Include="Code\element_default_title.cpp" />
+    <ClCompile Include="Code\RT_InfinitePlane.cpp" />
     <ClCompile Include="Common\gltf_utils.cpp" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
@@ -331,6 +332,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="Code\element_camera.hpp" />
     <ClInclude Include="Code\element_default_menu.hpp" />
     <ClInclude Include="Code\element_default_title.hpp" />
+    <ClInclude Include="Code\RT_InfinitePlane.hpp" />
     <ClInclude Include="Common\gltf_utils.hpp" />
     <None Include="Include\tiny_gltf.h" />
     <None Include="Shaders\slang_types.h" />

@@ -285,14 +285,14 @@ namespace vk_test {
             // Load the GLTF resources
             {
                 tinygltf::Model teapot_model =
-                    loadGltfResources(findFile("teapot.gltf", { PATH.getAssetsPath() })); // Load the GLTF resources from the file
+                    loadGltfResources(findFile("teapot.gltf", { PATH.getResourcesPath() })); // Load the GLTF resources from the file
 
                 tinygltf::Model plane_model =
-                    loadGltfResources(findFile("plane.gltf", { PATH.getAssetsPath() })); // Load the GLTF resources from the file
+                    loadGltfResources(findFile("plane.gltf", { PATH.getResourcesPath() })); // Load the GLTF resources from the file
 
                 // Textures
                 {
-                    std::filesystem::path image_filename = findFile("tiled_floor.png", { PATH.getAssetsPath() });
+                    std::filesystem::path image_filename = findFile("tiled_floor.png", { PATH.getResourcesPath() });
                     Image                 texture        = loadAndCreateImage(cmd, m_StagingUploader, m_App->getDevice(), image_filename); // Load the image from the file and create a texture from it
                     m_SamplerPool.acquireSampler(texture.descriptor.sampler);
                     m_Textures.emplace_back(texture); // Store the texture in the vector of textures

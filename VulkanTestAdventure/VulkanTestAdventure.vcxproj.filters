@@ -217,6 +217,12 @@
     <Filter Include="Code\Main\Elements\DefaultMenu">
       <UniqueIdentifier>{0f8bc743-f22d-4834-8b1f-93b6ce3755b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\RTX">
+      <UniqueIdentifier>{1166d8fb-9cee-44d8-9f22-44c8a1964abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\RTX\RT_InfinitePlane">
+      <UniqueIdentifier>{8ed68628-1156-472e-9f66-e946cf1f45f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -317,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="Code\element_default_menu.cpp">
       <Filter>Code\Main\Elements\DefaultMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\RT_InfinitePlane.cpp">
+      <Filter>Code\Main\RTX\RT_InfinitePlane</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -456,6 +465,9 @@
     </ClInclude>
     <ClInclude Include="Code\element_default_menu.hpp">
       <Filter>Code\Main\Elements\DefaultMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RT_InfinitePlane.hpp">
+      <Filter>Code\Main\RTX\RT_InfinitePlane</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
