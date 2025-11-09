@@ -2,6 +2,8 @@
 #include "Application.hpp"
 
 #include "element_camera.hpp"
+#include "element_default_title.hpp"
+#include "element_default_menu.hpp"
 
 constexpr inline static glm::vec2        WINDOW_RESOLUTION = glm::vec2(1920, 1080);
 constexpr inline static std::string_view WINDOW_TITLE      = "VKTest";
