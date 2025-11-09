@@ -40,6 +40,20 @@ namespace vk_test {
         -*/
         void ReleaseResources();
 
+        /*--
+         * Prepares the command buffer for recording rendering commands.
+         * This function handles synchronization with the previous frame and acquires the next image from the swapchain.
+         * The command buffer is reset, ready for new rendering commands.
+        -*/
+        VkResult acquireNextImage(VkDevice device);
+
+        /*--
+         * Presents the rendered image to the screen.
+         * The semaphore ensures that the image is presented only after rendering is complete.
+         * Advances to the next frame in the cycle.
+        -*/
+        void presentFrame(VkQueue queue);
+
         void requestRebuild() { m_NeedRebuild = true; }
         bool needRebuilding() const { return m_NeedRebuild; }
 

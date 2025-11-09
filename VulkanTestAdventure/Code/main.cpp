@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Application.hpp"
 
+#include "element_camera.hpp"
+
 constexpr inline static glm::vec2        WINDOW_RESOLUTION = glm::vec2(1920, 1080);
 constexpr inline static std::string_view WINDOW_TITLE      = "VKTest";
 constexpr inline static int              WINDOW_MONITOR    = -1; // not fullscreen
@@ -61,6 +63,20 @@ int main(int argc, char* argv[]) {
         application_create_info.device          = context->getDevice();
         application_create_info.physical_device = context->getPhysicalDevice();
         application_create_info.queues          = context->getQueueInfos();
+
+        // Elements added to the application
+        //auto tutorial    = std::make_shared<Rt12InfinitePlane>();
+        auto element_camera  = std::make_shared<vk_test::ElementCamera>();
+        //auto window_title = std::make_shared<vk_test::ElementDefaultWindowTitle>();
+        //auto window_menu  = std::make_shared<vk_test::ElementDefaultMenu>();
+        auto camera_manipulator    = tutorial->getCameraManipulator();
+        element_camera->setCameraManipulator(camera_manipulator);
+
+        //// Add elements
+        //app->addElement(window_menu);
+        //app->addElement(window_title);
+        app->addElement(element_camera);
+        //app->addElement(tutorial);
 
         app->Initialize(application_create_info);
         app->Loop();

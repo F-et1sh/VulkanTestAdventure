@@ -14,15 +14,15 @@ namespace vk_test {
     // Interface for application elements
     struct IAppElement {
         // Interface
-        virtual void onAttach(Application* app) {}                            // Called once at start
-        virtual void onDetach() {}                                            // Called before destroying the application
-        virtual void onResize(VkCommandBuffer cmd, const VkExtent2D& size) {} // Called when the viewport size is changing
-        virtual void onUIRender() {}                                          // Called for anything related to UI
-        virtual void onUIMenu() {}                                            // This is the menubar to create
-        virtual void onPreRender() {}                                         // called post onUIRender and prior onRender (looped over all elements)
-        virtual void onRender(VkCommandBuffer cmd) {}                         // For anything to render within a frame
-        virtual void onFileDrop(const std::filesystem::path& filename) {}     // For when a file is dragged on top of the window
-        virtual void onLastHeadlessFrame() {};                                // Called at the end of the last frame in headless mode
+        virtual void onAttach(Application* app) {}                                // Called once at start
+        virtual void onDetach() {}                                                // Called before destroying the application
+        virtual void onResize(VkCommandBuffer command, const VkExtent2D& size) {} // Called when the viewport size is changing
+        virtual void onUIRender() {}                                              // Called for anything related to UI
+        virtual void onUIMenu() {}                                                // This is the menubar to create
+        virtual void onPreRender() {}                                             // called post onUIRender and prior onRender (looped over all elements)
+        virtual void onRender(VkCommandBuffer command) {}                         // For anything to render within a frame
+        virtual void onFileDrop(const std::filesystem::path& filename) {}         // For when a file is dragged on top of the window
+        virtual void onLastHeadlessFrame() {};                                    // Called at the end of the last frame in headless mode
 
         virtual ~IAppElement() = default;
     };
@@ -64,9 +64,12 @@ namespace vk_test {
 
         uint32_t getFrameCycleSize() const { return uint32_t(m_FrameData.size()); }
 
+        // Adding engines
+        void addElement(const std::shared_ptr<IAppElement>& layer);
+
         // Utility to create a temporary command buffer
         VkCommandBuffer createTempCmdBuffer() const;
-        void            submitAndWaitTempCmdBuffer(VkCommandBuffer cmd);
+        void            submitAndWaitTempCmdBuffer(VkCommandBuffer command);
 
         // Getters
         VkInstance        getInstance() const { return m_Instance; }
@@ -81,15 +84,30 @@ namespace vk_test {
         uint32_t          getFrameCycleIndex() const { return m_FrameRingCurrent; }
 
     private:
-        void        testAndSetWindowSizeAndPos(const glm::uvec2& window_size);
-        void        createDescriptorPool();
-        void        createTransientCommandPool();
-        void        createFrameSubmission(uint32_t num_frames);
-        void        resetFreeQueue(uint32_t size);
-        static bool isWindowPosValid(const glm::ivec2& window_position);
+        bool            prepareFrameResources();
+        void            waitForFrameCompletion() const;
+        void            freeResourcesQueue();
+        void            prepareFrameToSignal(int32_t num_frames_in_flight);
+        VkCommandBuffer beginCommandRecording();
+        void            drawFrame(VkCommandBuffer command);
+        void            renderToSwapchain(VkCommandBuffer command);
+        void            beginDynamicRenderingToSwapchain(VkCommandBuffer command) const;
+        void            endDynamicRenderingToSwapchain(VkCommandBuffer command);
+        void            addSwapchainSemaphores();
+        void            endFrame(VkCommandBuffer command, uint32_t frame_in_flights);
+        void            presentFrame();
+        void            advanceFrame(uint32_t frame_in_flights);
+        void            testAndSetWindowSizeAndPos(const glm::uvec2& window_size);
+        void            createDescriptorPool();
+        void            createTransientCommandPool();
+        void            createFrameSubmission(uint32_t num_frames);
+        void            resetFreeQueue(uint32_t size);
+        static bool     isWindowPosValid(const glm::ivec2& window_position);
 
     private:
         Window m_Window;
+
+        std::vector<std::shared_ptr<IAppElement>> m_Elements; // List of application elements to be called
 
         // Vulkan resources
         VkInstance             m_Instance{ VK_NULL_HANDLE };

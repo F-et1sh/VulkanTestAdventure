@@ -235,6 +235,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\element_camera.cpp" />
+    <ClCompile Include="Code\element_default_title.cpp" />
     <ClCompile Include="Common\gltf_utils.cpp" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
@@ -325,6 +327,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\element_camera.hpp" />
+    <ClInclude Include="Code\element_default_title.hpp" />
     <ClInclude Include="Common\gltf_utils.hpp" />
     <None Include="Include\tiny_gltf.h" />
     <None Include="Shaders\slang_types.h" />

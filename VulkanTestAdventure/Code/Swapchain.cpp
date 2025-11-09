@@ -152,6 +152,64 @@ void vk_test::Swapchain::ReleaseResources() {
     m_Images.clear();
 }
 
+VkResult vk_test::Swapchain::acquireNextImage(VkDevice device) {
+    assert((m_NeedRebuild == false) && "Swapbuffer need to call ReinitializeResources()");
+
+    // Get the frame resources for the current frame
+    // We use m_CurrentFrame here because we want to ensure we don't overwrite resources
+    // that are still in use by previous frames
+    auto& frame = m_FrameResources[m_FrameResourceIndex];
+
+    // Acquire the next image from the swapchain
+    // This will signal frame.imageAvailableSemaphore when the image is ready
+    // and store the index of the acquired image in m_nextImageIndex
+    VkResult result = vkAcquireNextImageKHR(device, m_Swapchain, std::numeric_limits<uint64_t>::max(), frame.image_available_semaphore, VK_NULL_HANDLE, &m_FrameImageIndex);
+
+    switch (result) {
+        case VK_SUCCESS:
+        case VK_SUBOPTIMAL_KHR: // Still valid for presentation
+            return result;
+
+        case VK_ERROR_OUT_OF_DATE_KHR: // The swapchain is no longer compatible with the surface and needs to be recreated
+            m_NeedRebuild = true;
+            return result;
+
+        default:
+            VK_TEST_SAY("Failed to acquire swapchain image : " << result);
+            return result;
+    }
+}
+
+void vk_test::Swapchain::presentFrame(VkQueue queue) {
+    // Get the frame resources for the current image
+    // We use m_NextImageIndex here because we want to signal the semaphore
+    // associated with the image we just finished rendering
+    auto& frame = m_FrameResources[m_FrameResourceIndex];
+
+    // Setup the presentation info, linking the swapchain and the image index
+    const VkPresentInfoKHR present_info{
+        .sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+        .waitSemaphoreCount = 1,                                // Wait for rendering to finish
+        .pWaitSemaphores    = &frame.render_finished_semaphore, // Synchronize presentation
+        .swapchainCount     = 1,                                // Swapchain to present the image
+        .pSwapchains        = &m_Swapchain,                     // Pointer to the swapchain
+        .pImageIndices      = &m_FrameImageIndex,               // Index of the image to present
+    };
+
+    // Present the image and handle potential resizing issues
+    const VkResult result = vkQueuePresentKHR(queue, &present_info);
+    // If the swapchain is out of date (e.g., window resized), it needs to be rebuilt
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        m_NeedRebuild = true;
+    }
+    else {
+        assert((result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR) && "Couldn't present swapchain image");
+    }
+
+    // Advance to the next frame in the swapchain
+    m_FrameResourceIndex = (m_FrameResourceIndex + 1) % m_MaxFramesInFlight;
+}
+
 void Swapchain::Release() {
     if (m_Device != nullptr) {
         ReleaseResources();

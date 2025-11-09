@@ -205,6 +205,15 @@
     <Filter Include="Code\Main\GLTF">
       <UniqueIdentifier>{71d586b2-f39d-4a1b-9807-07b618bd4197}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Main\Elements">
+      <UniqueIdentifier>{485315a4-90fe-4c79-acc0-bbf06638956c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Elements\Camera">
+      <UniqueIdentifier>{db317960-7685-4aa9-b930-58e7022d6fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Main\Elements\DefaultWindowTitle">
+      <UniqueIdentifier>{a86d5bc2-884a-41eb-9357-0dd8bbd0ad9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\pch.cpp">
@@ -296,6 +305,12 @@
     </ClCompile>
     <ClCompile Include="Common\gltf_utils.cpp">
       <Filter>Code\Main\Utilities\GLTF_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\element_camera.cpp">
+      <Filter>Code\Main\Elements\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\element_default_title.cpp">
+      <Filter>Code\Main\Elements\DefaultWindowTitle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -426,6 +441,12 @@
     </ClInclude>
     <ClInclude Include="Common\gltf_utils.hpp">
       <Filter>Code\Main\Utilities\GLTF_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\element_camera.hpp">
+      <Filter>Code\Main\Elements\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\element_default_title.hpp">
+      <Filter>Code\Main\Elements\DefaultWindowTitle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

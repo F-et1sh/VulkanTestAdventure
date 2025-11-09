@@ -2,6 +2,14 @@
 #include "Application.hpp"
 
 void vk_test::Application::Release() {
+    // This will call the onDetach of the elements
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onDetach();
+    }
+
+    // Destroy the elements
+    m_Elements.clear();
+
     vkDeviceWaitIdle(m_Device);
 
     // Clean pending
@@ -63,42 +71,46 @@ void vk_test::Application::Initialize(ApplicationCreateInfo& info) {
 }
 
 void vk_test::Application::Loop() {
-    while (glfwWindowShouldClose(m_Window.getGLFWWindow()) == 0) {
+    while (!glfwWindowShouldClose(m_Window.getGLFWWindow())) {
+        // Frame Resource Preparationz
+        if (prepareFrameResources()) {
+            // Free resources from previous frame
+            freeResourcesQueue();
 
-        //// Frame Resource Preparation
-        //if (prepareFrameResources()) {
-        //    // Free resources from previous frame
-        //    freeResourcesQueue();
+            // Prepare Frame Synchronization
+            prepareFrameToSignal(m_Swapchain.getMaxFramesInFlight());
 
-        //    // Prepare Frame Synchronization
-        //    prepareFrameToSignal(m_swapchain.getMaxFramesInFlight());
+            // Record Commands
+            VkCommandBuffer command = beginCommandRecording();
+            drawFrame(command);         // Call onUIRender() and onRender() for each element
+            renderToSwapchain(command); // Render ImGui to swapchain
+            addSwapchainSemaphores();   // Setup synchronization
+            endFrame(command, m_Swapchain.getMaxFramesInFlight());
 
-        //    // Record Commands
-        //    VkCommandBuffer cmd = beginCommandRecording();
-        //    drawFrame(cmd);           // Call onUIRender() and onRender() for each element
-        //    renderToSwapchain(cmd);   // Render ImGui to swapchain
-        //    addSwapchainSemaphores(); // Setup synchronization
-        //    endFrame(cmd, m_swapchain.getMaxFramesInFlight());
+            // Present Frame
+            presentFrame(); // This can also trigger swapchain rebuild
 
-        //    // Present Frame
-        //    presentFrame(); // This can also trigger swapchain rebuild
+            // Advance Frame
+            advanceFrame(m_Swapchain.getMaxFramesInFlight());
+        }
 
-        //    // Advance Frame
-        //    advanceFrame(m_swapchain.getMaxFramesInFlight());
-        //}
-
-        vk_test::Window::PollEvents();
+        m_Window.PollEvents();
     }
 }
 
-VkCommandBuffer vk_test::Application::createTempCmdBuffer() const {
-    VkCommandBuffer cmd{};
-    beginSingleTimeCommands(cmd, m_Device, m_TransientCommandPool);
-    return cmd;
+void vk_test::Application::addElement(const std::shared_ptr<IAppElement>& layer) {
+    m_Elements.emplace_back(layer);
+    layer->onAttach(this);
 }
 
-void vk_test::Application::submitAndWaitTempCmdBuffer(VkCommandBuffer cmd) {
-    endSingleTimeCommands(cmd, m_Device, m_TransientCommandPool, m_Queues[0].queue);
+VkCommandBuffer vk_test::Application::createTempCmdBuffer() const {
+    VkCommandBuffer command{};
+    beginSingleTimeCommands(command, m_Device, m_TransientCommandPool);
+    return command;
+}
+
+void vk_test::Application::submitAndWaitTempCmdBuffer(VkCommandBuffer command) {
+    endSingleTimeCommands(command, m_Device, m_TransientCommandPool, m_Queues[0].queue);
 }
 
 //-----------------------------------------------------------------------
@@ -265,4 +277,195 @@ bool vk_test::Application::isWindowPosValid(const glm::ivec2& window_position) {
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------
+// prepareFrameResources is the first step in the rendering process.
+// It looks if the swapchain require rebuild, which happens when the window is resized.
+// It acquires the image from the swapchain to render into.
+///
+bool vk_test::Application::prepareFrameResources() {
+    if (m_Swapchain.needRebuilding()) {
+        m_Swapchain.ReinitializeResources(m_WindowExtent, IS_VSYN_WANTED);
+    }
+
+    waitForFrameCompletion(); // Wait until GPU has finished processing
+
+    VkResult result = m_Swapchain.acquireNextImage(m_Device);
+    return (result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR); // Continue only if we got a valid image
+}
+
+void vk_test::Application::waitForFrameCompletion() const {
+    // Wait until GPU has finished processing the frame that was using these resources previously (numFramesInFlight frames ago)
+    const VkSemaphoreWaitInfo wait_info = {
+        .sType          = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
+        .semaphoreCount = 1,
+        .pSemaphores    = &m_FrameTimelineSemaphore,
+        .pValues        = &m_FrameData[m_FrameRingCurrent].frame_number,
+    };
+    vkWaitSemaphores(m_Device, &wait_info, std::numeric_limits<uint64_t>::max());
+}
+
+void vk_test::Application::freeResourcesQueue() {
+    for (auto& func : m_ResourceFreeQueue[m_FrameRingCurrent]) {
+        func(); // Free resources in queue
+    }
+    m_ResourceFreeQueue[m_FrameRingCurrent].clear();
+}
+
+void vk_test::Application::prepareFrameToSignal(int32_t num_frames_in_flight) {
+    m_FrameData[m_FrameRingCurrent].frame_number += num_frames_in_flight;
+}
+
+//-----------------------------------------------------------------------
+// Begin the command buffer recording for the frame
+// It resets the command pool to reuse the command buffer for recording new rendering commands for the current frame.
+// and it returns the command buffer for the frame.
+VkCommandBuffer vk_test::Application::beginCommandRecording() {
+    // Get the frame data for the current frame in the ring buffer
+    FrameData& frame = m_FrameData[m_FrameRingCurrent];
+
+    // Reset the command pool to reuse the command buffer for recording new rendering commands for the current frame.
+    vkResetCommandPool(m_Device, frame.command_pool, 0);
+    VkCommandBuffer command = frame.command_buffer;
+
+    // Begin the command buffer recording for the frame
+    const VkCommandBufferBeginInfo begin_info{ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+                                               .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT };
+    vkBeginCommandBuffer(command, &begin_info);
+
+    return command;
+}
+
+void vk_test::Application::drawFrame(VkCommandBuffer command) {
+    // Reset the extra semaphores and command buffers
+    m_WaitSemaphores.clear();
+    m_SignalSemaphores.clear();
+    m_CommandBuffers.clear();
+
+    // Call UI rendering for each element
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onUIRender();
+    }
+
+    // Call onPreRender for each element with the command buffer of the frame
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onPreRender();
+    }
+
+    // Call onRender for each element with the command buffer of the frame
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onRender(command);
+    }
+}
+
+void vk_test::Application::renderToSwapchain(VkCommandBuffer command) {
+    // Start rendering to the swapchain
+    beginDynamicRenderingToSwapchain(command);
+    {
+        //nvvk::DebugUtil::ScopedCmdLabel scopedCmdLabel(command, "ImGui");
+        //// The ImGui draw commands are recorded to the command buffer, which includes the display of our GBuffer image
+        //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), command);
+    }
+    endDynamicRenderingToSwapchain(command);
+}
+
+//-----------------------------------------------------------------------
+// We are using dynamic rendering, which is a more flexible way to render to the swapchain image.
+//
+void vk_test::Application::beginDynamicRenderingToSwapchain(VkCommandBuffer command) const {
+    // Image to render to
+    const VkRenderingAttachmentInfo color_attachment{
+        .sType       = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
+        .imageView   = m_Swapchain.getImageView(),
+        .imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+        .loadOp      = VK_ATTACHMENT_LOAD_OP_CLEAR,  // Clear the image (see clearValue)
+        .storeOp     = VK_ATTACHMENT_STORE_OP_STORE, // Store the image (keep the image)
+        .clearValue  = { { { 0.0F, 0.0F, 0.0F, 1.0F } } },
+    };
+
+    // Details of the dynamic rendering
+    const VkRenderingInfo rendering_info{
+        .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO,
+        .renderArea           = { { 0, 0 }, m_WindowExtent },
+        .layerCount           = 1,
+        .colorAttachmentCount = 1,
+        .pColorAttachments    = &color_attachment,
+    };
+
+    // Transition the swapchain image to the color attachment layout, needed when using dynamic rendering
+    cmdImageMemoryBarrier(command, { m_Swapchain.getImage(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL });
+
+    vkCmdBeginRendering(command, &rendering_info);
+}
+
+//-----------------------------------------------------------------------
+// End of dynamic rendering.
+// The image is transitioned back to the present layout, and the rendering is ended.
+//
+void vk_test::Application::endDynamicRenderingToSwapchain(VkCommandBuffer command) {
+    vkCmdEndRendering(command);
+
+    // Transition the swapchain image back to the present layout
+    cmdImageMemoryBarrier(command, { m_Swapchain.getImage(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR });
+}
+
+void vk_test::Application::addSwapchainSemaphores() {
+    // Prepare to submit the current frame for rendering
+    // First add the swapchain semaphore to wait for the image to be available.
+    m_WaitSemaphores.push_back({
+        .sType     = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+        .semaphore = m_Swapchain.getImageAvailableSemaphore(),
+        .stageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+    });
+    m_SignalSemaphores.push_back({
+        .sType     = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+        .semaphore = m_Swapchain.getRenderFinishedSemaphore(),
+        .stageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, // Ensure everything is done before presenting
+    });
+}
+
+void vk_test::Application::endFrame(VkCommandBuffer command, uint32_t frame_in_flights) {
+    // Ends recording of commands for the frame
+    vkEndCommandBuffer(command);
+
+    // Get the frame data for the current frame in the ring buffer
+    FrameData& frame = m_FrameData[m_FrameRingCurrent];
+
+    // Add timeline semaphore to signal when GPU completes this frame
+    // The color attachment output stage is used since that's when the frame is fully rendered
+    m_SignalSemaphores.push_back({
+        .sType     = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+        .semaphore = m_FrameTimelineSemaphore,
+        .value     = frame.frame_number,
+        .stageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, // Wait that everything is completed
+    });
+
+    // Adding the command buffer of the frame to the list of command buffers to submit
+    // Note : extra command buffers could have been added to the list from other parts of the application (elements)
+    m_CommandBuffers.push_back({ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO, .commandBuffer = command });
+
+    // Populate the submit info to synchronize rendering and send the command buffer
+    const VkSubmitInfo2 submit_info{
+        .sType                    = VK_STRUCTURE_TYPE_SUBMIT_INFO_2,
+        .waitSemaphoreInfoCount   = uint32_t(m_WaitSemaphores.size()),   //
+        .pWaitSemaphoreInfos      = m_WaitSemaphores.data(),             // Wait for the image to be available
+        .commandBufferInfoCount   = uint32_t(m_CommandBuffers.size()),   //
+        .pCommandBufferInfos      = m_CommandBuffers.data(),             // Command buffer to submit
+        .signalSemaphoreInfoCount = uint32_t(m_SignalSemaphores.size()), //
+        .pSignalSemaphoreInfos    = m_SignalSemaphores.data(),           // Signal when rendering is finished
+    };
+
+    // Submit the command buffer to the GPU and signal when it's done
+    vkQueueSubmit2(m_Queues[0].queue, 1, &submit_info, nullptr);
+}
+
+void vk_test::Application::presentFrame() {
+    // Present the image
+    m_Swapchain.presentFrame(m_Queues[0].queue);
+}
+
+void vk_test::Application::advanceFrame(uint32_t frame_in_flights) {
+    // Move to the next frame
+    m_FrameRingCurrent = (m_FrameRingCurrent + 1) % frame_in_flights;
 }
