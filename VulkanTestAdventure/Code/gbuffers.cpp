@@ -74,9 +74,9 @@ VkResult vk_test::GBuffer::update(VkCommandBuffer cmd, VkExtent2D new_size) {
     return initResources(cmd);
 }
 
-VkDescriptorSet vk_test::GBuffer::getDescriptorSet(uint32_t i) const {
-    return m_Resources.ui_descriptor_sets[i];
-}
+//VkDescriptorSet vk_test::GBuffer::getDescriptorSet(uint32_t i) const {
+//    return m_Resources.ui_descriptor_sets[i];
+//}
 
 VkExtent2D vk_test::GBuffer::getSize() const {
     return m_Size;
@@ -129,7 +129,7 @@ VkResult vk_test::GBuffer::initResources(VkCommandBuffer cmd) {
     const auto num_color = static_cast<uint32_t>(m_Info.color_formats.size());
 
     m_Resources.g_buffer_color.resize(num_color);
-    m_Resources.ui_image_views.resize(num_color);
+    //m_Resources.ui_image_views.resize(num_color);
 
     for (uint32_t c = 0; c < num_color; c++) {
         // Color image and view
@@ -155,9 +155,9 @@ VkResult vk_test::GBuffer::initResources(VkCommandBuffer cmd) {
         //dutil.setObjectName(m_Resources.g_buffer_color[c].descriptor.imageView, "G-Color" + std::to_string(c));
 
         // UI Image color view
-        view_info.image        = m_Resources.g_buffer_color[c].image;
-        view_info.components.a = VK_COMPONENT_SWIZZLE_ONE; // Forcing the VIEW to have a 1 in the alpha channel
-        vkCreateImageView(device, &view_info, nullptr, &m_Resources.ui_image_views[c]);
+        //view_info.image        = m_Resources.g_buffer_color[c].image;
+        //view_info.components.a = VK_COMPONENT_SWIZZLE_ONE; // Forcing the VIEW to have a 1 in the alpha channel
+        //vkCreateImageView(device, &view_info, nullptr, &m_Resources.ui_image_views[c]);
         //dutil.setObjectName(m_Resources.ui_image_views[c], "UI G-Color" + std::to_string(c));
 
         // Set the sampler for the color attachment
@@ -217,43 +217,43 @@ VkResult vk_test::GBuffer::initResources(VkCommandBuffer cmd) {
     }
 
     // Descriptor Set for ImGUI
-    if (m_Info.descriptor_pool != nullptr) {
-        m_Resources.ui_descriptor_sets.resize(num_color);
+    //if (m_Info.descriptor_pool != nullptr) {
+    //    m_Resources.ui_descriptor_sets.resize(num_color);
 
-        // Create descriptor set layout (used by ImGui)
-        const VkDescriptorSetLayoutBinding    binding = { 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT };
-        const VkDescriptorSetLayoutCreateInfo info    = {
-               .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO, .bindingCount = 1, .pBindings = &binding
-        };
-        vkCreateDescriptorSetLayout(device, &info, nullptr, &m_DescriptorLayout);
+    //    // Create descriptor set layout (used by ImGui)
+    //    const VkDescriptorSetLayoutBinding    binding = { 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT };
+    //    const VkDescriptorSetLayoutCreateInfo info    = {
+    //           .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO, .bindingCount = 1, .pBindings = &binding
+    //    };
+    //    vkCreateDescriptorSetLayout(device, &info, nullptr, &m_DescriptorLayout);
 
-        // Same layout for all color attachments
-        std::vector<VkDescriptorSetLayout> layouts(num_color, m_DescriptorLayout);
+    //    // Same layout for all color attachments
+    //    std::vector<VkDescriptorSetLayout> layouts(num_color, m_DescriptorLayout);
 
-        // Allocate descriptor sets
-        std::vector<VkDescriptorImageInfo> desc_images(num_color);
-        std::vector<VkWriteDescriptorSet>  write_desc(num_color);
-        const VkDescriptorSetAllocateInfo  alloc_infos = {
-             .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-             .descriptorPool     = m_Info.descriptor_pool,
-             .descriptorSetCount = num_color,
-             .pSetLayouts        = layouts.data(),
-        };
-        vkAllocateDescriptorSets(device, &alloc_infos, m_Resources.ui_descriptor_sets.data());
+    //    // Allocate descriptor sets
+    //    std::vector<VkDescriptorImageInfo> desc_images(num_color);
+    //    std::vector<VkWriteDescriptorSet>  write_desc(num_color);
+    //    const VkDescriptorSetAllocateInfo  alloc_infos = {
+    //         .sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+    //         .descriptorPool     = m_Info.descriptor_pool,
+    //         .descriptorSetCount = num_color,
+    //         .pSetLayouts        = layouts.data(),
+    //    };
+    //    vkAllocateDescriptorSets(device, &alloc_infos, m_Resources.ui_descriptor_sets.data());
 
-        // Update the descriptor sets
-        for (uint32_t d = 0; d < num_color; ++d) {
-            desc_images[d] = { m_Info.image_sampler, m_Resources.ui_image_views[d], layout };
-            write_desc[d]  = {
-                 .sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                 .dstSet          = m_Resources.ui_descriptor_sets[d],
-                 .descriptorCount = 1,
-                 .descriptorType  = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                 .pImageInfo      = &desc_images[d],
-            };
-        }
-        vkUpdateDescriptorSets(device, uint32_t(m_Resources.ui_descriptor_sets.size()), write_desc.data(), 0, nullptr);
-    }
+    //    // Update the descriptor sets
+    //    for (uint32_t d = 0; d < num_color; ++d) {
+    //        desc_images[d] = { m_Info.image_sampler, m_Resources.ui_image_views[d], layout };
+    //        write_desc[d]  = {
+    //             .sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+    //             .dstSet          = m_Resources.ui_descriptor_sets[d],
+    //             .descriptorCount = 1,
+    //             .descriptorType  = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+    //             .pImageInfo      = &desc_images[d],
+    //        };
+    //    }
+    //    vkUpdateDescriptorSets(device, uint32_t(m_Resources.ui_descriptor_sets.size()), write_desc.data(), 0, nullptr);
+    //}
 
     return VK_SUCCESS;
 }
@@ -264,10 +264,10 @@ void vk_test::GBuffer::deinitResources() {
     }
 
     VkDevice device = m_Info.allocator->getDevice();
-    if ((m_Info.descriptor_pool != nullptr) && !m_Resources.ui_descriptor_sets.empty()) {
-        vkFreeDescriptorSets(device, m_Info.descriptor_pool, uint32_t(m_Resources.ui_descriptor_sets.size()), m_Resources.ui_descriptor_sets.data());
+    if ((m_Info.descriptor_pool != nullptr) /*&& !m_Resources.ui_descriptor_sets.empty()*/) {
+        //vkFreeDescriptorSets(device, m_Info.descriptor_pool, uint32_t(m_Resources.ui_descriptor_sets.size()), m_Resources.ui_descriptor_sets.data());
         vkDestroyDescriptorSetLayout(device, m_DescriptorLayout, nullptr);
-        m_Resources.ui_descriptor_sets.clear();
+        //m_Resources.ui_descriptor_sets.clear();
         m_DescriptorLayout = VK_NULL_HANDLE;
     }
 
@@ -279,9 +279,9 @@ void vk_test::GBuffer::deinitResources() {
         m_Info.allocator->destroyImage(m_Resources.g_buffer_depth);
     }
 
-    for (const VkImageView& view : m_Resources.ui_image_views) {
+    /*for (const VkImageView& view : m_Resources.ui_image_views) {
         vkDestroyImageView(device, view, nullptr);
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------------------------------

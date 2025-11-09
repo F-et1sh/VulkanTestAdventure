@@ -620,20 +620,50 @@
     <None Include="Code\Renderer.cpp">
       <Filter>Code\Frozen\OneFile Renderer %28 C-Style %29</Filter>
     </None>
-    <None Include="Shaders\sky_io.h.slang">
-      <Filter>Code\Main\Shaders</Filter>
-    </None>
-    <None Include="Shaders\tonemap_functions.h.slang">
-      <Filter>Code\Main\Shaders</Filter>
-    </None>
-    <None Include="Shaders\tonemap_io.h.slang">
-      <Filter>Code\Main\Shaders</Filter>
-    </None>
-    <None Include="Shaders\slang_types.h">
-      <Filter>Code\Main\Shaders</Filter>
-    </None>
     <None Include="Include\tiny_gltf.h">
       <Filter>Code\Main\GLTF</Filter>
+    </None>
+    <None Include="..\Files\Shaders\rtbasic.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\foundation.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\bsdf_functions.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\bsdf_types.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\constants.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\functions.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\pbr.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\pbr_ggx_microfacet.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\pbr_material_types.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\sky_functions.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\sky_io.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\tonemap_functions.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\tonemap_io.h.slang">
+      <Filter>Code\Main\Shaders</Filter>
+    </None>
+    <None Include="..\Files\Shaders\slang_types.h">
+      <Filter>Code\Main\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

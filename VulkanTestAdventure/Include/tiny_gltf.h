@@ -5067,7 +5067,7 @@ static bool ParseDracoExtension(Primitive *primitive, Model *model,
     decodedBufferView.buffer = int(model->buffers.size() - 1);
     decodedBufferView.byteLength = bufferSize;
     decodedBufferView.byteOffset = pAttribute->byte_offset();
-    decodedBufferView.byteStride = pAttribute->byte_stride();
+    decodedBufferView.byteStride = pAttribute->byteStride();
     decodedBufferView.target = primitive->indices >= 0
                                    ? TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER
                                    : TINYGLTF_TARGET_ARRAY_BUFFER;

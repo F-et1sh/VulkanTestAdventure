@@ -24,7 +24,7 @@
 
 #pragma once
 #include <resource_allocator.hpp>
-#include "../Shaders/sky_io.h.slang"
+#include "../../Files/Shaders/sky_io.h.slang"
 
 namespace vk_test {
     template <typename SkyParams>

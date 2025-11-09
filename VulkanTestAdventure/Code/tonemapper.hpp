@@ -25,7 +25,7 @@
 #pragma once
 #include "resource_allocator.hpp"
 #include "timers.hpp"
-#include <../Shaders/tonemap_io.h.slang>
+#include "../../Files/Shaders/tonemap_io.h.slang"
 #include <descriptors.hpp>
 
 namespace vk_test {

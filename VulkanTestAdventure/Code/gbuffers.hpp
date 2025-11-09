@@ -82,7 +82,7 @@ namespace vk_test {
         VkResult update(VkCommandBuffer cmd, VkExtent2D new_size);
 
         //--- Getters for the GBuffer resources -------------------------
-        VkDescriptorSet              getDescriptorSet(uint32_t i = 0) const; // Can be use as ImTextureID for ImGui
+        //VkDescriptorSet              getDescriptorSet(uint32_t i = 0) const; // Can be use as ImTextureID for ImGui
         VkExtent2D                   getSize() const;
         VkImage                      getColorImage(uint32_t i = 0) const;
         VkImage                      getDepthImage() const;
@@ -129,8 +129,8 @@ namespace vk_test {
         struct Resources {
             std::vector<vk_test::Image>  g_buffer_color;     // Color attachments
             vk_test::Image               g_buffer_depth{};   // Optional depth attachment
-            std::vector<VkImageView>     ui_image_views;     // Special views for ImGui (alpha=1)
-            std::vector<VkDescriptorSet> ui_descriptor_sets; // ImGui descriptor sets
+            //std::vector<VkImageView>     ui_image_views;     // Special views for ImGui (alpha=1)
+            //std::vector<VkDescriptorSet> ui_descriptor_sets; // ImGui descriptor sets
         } m_Resources;                                       // All Vulkan resources
 
         VkExtent2D m_Size{}; // Width and height of the buffers

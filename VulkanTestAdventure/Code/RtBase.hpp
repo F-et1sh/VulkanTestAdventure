@@ -181,13 +181,13 @@ namespace vk_test {
             //        nvgui::CameraWidget(m_camera_manip);
             //    }
             //    if (ImGui::CollapsingHeader("Environment")) {
-            //        ImGui::Checkbox("Use Sky", (bool*) &m_SceneResource.scene_info.use_sky);
-            //        if (m_SceneResource.scene_info.use_sky) {
-            //            nvgui::skySimpleParametersUI(m_SceneResource.scene_info.sky_simple_param);
+            //        ImGui::Checkbox("Use Sky", (bool*) &m_SceneResource.scene_info.useSky);
+            //        if (m_SceneResource.scene_info.useSky) {
+            //            nvgui::skySimpleParametersUI(m_SceneResource.scene_info.skySimpleParam);
             //        }
             //        else {
             //            PE::begin();
-            //            PE::ColorEdit3("Background", (float*) &m_SceneResource.scene_info.background_color);
+            //            PE::ColorEdit3("Background", (float*) &m_SceneResource.scene_info.backgroundColor);
             //            PE::end();
             //            // Light
             //            PE::begin();
@@ -307,18 +307,18 @@ namespace vk_test {
 
             m_SceneResource.materials = {
                 // Teapot material
-                { .base_color_factor = glm::vec4(0.8F, 1.0F, 0.6F, 1.0F), .metallic_factor = 0.5F, .roughness_factor = 0.5F },
+                { .baseColorFactor = glm::vec4(0.8F, 1.0F, 0.6F, 1.0F), .metallicFactor = 0.5F, .roughnessFactor = 0.5F },
                 // Plane material with texture
-                { .base_color_factor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), .metallic_factor = 0.1F, .roughness_factor = 0.8F, .base_color_texture_index = 1 }
+                { .baseColorFactor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), .metallicFactor = 0.1F, .roughnessFactor = 0.8F, .baseColorTextureIndex = 1 }
             };
 
             m_SceneResource.instances = {
                 // Teapot
-                { .transform      = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1), glm::vec3(0.5F)),
-                  .material_index = 0,
-                  .mesh_index     = 0 },
+                { .transform     = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1), glm::vec3(0.5F)),
+                  .materialIndex = 0,
+                  .meshIndex     = 0 },
                 // Plane
-                { .transform = glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, -0.9F, 0)), glm::vec3(2.F)), .material_index = 1, .mesh_index = 1 },
+                { .transform = glm::scale(glm::translate(glm::mat4(1), glm::vec3(0, -0.9F, 0)), glm::vec3(2.F)), .materialIndex = 1, .meshIndex = 1 },
             };
 
             createGltfSceneInfoBuffer(m_SceneResource, m_StagingUploader); // Create buffers for the scene data (GPU buffers)
@@ -326,19 +326,19 @@ namespace vk_test {
             m_StagingUploader.cmdUploadAppended(cmd); // Upload the scene information to the GPU
 
             // Scene information
-            shaderio::GltfSceneInfo& scene_info      = m_SceneResource.scene_info;
-            scene_info.use_sky                       = 0;                                                                      // Use light
-            scene_info.instances                     = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Address of the instance buffer
-            scene_info.meshes                        = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Address of the mesh buffer
-            scene_info.materials                     = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Address of the material buffer
-            scene_info.background_color              = { 0.85F, 0.85F, 0.85F };                                                // The background color
-            scene_info.num_lights                    = 1;
-            scene_info.punctual_lights[0].color      = glm::vec3(1.0F, 1.0F, 1.0F);
-            scene_info.punctual_lights[0].intensity  = 4.0F;
-            scene_info.punctual_lights[0].position   = glm::vec3(1.0F, 1.0F, 1.0F); // Position of the light
-            scene_info.punctual_lights[0].direction  = glm::vec3(1.0F, 1.0F, 1.0F); // Direction to the light
-            scene_info.punctual_lights[0].type       = shaderio::GltfLightType::ePoint;
-            scene_info.punctual_lights[0].cone_angle = 0.9F; // Cone angle for spot lights (0 for point and directional lights)
+            shaderio::GltfSceneInfo& scene_info    = m_SceneResource.scene_info;
+            scene_info.useSky                      = 0;                                                                      // Use light
+            scene_info.instances                   = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Address of the instance buffer
+            scene_info.meshes                      = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Address of the mesh buffer
+            scene_info.materials                   = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Address of the material buffer
+            scene_info.backgroundColor             = { 0.85F, 0.85F, 0.85F };                                                // The background color
+            scene_info.numLights                   = 1;
+            scene_info.punctualLights[0].color     = glm::vec3(1.0F, 1.0F, 1.0F);
+            scene_info.punctualLights[0].intensity = 4.0F;
+            scene_info.punctualLights[0].position  = glm::vec3(1.0F, 1.0F, 1.0F); // Position of the light
+            scene_info.punctualLights[0].direction = glm::vec3(1.0F, 1.0F, 1.0F); // Direction to the light
+            scene_info.punctualLights[0].type      = shaderio::GltfLightType::ePoint;
+            scene_info.punctualLights[0].coneAngle = 0.9F; // Cone angle for spot lights (0 for point and directional lights)
 
             m_App->submitAndWaitTempCmdBuffer(cmd); // Submit the command buffer to upload the resources
 
@@ -478,13 +478,13 @@ namespace vk_test {
             const glm::mat4& view_matrix = m_CameraManip->getViewMatrix();
             const glm::mat4& proj_matrix = m_CameraManip->getPerspectiveMatrix();
 
-            m_SceneResource.scene_info.view_proj_matrix = proj_matrix * view_matrix;                                              // Combine the view and projection matrices
-            m_SceneResource.scene_info.proj_inv_matrix  = glm::inverse(proj_matrix);                                              // Inverse projection matrix
-            m_SceneResource.scene_info.view_inv_matrix  = glm::inverse(view_matrix);                                              // Inverse view matrix
-            m_SceneResource.scene_info.camera_position  = m_CameraManip->getEye();                                                // Get the camera position
-            m_SceneResource.scene_info.instances        = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Get the address of the instance buffer
-            m_SceneResource.scene_info.meshes           = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Get the address of the mesh buffer
-            m_SceneResource.scene_info.materials        = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Get the address of the material buffer
+            m_SceneResource.scene_info.viewProjMatrix = proj_matrix * view_matrix;                                              // Combine the view and projection matrices
+            m_SceneResource.scene_info.projInvMatrix  = glm::inverse(proj_matrix);                                              // Inverse projection matrix
+            m_SceneResource.scene_info.viewInvMatrix  = glm::inverse(view_matrix);                                              // Inverse view matrix
+            m_SceneResource.scene_info.cameraPosition = m_CameraManip->getEye();                                                // Get the camera position
+            m_SceneResource.scene_info.instances      = (shaderio::GltfInstance*) m_SceneResource.b_instances.address;          // Get the address of the instance buffer
+            m_SceneResource.scene_info.meshes         = (shaderio::GltfMesh*) m_SceneResource.b_meshes.address;                 // Get the address of the mesh buffer
+            m_SceneResource.scene_info.materials      = (shaderio::GltfMetallicRoughness*) m_SceneResource.b_materials.address; // Get the address of the material buffer
 
             // Making sure the scene information buffer is updated before rendering
             // Wait that the fragment shader is done reading the previous scene information and wait for the transfer to complete
@@ -512,19 +512,19 @@ namespace vk_test {
             };
 
             // Rendering the Sky
-            if (m_SceneResource.scene_info.use_sky != 0) {
+            if (m_SceneResource.scene_info.useSky != 0) {
                 const glm::mat4& view_matrix = m_CameraManip->getViewMatrix();
                 const glm::mat4& proj_matrix = m_CameraManip->getPerspectiveMatrix();
-                m_SkySimple.runCompute(cmd, m_App->getViewportSize(), view_matrix, proj_matrix, m_SceneResource.scene_info.sky_simple_param, m_GBuffers.getDescriptorImageInfo(eImgRendered));
+                m_SkySimple.runCompute(cmd, m_App->getViewportSize(), view_matrix, proj_matrix, m_SceneResource.scene_info.skySimpleParam, m_GBuffers.getDescriptorImageInfo(eImgRendered));
             }
 
             // Rendering to the GBuffer
             VkRenderingAttachmentInfo color_attachment = DEFAULT_VkRenderingAttachmentInfo;
-            color_attachment.loadOp                    = (m_SceneResource.scene_info.use_sky != 0) ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
+            color_attachment.loadOp                    = (m_SceneResource.scene_info.useSky != 0) ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR; // Load the previous content of the GBuffer color attachment (Sky rendering)
             color_attachment.imageView                 = m_GBuffers.getColorImageView(eImgRendered);
-            color_attachment.clearValue                = { .color = { { m_SceneResource.scene_info.background_color.x,
-                                                                        m_SceneResource.scene_info.background_color.y,
-                                                                        m_SceneResource.scene_info.background_color.z,
+            color_attachment.clearValue                = { .color = { { m_SceneResource.scene_info.backgroundColor.x,
+                                                                        m_SceneResource.scene_info.backgroundColor.y,
+                                                                        m_SceneResource.scene_info.backgroundColor.z,
                                                                         1.0F } } };
 
             VkRenderingAttachmentInfo depth_attachment = DEFAULT_VkRenderingAttachmentInfo;
@@ -568,9 +568,9 @@ namespace vk_test {
             vkCmdSetVertexInputEXT(cmd, 0, nullptr, 0, nullptr);
 
             for (size_t i = 0; i < m_SceneResource.instances.size(); i++) {
-                uint32_t                      mesh_index = m_SceneResource.instances[i].mesh_index = 0;
-                const shaderio::GltfMesh&     gltf_mesh                                            = m_SceneResource.meshes[mesh_index];
-                const shaderio::TriangleMesh& tri_mesh                                             = gltf_mesh.tri_mesh;
+                uint32_t                      meshIndex = m_SceneResource.instances[i].meshIndex = 0;
+                const shaderio::GltfMesh&     gltf_mesh                                          = m_SceneResource.meshes[meshIndex];
+                const shaderio::TriangleMesh& triMesh                                            = gltf_mesh.triMesh;
 
                 // Push constant is information that is passed to the shader at each draw call.
                 push_values.normalMatrix  = glm::transpose(glm::inverse(glm::mat3(m_SceneResource.instances[i].transform)));
@@ -578,14 +578,14 @@ namespace vk_test {
                 vkCmdPushConstants2(cmd, &push_info);
 
                 // Get the buffer directly using the pre-computed mapping
-                uint32_t      buffer_index = m_SceneResource.mesh_to_buffer_index[mesh_index] = 0;
-                const Buffer& v                                                               = m_SceneResource.b_gltf_datas[buffer_index];
+                uint32_t      buffer_index = m_SceneResource.mesh_to_buffer_index[meshIndex] = 0;
+                const Buffer& v                                                              = m_SceneResource.b_gltf_datas[buffer_index];
 
                 // Bind index buffers
-                vkCmdBindIndexBuffer(cmd, v.buffer, tri_mesh.indices.offset, VkIndexType(gltf_mesh.index_type));
+                vkCmdBindIndexBuffer(cmd, v.buffer, triMesh.indices.offset, VkIndexType(gltf_mesh.indexType));
 
                 // Draw the mesh
-                vkCmdDrawIndexed(cmd, tri_mesh.indices.count, 1, 0, 0, 0); // All indices
+                vkCmdDrawIndexed(cmd, triMesh.indices.count, 1, 0, 0, 0); // All indices
             }
 
             // ** END RENDERING **
@@ -606,18 +606,18 @@ namespace vk_test {
         static void primitiveToGeometry(const shaderio::GltfMesh&                 gltf_mesh,
                                         VkAccelerationStructureGeometryKHR&       geometry,
                                         VkAccelerationStructureBuildRangeInfoKHR& range_info) {
-            const shaderio::TriangleMesh tri_mesh       = gltf_mesh.tri_mesh;
-            const auto                   triangle_count = static_cast<uint32_t>(tri_mesh.indices.count / 3U);
+            const shaderio::TriangleMesh triMesh        = gltf_mesh.triMesh;
+            const auto                   triangle_count = static_cast<uint32_t>(triMesh.indices.count / 3U);
 
             // Describe buffer as array of VertexObj.
             VkAccelerationStructureGeometryTrianglesDataKHR triangles{
                 .sType        = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR,
                 .vertexFormat = VK_FORMAT_R32G32B32_SFLOAT, // vec3 vertex position data
-                .vertexData   = { .deviceAddress = VkDeviceAddress(gltf_mesh.gltf_buffer) + tri_mesh.positions.offset },
-                .vertexStride = tri_mesh.positions.byte_stride,
-                .maxVertex    = tri_mesh.positions.count - 1,
-                .indexType    = VkIndexType(gltf_mesh.index_type), // Index type (VK_INDEX_TYPE_UINT16 or VK_INDEX_TYPE_UINT32)
-                .indexData    = { .deviceAddress = VkDeviceAddress(gltf_mesh.gltf_buffer) + tri_mesh.indices.offset },
+                .vertexData   = { .deviceAddress = VkDeviceAddress(gltf_mesh.gltfBuffer) + triMesh.positions.offset },
+                .vertexStride = triMesh.positions.byteStride,
+                .maxVertex    = triMesh.positions.count - 1,
+                .indexType    = VkIndexType(gltf_mesh.indexType), // Index type (VK_INDEX_TYPE_UINT16 or VK_INDEX_TYPE_UINT32)
+                .indexData    = { .deviceAddress = VkDeviceAddress(gltf_mesh.gltfBuffer) + triMesh.indices.offset },
             };
 
             // Identify the above data as containing opaque triangles.
@@ -665,11 +665,17 @@ namespace vk_test {
             vkGetAccelerationStructureBuildSizesKHR(device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &as_build_info, max_prim_count.data(), &as_build_size);
 
             // Make sure the scratch buffer is properly aligned
-            VkDeviceSize scratch_size = align_up(as_build_size.buildScratchSize = 0, m_AsProperties.minAccelerationStructureScratchOffsetAlignment);
+            VkDeviceSize scratch_size = align_up(as_build_size.buildScratchSize, m_AsProperties.minAccelerationStructureScratchOffsetAlignment);
 
             // Create the scratch buffer to store the temporary data for the build
             Buffer scratch_buffer;
-            m_Allocator.createBuffer(scratch_buffer, scratch_size, VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR, VMA_MEMORY_USAGE_AUTO, {}, m_AsProperties.minAccelerationStructureScratchOffsetAlignment);
+            m_Allocator.createBuffer(
+                scratch_buffer,
+                scratch_size,
+                VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT | VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR,
+                VMA_MEMORY_USAGE_AUTO,
+                {}, // Flags
+                m_AsProperties.minAccelerationStructureScratchOffsetAlignment);
 
             // Create the acceleration structure
             VkAccelerationStructureCreateInfoKHR create_info{
@@ -735,8 +741,8 @@ namespace vk_test {
             for (const shaderio::GltfInstance& instance : m_SceneResource.instances) {
                 VkAccelerationStructureInstanceKHR as_instance{};
                 as_instance.transform                              = to_transform_matrix_khr(instance.transform);       // Position of the instance
-                as_instance.instanceCustomIndex                    = instance.mesh_index;                               // gl_InstanceCustomIndexEXT
-                as_instance.accelerationStructureReference         = m_BlasAccel[instance.mesh_index].address;          // Address of the BLAS
+                as_instance.instanceCustomIndex                    = instance.meshIndex;                                // gl_InstanceCustomIndexEXT
+                as_instance.accelerationStructureReference         = m_BlasAccel[instance.meshIndex].address;           // Address of the BLAS
                 as_instance.instanceShaderBindingTableRecordOffset = 0;                                                 // We will use the same hit group for all objects
                 as_instance.flags                                  = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV; // No culling - double sided
                 as_instance.mask                                   = 0xFF;
@@ -877,7 +883,7 @@ namespace vk_test {
             rt_pipeline_info.pGroups                      = shader_groups.data();
             rt_pipeline_info.maxPipelineRayRecursionDepth = std::max(3U, m_RtProperties.maxRayRecursionDepth); // Ray depth
             rt_pipeline_info.layout                       = m_RtPipelineLayout;
-            vkCreateRayTracingPipelinesKHR(m_App->getDevice(), {}, {}, 1, &rt_pipeline_info, nullptr, &m_RtPipeline);
+            auto r                                        = vkCreateRayTracingPipelinesKHR(m_App->getDevice(), {}, {}, 1, &rt_pipeline_info, nullptr, &m_RtPipeline);
 
             // Create the shader binding table for this pipeline
             createShaderBindingTable(rt_pipeline_info);
@@ -892,11 +898,11 @@ namespace vk_test {
 
             m_Allocator.destroyBuffer(m_SbtBuffer); // Cleanup when re-creating
 
-            VkDevice device      = m_App->getDevice();
-            uint32_t handle_size = m_RtProperties.shaderGroupHandleSize = 0;
-            uint32_t handle_alignment = m_RtProperties.shaderGroupHandleAlignment = 0;
-            uint32_t base_alignment = m_RtProperties.shaderGroupBaseAlignment = 0;
-            uint32_t group_count                                              = rt_pipeline_info.groupCount;
+            VkDevice device           = m_App->getDevice();
+            uint32_t handle_size      = m_RtProperties.shaderGroupHandleSize;
+            uint32_t handle_alignment = m_RtProperties.shaderGroupHandleAlignment;
+            uint32_t base_alignment   = m_RtProperties.shaderGroupBaseAlignment;
+            uint32_t group_count      = rt_pipeline_info.groupCount;
 
             // Get shader group handles
             size_t data_size = handle_size * group_count;
@@ -922,7 +928,7 @@ namespace vk_test {
             m_Allocator.createBuffer(m_SbtBuffer, buffer_size, VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR, VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE, VMA_ALLOCATION_CREATE_MAPPED_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT);
 
             // Populate SBT buffer
-            uint8_t* p_data = m_SbtBuffer.mapping = nullptr;
+            uint8_t* p_data = m_SbtBuffer.mapping;
 
             // Ray generation shader (group 0)
             memcpy(p_data + raygen_offset, m_ShaderHandles.data() + (0 * handle_size), handle_size);

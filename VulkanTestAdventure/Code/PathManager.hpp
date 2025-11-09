@@ -24,7 +24,7 @@ namespace vk_test {
             return this->getAssetsPath() / L"Shaders";
         }
 
-        [[nodiscard]] const std::filesystem::path& getResourcesPath() const noexcept {
+        [[nodiscard]] std::filesystem::path getResourcesPath() const noexcept {
             return m_AssetsPath / L"Resources";
         }
 

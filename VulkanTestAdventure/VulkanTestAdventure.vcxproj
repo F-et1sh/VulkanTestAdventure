@@ -240,6 +240,19 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="Code\element_default_title.cpp" />
     <ClCompile Include="Code\RT_InfinitePlane.cpp" />
     <ClCompile Include="Common\gltf_utils.cpp" />
+    <None Include="..\Files\Shaders\bsdf_functions.h.slang" />
+    <None Include="..\Files\Shaders\bsdf_types.h.slang" />
+    <None Include="..\Files\Shaders\constants.h.slang" />
+    <None Include="..\Files\Shaders\foundation.slang" />
+    <None Include="..\Files\Shaders\functions.h.slang" />
+    <None Include="..\Files\Shaders\pbr.h.slang" />
+    <None Include="..\Files\Shaders\pbr_ggx_microfacet.h.slang" />
+    <None Include="..\Files\Shaders\pbr_material_types.h.slang" />
+    <None Include="..\Files\Shaders\rtbasic.slang" />
+    <None Include="..\Files\Shaders\sky_functions.h.slang" />
+    <None Include="..\Files\Shaders\sky_io.h.slang" />
+    <None Include="..\Files\Shaders\tonemap_functions.h.slang" />
+    <None Include="..\Files\Shaders\tonemap_io.h.slang" />
     <None Include="Code\VkHpp_DeviceManager.cpp" />
     <None Include="Code\VkHpp_FrameData.cpp" />
     <None Include="Code\VkHpp_GPUResourceManager.cpp" />
@@ -313,9 +326,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <CopyFileToFolders Include="Lisenses\NVIDIA_LICENSE">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <None Include="Shaders\sky_io.h.slang" />
-    <None Include="Shaders\tonemap_functions.h.slang" />
-    <None Include="Shaders\tonemap_io.h.slang" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Lisenses\VULKAN_LICENSE.txt" />
@@ -329,13 +339,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Files\Shaders\slang_types.h" />
     <ClInclude Include="Code\element_camera.hpp" />
     <ClInclude Include="Code\element_default_menu.hpp" />
     <ClInclude Include="Code\element_default_title.hpp" />
     <ClInclude Include="Code\RT_InfinitePlane.hpp" />
     <ClInclude Include="Common\gltf_utils.hpp" />
     <None Include="Include\tiny_gltf.h" />
-    <None Include="Shaders\slang_types.h" />
     <None Include="Code\VkHpp_Image.h" />
     <None Include="Code\VkHpp_PipelineManager.h" />
     <None Include="Code\VkHpp_DeviceManager.h" />
