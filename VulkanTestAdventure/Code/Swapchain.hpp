@@ -71,6 +71,7 @@ namespace vk_test {
             VkImage     image{};      // Image to render to
             VkImageView image_view{}; // Image view to access the image
         };
+
         /*--
          * Resources associated with each frame being processed.
          * Each frame has its own set of resources, mainly synchronization primitives

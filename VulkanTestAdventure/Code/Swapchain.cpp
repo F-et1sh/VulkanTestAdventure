@@ -83,6 +83,7 @@ VkResult vk_test::Swapchain::InitializeResources(VkExtent2D& out_window_size, bo
     // (because vkAcquireNextImageKHR can return an index to each image),
     // so adjust m_maxFramesInFlight.
     assert((m_MaxFramesInFlight <= image_count) && "Wrong swapchain setup");
+
     m_MaxFramesInFlight = image_count;
     std::vector<VkImage> swap_images(m_MaxFramesInFlight);
     vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &m_MaxFramesInFlight, swap_images.data());
@@ -153,10 +154,10 @@ void vk_test::Swapchain::ReleaseResources() {
 }
 
 VkResult vk_test::Swapchain::acquireNextImage(VkDevice device) {
-    assert((m_NeedRebuild == false) && "Swapbuffer need to call ReinitializeResources()");
+    assert((m_NeedRebuild == false) && "Swapbuffer need to call reinitResources()");
 
     // Get the frame resources for the current frame
-    // We use m_CurrentFrame here because we want to ensure we don't overwrite resources
+    // We use m_currentFrame here because we want to ensure we don't overwrite resources
     // that are still in use by previous frames
     auto& frame = m_FrameResources[m_FrameResourceIndex];
 
@@ -182,12 +183,12 @@ VkResult vk_test::Swapchain::acquireNextImage(VkDevice device) {
 
 void vk_test::Swapchain::presentFrame(VkQueue queue) {
     // Get the frame resources for the current image
-    // We use m_NextImageIndex here because we want to signal the semaphore
+    // We use m_nextImageIndex here because we want to signal the semaphore
     // associated with the image we just finished rendering
-    auto& frame = m_FrameResources[m_FrameResourceIndex];
+    auto& frame = m_FrameResources[m_FrameImageIndex];
 
     // Setup the presentation info, linking the swapchain and the image index
-    const VkPresentInfoKHR present_info{
+    const VkPresentInfoKHR presentInfo{
         .sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
         .waitSemaphoreCount = 1,                                // Wait for rendering to finish
         .pWaitSemaphores    = &frame.render_finished_semaphore, // Synchronize presentation
@@ -197,7 +198,7 @@ void vk_test::Swapchain::presentFrame(VkQueue queue) {
     };
 
     // Present the image and handle potential resizing issues
-    const VkResult result = vkQueuePresentKHR(queue, &present_info);
+    const VkResult result = vkQueuePresentKHR(queue, &presentInfo);
     // If the swapchain is out of date (e.g., window resized), it needs to be rebuilt
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         m_NeedRebuild = true;

@@ -71,8 +71,68 @@ void vk_test::Application::Initialize(ApplicationCreateInfo& info) {
 }
 
 void vk_test::Application::Loop() {
+    VK_TEST_SAY("Running application");
+    // Re-load ImGui settings from disk, as there might be application elements with settings to restore.
+    //ImGui::LoadIniSettingsFromDisk(m_iniFilename.c_str());
+
+    //// Handle headless mode
+    //if (false) {
+    //    headlessRun();
+    //    return;
+    //}
+
+    // Main rendering loop
     while (!glfwWindowShouldClose(m_Window.getGLFWWindow())) {
-        // Frame Resource Preparationz
+        // Window System Events.
+        // We add a delay before polling to reduce latency.
+        //if (IS_VSYN_WANTED) {
+        //m_FramePacer.pace();
+        //}
+        glfwPollEvents();
+
+        // Skip rendering when minimized
+        if (glfwGetWindowAttrib(m_Window.getGLFWWindow(), GLFW_ICONIFIED) == GLFW_TRUE) {
+            //ImGui_ImplGlfw_Sleep(10);
+            continue;
+        }
+
+        // Begin New Frame for ImGui
+        //ImGui_ImplVulkan_NewFrame();
+        //ImGui_ImplGlfw_NewFrame();
+        //ImGui::NewFrame();
+
+        // Setup ImGui Docking and UI
+        //setupImguiDock();
+        //if (m_useMenubar && ImGui::BeginMainMenuBar()) {
+        //for (std::shared_ptr<IAppElement>& e : m_elements) {
+        //e->onUIMenu();
+        //}
+        //ImGui::EndMainMenuBar();
+        //}
+
+        // Handle Viewport Updates
+        VkExtent2D viewport_extent = m_WindowExtent;
+        //const ImGuiWindow* viewport     = ImGui::FindWindowByName("Viewport");
+        //if (viewport) {
+        //viewport_extent = { uint32_t(viewport->Size.x), uint32_t(viewport->Size.y) };
+        //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        //ImGui::Begin("Viewport");
+        //ImGui::End();
+        //ImGui::PopStyleVar();
+        //}
+
+        // Update viewport if size changed
+        if (m_ViewportExtent.width != viewport_extent.width || m_ViewportExtent.height != viewport_extent.height) {
+            onViewportSizeChange(viewport_extent);
+        }
+
+        //// Handle Screenshot Requests
+        //if (m_screenShotRequested && (m_FrameRingCurrent == m_screenShotFrame)) {
+        //    saveScreenShot(m_screenShotFilename, k_imageQuality);
+        //    m_screenShotRequested = false;
+        //}
+
+        // Frame Resource Preparation
         if (prepareFrameResources()) {
             // Free resources from previous frame
             freeResourcesQueue();
@@ -81,11 +141,11 @@ void vk_test::Application::Loop() {
             prepareFrameToSignal(m_Swapchain.getMaxFramesInFlight());
 
             // Record Commands
-            VkCommandBuffer command = beginCommandRecording();
-            drawFrame(command);         // Call onUIRender() and onRender() for each element
-            renderToSwapchain(command); // Render ImGui to swapchain
-            addSwapchainSemaphores();   // Setup synchronization
-            endFrame(command, m_Swapchain.getMaxFramesInFlight());
+            VkCommandBuffer cmd = beginCommandRecording();
+            drawFrame(cmd);           // Call onUIRender() and onRender() for each element
+            renderToSwapchain(cmd);   // Render ImGui to swapchain
+            addSwapchainSemaphores(); // Setup synchronization
+            endFrame(cmd, m_Swapchain.getMaxFramesInFlight());
 
             // Present Frame
             presentFrame(); // This can also trigger swapchain rebuild
@@ -94,7 +154,15 @@ void vk_test::Application::Loop() {
             advanceFrame(m_Swapchain.getMaxFramesInFlight());
         }
 
-        m_Window.PollEvents();
+        //// End ImGui frame
+        //ImGui::EndFrame();
+
+        //// Handle Additional ImGui Windows
+        //if((ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0)
+        //{
+        //  ImGui::UpdatePlatformWindows();
+        //  ImGui::RenderPlatformWindowsDefault();
+        //}
     }
 }
 
@@ -280,6 +348,94 @@ bool vk_test::Application::isWindowPosValid(const glm::ivec2& window_position) {
 }
 
 //-----------------------------------------------------------------------
+// This is the headless version of the run loop.
+// It will render the scene for the number of frames specified in the headlessFrameCount.
+// It will call onUIRender() and onRender() for each element.
+//
+void vk_test::Application::headlessRun() {
+    //ScopedTimer st(__FUNCTION__);
+    m_ViewportExtent = m_WindowExtent;
+
+    // Set the display for Imgui
+    //ImGuiIO& io      = ImGui::GetIO();
+    //io.DisplaySize.x = float(m_viewportSize.width);
+    //io.DisplaySize.y = float(m_viewportSize.height);
+
+    // Make the size has been communicated everywhere
+    VkCommandBuffer cmd{};
+    beginSingleTimeCommands(cmd, m_Device, m_TransientCommandPool);
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onResize(cmd, m_ViewportExtent);
+    }
+    endSingleTimeCommands(cmd, m_Device, m_TransientCommandPool, m_Queues[0].queue);
+
+    // Need to render the UI twice: the first pass sets up the internal state and layout,
+    // and the second pass finalizes the rendering with the updated state.
+    {
+        //ImGui_ImplVulkan_NewFrame();
+        //ImGui::NewFrame();
+        //setupImguiDock();
+
+        // Call UI rendering for each element
+        for (std::shared_ptr<IAppElement>& e : m_Elements) {
+            e->onUIRender();
+        }
+        //ImGui::EndFrame();
+    }
+
+    // Rendering n-times the scene
+    for (uint32_t frameID = 0; frameID < 1; frameID++) {
+        //ImGui_ImplVulkan_NewFrame();
+        //ImGui::NewFrame(); // Even if isn't directly used, helps advancing time if query
+
+        waitForFrameCompletion();
+
+        prepareFrameToSignal(getFrameCycleSize());
+
+        VkCommandBuffer cmd = beginCommandRecording(); // Start the command buffer
+        drawFrame(cmd);                                // Call onUIRender() and onRender() for each element
+        endFrame(cmd, getFrameCycleSize());            // End the frame and submit it
+        advanceFrame(getFrameCycleSize());             // Advance to the next frame in the ring buffer
+
+        //ImGui::EndFrame();
+    }
+    //ImGui::Render(); // This is creating the data to draw the UI (not on GPU yet)
+
+    // At this point, everything has been rendered. Let it finish.
+    vkDeviceWaitIdle(m_Device);
+
+    // Call back the application, such that it can do something with the rendered image
+    for (std::shared_ptr<IAppElement>& e : m_Elements) {
+        e->onLastHeadlessFrame();
+    }
+}
+
+//-----------------------------------------------------------------------
+// Call this function if the viewport size changes
+// This happens when the window is resized, or when the ImGui viewport window is resized.
+//
+void vk_test::Application::onViewportSizeChange(VkExtent2D extent) {
+    // Check for DPI scaling and adjust the font size
+    float xscale, yscale;
+    glfwGetWindowContentScale(m_Window.getGLFWWindow(), &xscale, &yscale);
+    //ImGui::GetIO().FontGlobalScale *= xscale / m_dpiScale;
+    //m_dpiScale = xscale;
+
+    m_ViewportExtent = extent;
+    // Recreate the G-Buffer to the size of the viewport
+    vkQueueWaitIdle(m_Queues[0].queue);
+    {
+        VkCommandBuffer cmd{};
+        beginSingleTimeCommands(cmd, m_Device, m_TransientCommandPool);
+        // Call the implementation of the UI rendering
+        for (std::shared_ptr<IAppElement>& e : m_Elements) {
+            e->onResize(cmd, m_ViewportExtent);
+        }
+        endSingleTimeCommands(cmd, m_Device, m_TransientCommandPool, m_Queues[0].queue);
+    }
+}
+
+//-----------------------------------------------------------------------
 // prepareFrameResources is the first step in the rendering process.
 // It looks if the swapchain require rebuild, which happens when the window is resized.
 // It acquires the image from the swapchain to render into.
@@ -442,11 +598,11 @@ void vk_test::Application::endFrame(VkCommandBuffer command, uint32_t frame_in_f
     });
 
     // Adding the command buffer of the frame to the list of command buffers to submit
-    // Note : extra command buffers could have been added to the list from other parts of the application (elements)
+    // Note: extra command buffers could have been added to the list from other parts of the application (elements)
     m_CommandBuffers.push_back({ .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO, .commandBuffer = command });
 
     // Populate the submit info to synchronize rendering and send the command buffer
-    const VkSubmitInfo2 submit_info{
+    const VkSubmitInfo2 submitInfo{
         .sType                    = VK_STRUCTURE_TYPE_SUBMIT_INFO_2,
         .waitSemaphoreInfoCount   = uint32_t(m_WaitSemaphores.size()),   //
         .pWaitSemaphoreInfos      = m_WaitSemaphores.data(),             // Wait for the image to be available
@@ -457,7 +613,7 @@ void vk_test::Application::endFrame(VkCommandBuffer command, uint32_t frame_in_f
     };
 
     // Submit the command buffer to the GPU and signal when it's done
-    vkQueueSubmit2(m_Queues[0].queue, 1, &submit_info, nullptr);
+    vkQueueSubmit2(m_Queues[0].queue, 1, &submitInfo, nullptr);
 }
 
 void vk_test::Application::presentFrame() {

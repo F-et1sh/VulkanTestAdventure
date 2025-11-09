@@ -202,7 +202,7 @@ VkResult vk_test::GBuffer::initResources(VkCommandBuffer cmd) {
 
         for (uint32_t c = 0; c < num_color; c++) {
             // Clear to avoid garbage data
-            const VkClearColorValue                      clear_value = { { 0.F, 0.F, 0.F, 0.F } };
+            const VkClearColorValue                      clear_value = { { 1.F, 0.F, 0.F, 0.F } };
             const std::array<VkImageSubresourceRange, 1> range       = {
                 { { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1 } }
             };

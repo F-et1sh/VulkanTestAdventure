@@ -84,6 +84,8 @@ namespace vk_test {
         uint32_t          getFrameCycleIndex() const { return m_FrameRingCurrent; }
 
     private:
+        void            headlessRun();
+        void            onViewportSizeChange(VkExtent2D extent);
         bool            prepareFrameResources();
         void            waitForFrameCompletion() const;
         void            freeResourcesQueue();
