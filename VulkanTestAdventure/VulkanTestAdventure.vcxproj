@@ -150,7 +150,7 @@
     <ProjectReference />
     <PostBuildEvent>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "F:\Windows\Desktop\Vulkan Work\vk_raytracing_tutorial_KHR\build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll" "$(SolutionDir)_bin/Release"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -159,7 +159,7 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang.dll C:/VulkanSDK/1.4.328.1/bin/shaderc_shared.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "F:\Windows\Desktop\Vulkan Work\vk_raytracing_tutorial_KHR\build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang.dll" "C:/VulkanSDK/1.4.328.1/bin/shaderc_shared.dll" "$(SolutionDir)_bin/Release"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -212,7 +212,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ProjectReference />
     <PostBuildEvent>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "F:\Windows\Desktop\Vulkan Work\vk_raytracing_tutorial_KHR\build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang-glslang.dll" "$(SolutionDir)_bin/Release"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -221,7 +221,7 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different F:/Windows/Desktop/vk_raytracing_tutorial_KHR/build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang.dll C:/VulkanSDK/1.4.328.1/bin/shaderc_shared.dll F:/Windows/Desktop/vk_raytracing_tutorial_KHR/_bin/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different "F:\Windows\Desktop\Vulkan Work\vk_raytracing_tutorial_KHR\build/_deps/Slang-windows-x86_64-2025.13.1/bin/slang.dll" "C:/VulkanSDK/1.4.328.1/bin/shaderc_shared.dll" "$(SolutionDir)_bin/Release"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
